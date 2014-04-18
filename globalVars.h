@@ -24,7 +24,7 @@
 #define NE 5
 #define N_Neurons (NE + NI)
 #define K 2
-
+o
 // params patch
 #define L 1.0
 #define CON_SIGMA (L / 5.0)
@@ -68,7 +68,11 @@ FILE *outVars, *spkTimesFp;
 
 
 double contrast, theta;
-double *gFF, *iFF, *rTotal, muE, muI; // vectors
+double *gFF, *iFF, *rTotal, muE, muI,
+  *randnXiA, // norm rand number
+  **randwZiA, // weibul rand number
+  *randuDelta, // uniform rand (0, PI)
+  **randuPhi; // uniform rand (0, 2.PI)
 
 
 #define RHO 0.5 // ratio - smatic / dendritic synapses

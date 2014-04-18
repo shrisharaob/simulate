@@ -1,5 +1,6 @@
 void Isynap1(double *vm);
 void IBackGrnd(double *vm);
+void AuxRffTotal();
 void RffTotal(double theta, double t);
 void Gff(double theta);
 double XCordinate(int neuronIdx, double nA);

@@ -6,6 +6,7 @@
 #include "globalVars.h"
 #include "auxFuncProtos.h"
 #include "optmNwEq.c"
+#include "varProtos.h"
 
 //#include "nwEq2.h"
 //void (*derive)(double, double *, double *);
@@ -55,10 +56,15 @@ void main(int argc, char **argv) {
     gFF = vector(1, N_Neurons);
     iFF = vector(1, N_Neurons);
     rTotal = vector(1, N_Neurons);
+    randXiA = vector(1, N_Neurons);
+    randwZiA = matrix(1, N_Neurons, 1, 4);
+    randuDelta = vector(1, N_Neurons);
+    randuPhi = matrix(1, N_Neurons, 1, 3);
 
     outVars = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outvars", "w");
-
+    
     genConMat();
+    AuxRffTotal();
     //    GenConMat02();
     /* /\********\/ */
     /* conMat[1][1] = 0; */
