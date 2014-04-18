@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include "nrutil.h"
 #include "nr.h"
+#include "varProtos.h"
 #include "globalVars.h"
 #include "auxFuncProtos.h"
-#include "varProtos.h"
+
 
 extern double **conMat, *iSynap, *expSum, *gEE, *gEI, *gIE, *gII, *rTotal;
 extern double contrast, *gFF, *iFF;
@@ -222,7 +223,7 @@ void AuxRffTotal() {
   for(lNeuron = 1; lNeuron <= N_Neurons; ++lNeuron) {
     idem1 = -1 * rand();
     idem2 = -1 * rand();
-    randXiA[lNeuron] =  gasdev(&idem1);
+    randnXiA[lNeuron] =  gasdev(&idem1);
     randuDelta[lNeuron] = PI * ran1(&idem2);
     for(i = 1; i <= 4; ++i) {
       idem3 = -1 * rand();
@@ -242,26 +243,26 @@ void RffTotal(double theta, double t) {
   long idem1 = -31, idem2 = -61;
   for(lNeuron = 1; lNeuron <= N_Neurons; ++lNeuron) {
     rTotal[lNeuron] = CFF * K * (R0 + R1 * log10(1 + contrast)) 
-      + sqrt(CFF * K) * R0 * randXiA[lNeuron]
-      + sqrt(CFF * K) * R1 * log10(1 + contrast) * (randXiA[lNeuron] 
-						    + etaE * randZiA[lNeuron][1] * cos(2 * (theta - randuDelta[lNeuron])) 
-						    + muE * randZiA[lNeuron][2] * cos(INP_FREQ * t - randuPhi[lNeuron][1])
-						    + etaE * muE * 0.5 * randZiA[lNeuron][3] 
+      + sqrt(CFF * K) * R0 * randnXiA[lNeuron]
+      + sqrt(CFF * K) * R1 * log10(1 + contrast) * (randnXiA[lNeuron] 
+						    + etaE * randwZiA[lNeuron][1] * cos(2 * (theta - randuDelta[lNeuron])) 
+						    + muE * randwZiA[lNeuron][2] * cos(INP_FREQ * t - randuPhi[lNeuron][1])
+						    + etaE * muE * 0.5 * randwZiA[lNeuron][3] 
                                                     * cos(2 * theta + INP_FREQ * t - randuPhi[lNeuron][2])
-                                                    + randZiA[lNeuron][4] 
-                                                    * cos(2 * theta - INP_FREQ * t + randuPhi[lNeuron][3])));
+                                                    + randwZiA[lNeuron][4] 
+                                                    * cos(2 * theta - INP_FREQ * t + randuPhi[lNeuron][3]));
   }
 
  for(lNeuron = NE + 1; lNeuron <= N_Neurons; ++lNeuron) {
     rTotal[lNeuron] = CFF * K * (R0 + R1 * log10(1 + contrast)) 
-      + sqrt(CFF * K) * R0 * randXiA[lNeuron]
-      + sqrt(CFF * K) * R1 * log10(1 + contrast) * (randXiA[lNeuron] 
-						    + etaI * randZiA[lNeuron][1] * cos(2 * (theta - randuDelta[lNeuron])) 
-                                                    + muI * randZiA[lNeuron][1] * cos(INP_FREQ * t - randuPhi[lNeuron][1])
+      + sqrt(CFF * K) * R0 * randnXiA[lNeuron]
+      + sqrt(CFF * K) * R1 * log10(1 + contrast) * (randnXiA[lNeuron] 
+						    + etaI * randwZiA[lNeuron][1] * cos(2 * (theta - randuDelta[lNeuron])) 
+                                                    + muI * randwZiA[lNeuron][1] * cos(INP_FREQ * t - randuPhi[lNeuron][1])
 						    + etaI * muI * 0.5 
-						    * randZiA[lNeuron][3] * cos(2 * theta + INP_FREQ * t - randuPhi[lNeuron][2])
-						       + randZiA[lNeuron][4]
-						       * cos(2 * theta - INP_FREQ * t + randuPhi[lNeuron][3])));
+						    * randwZiA[lNeuron][3] * cos(2 * theta + INP_FREQ * t - randuPhi[lNeuron][2])
+						       + randwZiA[lNeuron][4]
+                                                    * cos(2 * theta - INP_FREQ * t + randuPhi[lNeuron][3]));
   }
 
 }

@@ -20,11 +20,11 @@
 
 // params network
 #define N_StateVars 4
-#define NI 5
-#define NE 5
+#define NI 800
+#define NE 1000
 #define N_Neurons (NE + NI)
-#define K 2
-o
+#define K 100
+
 // params patch
 #define L 1.0
 #define CON_SIGMA (L / 5.0)
