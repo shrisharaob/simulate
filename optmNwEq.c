@@ -103,7 +103,7 @@ void derivs(double t, double stateVar[], double dydx[]) {
 				   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron]);
 	//+ iSynap[kNeuron] + iBg[kNeuron] + iFF[kNeuron]); // N = [NE; NI]
       }
-      fprintf(outVars, "%f ", iSynap[kNeuron]);
+      fprintf(outVars, "%f %f %f ", iSynap[kNeuron], iBg[kNeuron], iFF[kNeuron]);
             //, iBg[kNeuron], iFF[kNeuron]);
     dydx[2 + colNo] = alpha_n(stateVar[1 + colNo]) * (1 - stateVar[2 + colNo]) 
                       - beta_n(stateVar[1 + colNo]) * stateVar[2 + colNo];

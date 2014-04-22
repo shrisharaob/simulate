@@ -15,15 +15,14 @@
 #define G_L_E 0.05 // excitatory
 #define G_L_I 0.1 // inhibitory
 #define G_adapt 0.5
-
 #define Tau_adapt 60 // in ms
 
 // params network
 #define N_StateVars 4
-#define NI 800
-#define NE 1000
+#define NI 2
+#define NE 2
 #define N_Neurons (NE + NI)
-#define K 100
+#define K 1
 
 // params patch
 #define L 1.0
@@ -49,7 +48,7 @@ double *iBg, *gaussNoiseE, *gaussNoiseI;
 
 double *input_cur, *IF_SPK, **conMat;
 double *iSynap, *expSum, *gEE, *gEI, *gIE, *gII;
-FILE *outVars, *spkTimesFp;
+FILE *outVars, *spkTimesFp, *isynapFP;
 
 // ff input
 #define CFF 0.1
@@ -72,8 +71,11 @@ double *gFF, *iFF, *rTotal, muE, muI,
   *randnXiA, // norm rand number
   **randwZiA, // weibul rand number
   *randuDelta, // uniform rand (0, PI)
-  **randuPhi; // uniform rand (0, 2.PI)
-
+  **randuPhi, // uniform rand (0, 2.PI)
+  *rTotalPrev, //  rToral(t - 1)
+  *tempRandnPrev, // randn prev (eq. 15)
+  *tempRandnNew;
+FILE *rTotalFP;
 
 #define RHO 0.5 // ratio - smatic / dendritic synapses
 

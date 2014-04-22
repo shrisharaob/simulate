@@ -66,11 +66,9 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
       //compute background current
       IBackGrnd(vm);
       RffTotal(theta, x);
-      Gff(theta);
+      Gff(theta, x);
       IFF(vm);
     }
-
-
   free_vector(v,1,nvar);
   free_vector(vout,1,nvar);
   free_vector(dv,1,nvar);

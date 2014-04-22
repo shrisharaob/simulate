@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include "nr.h"
 #include "nrutil.h"
-#include "varProtos.h"
 #include "globalVars.h"
+#include "varProtos.h"
 #include "auxFuncProtos.h"
 #include "optmNwEq.c"
 
@@ -26,14 +26,13 @@ void main(int argc, char **argv) {
     int dim = 4;
     double *vstart;
     double x1 = 0;
-    double x2 = 200;
+    double x2 = 100;
     int nSteps;
     FILE *fp;
     int loopIdx=0;
     int kNeuron, clmNo;
     double *spkTimes;
     int nSpks = 0;
-    
     // initialize
     spkTimes = vector(1, nSteps);
     dt = DT;
@@ -57,13 +56,16 @@ void main(int argc, char **argv) {
     gFF = vector(1, N_Neurons);
     iFF = vector(1, N_Neurons);
     rTotal = vector(1, N_Neurons);
+    rTotalPrev = vector(1, N_Neurons);
+    tempRandnPrev = vector(1, N_Neurons);
+    tempRandnNew = vector(1, N_Neurons);
     randnXiA = vector(1, N_Neurons);
     randwZiA = matrix(1, N_Neurons, 1, 4);
     randuDelta = vector(1, N_Neurons);
     randuPhi = matrix(1, N_Neurons, 1, 3);
-
     outVars = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outvars", "w");
-    
+    isynapFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/isynapEI", "w");
+    rTotalFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/rTotal", "w");
     genConMat();
     AuxRffTotal();
     //    GenConMat02();
@@ -77,16 +79,13 @@ void main(int argc, char **argv) {
     /* conMat[3][1] = 1; */
     /* conMat[3][2] = 0; */
     /* conMat[3][3] = 0; */
-
     // compute
-    
     printf("\nNE = %d\n", NE);
     printf("\nNI = %d\n", NI);
     printf("\nK = %d\n", K);
     printf("computing...\n");
     //Parse inputs
     if(argc > 1) {
-    
       theta = atof(argv[2]);
       contrast = atof(argv[3]);
       muE = atof(argv[4]);
@@ -137,6 +136,8 @@ void main(int argc, char **argv) {
     printf("\n");
     fclose(fp);
     fclose(outVars);
+    fclose(isynapFP);
+    fclose(rTotalFP);
     free_vector(expSum, 1, N_Neurons);
     free_vector(iSynap, 1, N_Neurons); 
     free_vector(gEE, 1, NE);   
@@ -146,8 +147,11 @@ void main(int argc, char **argv) {
     free_matrix(conMat, 1, N_Neurons, 1, N_Neurons);
     free_vector( gaussNoiseE, 1, NE);
     free_vector(gaussNoiseI, 1, NI);
+    free_vector(rTotal, 1, N_Neurons);
+    free_vector(rTotalPrev, 1, N_Neurons);
+    free_vector(tempRandnPrev, 1, N_Neurons);
+    free_vector(tempRandnNew, 1, N_Neurons);
     free_vector(iBg, 1, N_Neurons);
     free_vector(gFF, 1, N_Neurons);
     free_vector(iFF, 1, N_Neurons);
-
 }

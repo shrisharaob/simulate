@@ -1,0 +1,7 @@
+dt = 1e-3;
+tStart = 0;
+tSotp = 1;
+t = tStart: dt : tStop;
+x = zeros(length(t), 1);
+for n = 2 : length(t)
+    x(n) = x(n-1) + dt * (-1 * x(n-1) + randn)
