@@ -7,22 +7,22 @@
 #define SQRT_DT sqrt(DT)
 
 #define Cm 1 //microF / cm^2
-#define E_Na 55 //mV
-#define E_K -90
-#define E_L -65
-#define G_Na 100 // mS/cm^2
-#define G_K 40
+#define E_Na 55.0 //mV
+#define E_K -90.0
+#define E_L -65.0
+#define G_Na 100.0 // mS/cm^2
+#define G_K 40.0
 #define G_L_E 0.05 // excitatory
 #define G_L_I 0.1 // inhibitory
 #define G_adapt 0.5
-#define Tau_adapt 60 // in ms
+#define Tau_adapt 60.0 // in ms
 
 // params network
 #define N_StateVars 4
 #define NI 2
 #define NE 2
 #define N_Neurons (NE + NI)
-#define K 1
+#define K 1.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0
@@ -31,24 +31,24 @@
  // params synapse
 #define TAU_SYNAP 3.0
 #define INV_TAU_SYNAP (1 / TAU_SYNAP)
-#define V_E 0
-#define V_I -80
+#define V_E 0.0
+#define V_I -80.0
 #define G_EE 0.15
-#define G_EI 2
+#define G_EI 2.0
 #define G_IE 0.45
-#define G_II 3
+#define G_II 3.0
 #define EXP_SUM exp(-1 * DT / TAU_SYNAP)
 
 // backgrund input
-#define RB_E 20.0
-#define RB_I 50.0
+#define RB_E 2.0
+#define RB_I 2.0
 double *iBg, *gaussNoiseE, *gaussNoiseI;
 #define G_EB (0.3 /sqrt(K))
 #define G_IB (0.4 /sqrt(K))
 
 double *input_cur, *IF_SPK, **conMat;
 double *iSynap, *expSum, *gEE, *gEI, *gIE, *gII;
-FILE *outVars, *spkTimesFp, *isynapFP;
+FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP;
 
 // ff input
 #define CFF 0.1
@@ -74,9 +74,10 @@ double *gFF, *iFF, *rTotal, muE, muI,
   **randuPhi, // uniform rand (0, 2.PI)
   *rTotalPrev, //  rToral(t - 1)
   *tempRandnPrev, // randn prev (eq. 15)
-  *tempRandnNew;
+  *tempRandnNew,
+  *Itgrl, *ItgrlOld;
 FILE *rTotalFP;
 
-#define RHO 0.5 // ratio - smatic / dendritic synapses
+#define RHO 0.4 // ratio - smatic / dendritic synapses
 
-#define SPK_THRESH 1
+#define SPK_THRESH 20.0

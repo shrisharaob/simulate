@@ -1,0 +1,11 @@
+CC = gcc
+DEPS = ran1.c gasdev.c nrutil.c rk4.c auxFunctions.c rkdumb.c mysolver.c
+OUT_EXE = mysolver
+
+build: $(DEPS)
+        $(CC) -o $(OUT_EXE) $(DEPS)
+
+clean:
+        rm -f *.o core
+
+rebuild: clean build

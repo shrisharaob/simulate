@@ -4,5 +4,6 @@ extern double  *randnXiA, // norm rand number
   **randuPhi, // uniform rand (0, 2.PI)
   *rTotalPrev, // rTotal(t - 1)
   *tempRandnPrev,
-  *tempRandnNew; 
-extern FILE *isynapFP, *rTotalFP;
+  *tempRandnNew,
+  *Itgrl, *ItgrlOld;
+extern FILE *isynapFP, *rTotalFP, *gbgrndFP;

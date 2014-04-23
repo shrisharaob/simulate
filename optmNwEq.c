@@ -86,22 +86,20 @@ void derivs(double t, double stateVar[], double dydx[]) {
     //cur = 5;//input_cur[tIdx];
     //}
     //else {cur = 0;}
-    cur = 2.5;
+    cur = 0;
       if (kNeuron <= NE) { 
-	dydx[1 + colNo] =  1/Cm * (cur 
+        dydx[1 + colNo] =  1/Cm * (cur 
 				   - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
 				   - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
 				   - G_L_E * (stateVar[1 + colNo] - E_L)
-                               - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron]);
-	//+ iSynap[kNeuron] + iBg[kNeuron] + iFF[kNeuron]); // N = [NE; NI]
+                                   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBg[kNeuron]);// + iFF[kNeuron]); // N = [NE; NI]
       }
       else {
-	dydx[1 + colNo] =  1/Cm * (cur 
+        dydx[1 + colNo] =  1/Cm * (cur 
 				   - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
 				   - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
 				   - G_L_I * (stateVar[1 + colNo] - E_L)
-				   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron]);
-	//+ iSynap[kNeuron] + iBg[kNeuron] + iFF[kNeuron]); // N = [NE; NI]
+                                   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBg[kNeuron]);// + iFF[kNeuron]); // N = [NE; NI]
       }
       fprintf(outVars, "%f %f %f ", iSynap[kNeuron], iBg[kNeuron], iFF[kNeuron]);
             //, iBg[kNeuron], iFF[kNeuron]);
@@ -109,7 +107,7 @@ void derivs(double t, double stateVar[], double dydx[]) {
                       - beta_n(stateVar[1 + colNo]) * stateVar[2 + colNo];
   
     dydx[3 + colNo] = 1 / Tau_adapt * (z_inf(stateVar[1 + colNo]) - stateVar[3 + colNo]);
-
+    
     dydx[4 + colNo] = alpha_h(stateVar[1 + colNo]) * (1 - stateVar[4 + colNo]) 
                       - beta_h(stateVar[1 + colNo]) * stateVar[4 + colNo];
   }

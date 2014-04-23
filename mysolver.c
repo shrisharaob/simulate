@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <time.h>
 #include "nr.h"
 #include "nrutil.h"
 #include "globalVars.h"
@@ -59,6 +60,8 @@ void main(int argc, char **argv) {
     rTotalPrev = vector(1, N_Neurons);
     tempRandnPrev = vector(1, N_Neurons);
     tempRandnNew = vector(1, N_Neurons);
+    Itgrl = vector(1, N_Neurons);
+    ItgrlOld = vector(1, N_Neurons);
     randnXiA = vector(1, N_Neurons);
     randwZiA = matrix(1, N_Neurons, 1, 4);
     randuDelta = vector(1, N_Neurons);
@@ -66,6 +69,8 @@ void main(int argc, char **argv) {
     outVars = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outvars", "w");
     isynapFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/isynapEI", "w");
     rTotalFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/rTotal", "w");
+    gbgrndFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gBg", "w");
+    srand(time(NULL));
     genConMat();
     AuxRffTotal();
     //    GenConMat02();
@@ -82,7 +87,7 @@ void main(int argc, char **argv) {
     // compute
     printf("\nNE = %d\n", NE);
     printf("\nNI = %d\n", NI);
-    printf("\nK = %d\n", K);
+    printf("\nK = %d\n", (int)K);
     printf("computing...\n");
     //Parse inputs
     if(argc > 1) {
@@ -138,6 +143,7 @@ void main(int argc, char **argv) {
     fclose(outVars);
     fclose(isynapFP);
     fclose(rTotalFP);
+    fclose(gbgrndFP);
     free_vector(expSum, 1, N_Neurons);
     free_vector(iSynap, 1, N_Neurons); 
     free_vector(gEE, 1, NE);   

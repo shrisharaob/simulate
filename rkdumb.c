@@ -43,28 +43,29 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
       xx[k+1] = x;
       /* RENAME */
       for (i=1;i<=nvar;i++) 
-	{
-	  v[i]=vout[i];
-	  y[i][k+1] = v[i];
-	}
+        {
+          v[i]=vout[i];
+          y[i][k+1] = v[i];
+        }
       // detect spike - three consequtive time points are checked -->  ../^\..
       if(k>3) {
-	for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
-	  clmNo = (mNeuron - 1) * N_StateVars;
-	  IF_SPK[mNeuron] = 0;
-	  vm[mNeuron] = v[1 + clmNo];
-	  if(v[1 + clmNo] > SPK_THRESH 
-	     & v[1 + clmNo] < y[1 + clmNo][k] 
-	     & y[1 + clmNo][k] > y[1 + clmNo][k-1]) {
-	    IF_SPK[mNeuron] = 1;
-	    fprintf(spkTimesFp, "%f %d\n", xx[k], mNeuron);
-	  } 
-	}
+        for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
+          clmNo = (mNeuron - 1) * N_StateVars;
+          IF_SPK[mNeuron] = 0;
+          vm[mNeuron] = v[1 + clmNo];
+          if(v[1 + clmNo] > SPK_THRESH 
+             & v[1 + clmNo] < y[1 + clmNo][k] 
+             & y[1 + clmNo][k] > y[1 + clmNo][k-1]) {
+            IF_SPK[mNeuron] = 1;
+            fprintf(spkTimesFp, "%f %d\n", xx[k], mNeuron);
+          } 
+        }
       }
       // compute synaptic current
       Isynap1(vm);
       //compute background current
       IBackGrnd(vm);
+      // FF input current
       RffTotal(theta, x);
       Gff(theta, x);
       IFF(vm);
