@@ -302,8 +302,7 @@ void Gff(double theta, double t) {
       idem = -1 * rand();
       ItgrlOld[kNeuron] = Itgrl[kNeuron];
       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem) / SQRT_DT;
-      //      Itgrl[kNeuron] = 1;
-      gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-1 * (t - DT) / TAU_SYNAP) + Itgrl[kNeuron] * exp(-1 * t / TAU_SYNAP));
+      gFF[kNeuron] += DT * (-1 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP * ( INV_TAU_SYNAP * gFF[kNeuron] + ItgrlOld[kNeuron]));
       fprintf(rTotalFP, "%f ", gFF[kNeuron]);
       //fprintf(rTotalFP, "%f %f", gFF[kNeuron], rTotal[kNeuron]);
     }
@@ -311,29 +310,25 @@ void Gff(double theta, double t) {
       idem = -1 * rand();
       ItgrlOld[kNeuron] = Itgrl[kNeuron];
       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem) / SQRT_DT;
-      //      Itgrl[kNeuron] = 1;
-      gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-1 * (t - DT) / TAU_SYNAP) + Itgrl[kNeuron] * exp(-1 * t / TAU_SYNAP));
+      gFF[kNeuron] += DT * (-1 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP * ( INV_TAU_SYNAP * gFF[kNeuron] + ItgrlOld[kNeuron]));
       //      fprintf(rTotalFP, "%f %f", gFF[kNeuron], rTotal[kNeuron]);
       fprintf(rTotalFP, "%f ", gFF[kNeuron]);
     }
     fprintf(rTotalFP, "\n");
-
   }
   else {
      for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
        idem = -1 * rand();
        Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem) / SQRT_DT;
        //Itgrl[kNeuron] = 1;
-       gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-1 * (t - DT) / TAU_SYNAP) + Itgrl[kNeuron] * exp(-1 * t / TAU_SYNAP));
+       //       gFF[kNeuron] = 0;
        // fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
        fprintf(rTotalFP, "%f ", gFF[kNeuron]);
      }  
      for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
        idem = -1 * rand();
        Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem) / SQRT_DT;
-       //Itgrl[kNeuron] = 1;
-      gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-1 * (t - DT) / TAU_SYNAP) + Itgrl[kNeuron] * exp(-1 * t / TAU_SYNAP));
-      //       fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
+       //       fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
       fprintf(rTotalFP, "%f ", gFF[kNeuron]);
      }
         fprintf(rTotalFP, "\n");
@@ -361,3 +356,5 @@ void GenConMat02() {
   }
   printf("\n");
 }
+
+

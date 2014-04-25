@@ -73,12 +73,12 @@ void main(int argc, char **argv) {
     rTotalFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/rTotal", "w");
     gbgrndFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gBg", "w");
     srand(time(NULL));
-    //    genConMat();
+    genConMat();
     AuxRffTotal();
     //    GenConMat02();
     /* /\********\/ */
     //conMat[1][1] = 0; 
-         conMat[1][2] = 1; 
+    //conMat[1][2] = 1; 
     /* conMat[1][3] = 1; */
     //    conMat[2][1] = 1; 
     /* conMat[2][2] = 0; */

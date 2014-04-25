@@ -19,10 +19,10 @@
 
 // params network
 #define N_StateVars 4
-#define NI 1
-#define NE 1
+#define NI 10
+#define NE 10
 #define N_Neurons (NE + NI)
-#define K 1.0 // use decimal point to assign, keeps it double 
+#define K 2.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0
