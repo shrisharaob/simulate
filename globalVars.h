@@ -19,8 +19,8 @@
 
 // params network
 #define N_StateVars 4
-#define NI 2
-#define NE 2
+#define NI 1
+#define NE 1
 #define N_Neurons (NE + NI)
 #define K 1.0 // use decimal point to assign, keeps it double 
 
@@ -38,6 +38,9 @@
 #define G_IE 0.45
 #define G_II 3.0
 #define EXP_SUM exp(-1 * DT / TAU_SYNAP)
+
+// recurrent input 
+double *tempCurE, *tempCurI;
 
 // backgrund input
 #define RB_E 2.0

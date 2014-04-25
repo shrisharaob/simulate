@@ -60,6 +60,8 @@ void main(int argc, char **argv) {
     rTotalPrev = vector(1, N_Neurons);
     tempRandnPrev = vector(1, N_Neurons);
     tempRandnNew = vector(1, N_Neurons);
+    tempCurE = vector(1, N_Neurons);
+    tempCurI = vector(1, N_Neurons);
     Itgrl = vector(1, N_Neurons);
     ItgrlOld = vector(1, N_Neurons);
     randnXiA = vector(1, N_Neurons);
@@ -71,14 +73,14 @@ void main(int argc, char **argv) {
     rTotalFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/rTotal", "w");
     gbgrndFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gBg", "w");
     srand(time(NULL));
-    genConMat();
+    //    genConMat();
     AuxRffTotal();
     //    GenConMat02();
     /* /\********\/ */
-    /* conMat[1][1] = 0; */
-    /* conMat[1][2] = 1; */
+    //conMat[1][1] = 0; 
+         conMat[1][2] = 1; 
     /* conMat[1][3] = 1; */
-    /* conMat[2][1] = 1; */
+    //    conMat[2][1] = 1; 
     /* conMat[2][2] = 0; */
     /* conMat[2][3] = 1; */
     /* conMat[3][1] = 1; */
@@ -109,7 +111,7 @@ void main(int argc, char **argv) {
       contrast = 0.25;
       muE = 0.1;
       muI = 0.1;
-      for(loopIdx = 1; loopIdx < nSteps+1;  ++loopIdx) {
+      for(loopIdx =1; loopIdx < nSteps+1;  ++loopIdx) {
 	input_cur[loopIdx] = 10; 
       }
     }
@@ -139,6 +141,7 @@ void main(int argc, char **argv) {
        }
       }
     printf("\n");
+    printf("nSteps = %d \n", loopIdx);
     fclose(fp);
     fclose(outVars);
     fclose(isynapFP);
@@ -150,7 +153,6 @@ void main(int argc, char **argv) {
     free_vector(gIE, 1, NI);   
     free_vector(gEI, 1, NE);   
     free_vector(gII, 1, NI);   
-    free_matrix(conMat, 1, N_Neurons, 1, N_Neurons);
     free_vector( gaussNoiseE, 1, NE);
     free_vector(gaussNoiseI, 1, NI);
     free_vector(rTotal, 1, N_Neurons);
@@ -160,4 +162,9 @@ void main(int argc, char **argv) {
     free_vector(iBg, 1, N_Neurons);
     free_vector(gFF, 1, N_Neurons);
     free_vector(iFF, 1, N_Neurons);
+    free_vector(tempCurI, 1, N_Neurons);
+    free_vector(tempCurE, 1, N_Neurons);
+    free_matrix(conMat, 1, N_Neurons, 1, N_Neurons);
+    free_matrix(randwZiA, 1, N_Neurons, 1, 4);
+    free_matrix(randuPhi, 1, N_Neurons, 1, 3);
 }

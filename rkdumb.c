@@ -33,13 +33,16 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
   xx[1] = x1;  
   x = x1;
   h = (x2 - x1) / nstep;
+  /* for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) { */
+  /*   fprintf(outVars, "%f %f %f %f ", x, iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]); */
+  /* } */
+  //  fprintf(outVars, "\n");
   for (k = 1; k <= nstep; k++) 
     {
       (*derivs)(x,v,dv);
       rk4(v,dv,nvar,x,h,vout,derivs);
-
       if ((double)(x+h) == x) nrerror("Step size too small in routine rkdumb");
-      x += h;
+      x += h; 
       xx[k+1] = x;
       /* RENAME */
       for (i=1;i<=nvar;i++) 
@@ -47,19 +50,35 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
           v[i]=vout[i];
           y[i][k+1] = v[i];
         }
+
+
       // detect spike - three consequtive time points are checked -->  ../^\..
       if(k>3) {
+        fprintf(outVars, "%f", x); // first clm  is time 
         for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
           clmNo = (mNeuron - 1) * N_StateVars;
           IF_SPK[mNeuron] = 0;
-          vm[mNeuron] = v[1 + clmNo];
+          vm[mNeuron] = v[1 + clmNo]; 
           if(v[1 + clmNo] > SPK_THRESH 
              & v[1 + clmNo] < y[1 + clmNo][k] 
              & y[1 + clmNo][k] > y[1 + clmNo][k-1]) {
             IF_SPK[mNeuron] = 1;
             fprintf(spkTimesFp, "%f %d\n", xx[k], mNeuron);
-          } 
+          }
+          fprintf(outVars, "%f %f %f ", iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
+          //          printf("%f \n", x);
+          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
         }
+        fprintf(outVars, "\n");
+        fprintf(isynapFP, "\n"); 
+      }
+      else {
+        for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
+          fprintf(outVars, "%f %f %f %f ", x, iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
+          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
+        }
+        fprintf(outVars, "\n");
+        fprintf(isynapFP, "\n"); 
       }
       // compute synaptic current
       Isynap1(vm);

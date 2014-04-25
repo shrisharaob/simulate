@@ -7,3 +7,11 @@ extern double  *randnXiA, // norm rand number
   *tempRandnNew,
   *Itgrl, *ItgrlOld;
 extern FILE *isynapFP, *rTotalFP, *gbgrndFP;
+
+
+// recurrent input 
+double *tempCurE, *tempCurI;
+
+extern double **conMat, *iSynap, *expSum, *gEE, *gEI, *gIE, *gII, *rTotal;
+
+extern double contrast, *gFF, *iFF;

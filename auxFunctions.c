@@ -8,11 +8,10 @@
 #include "varProtos.h"
 #include "auxFuncProtos.h"
 
-extern double **conMat, *iSynap, *expSum, *gEE, *gEI, *gIE, *gII, *rTotal;
-extern double contrast, *gFF, *iFF;
+// recurrent synaptic current
 void Isynap1(double *vm) {
   int kNeuron, mNeuron;
-  double out, tempCurE, tempCurI;
+  double out; 
   FILE *fp;
   iSynap = vector(1, N_Neurons); 
   for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
@@ -24,73 +23,70 @@ void Isynap1(double *vm) {
   for(mNeuron = 1; mNeuron <= NE; ++mNeuron) {
     if(IF_SPK[mNeuron] == 1) {  // if mNeuron fired, then add expSum to all the neurons to which it projects
       for(kNeuron = 1; kNeuron <= NE; ++kNeuron) { // E --> E connections
-	if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
-	  gEE[kNeuron] += expSum[mNeuron];
-	}
+        if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
+          gEE[kNeuron] += expSum[mNeuron];
+        }
       }
       for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) { // E --> I connections
-	if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
-	  gIE[kNeuron - NE] += expSum[mNeuron];
-	}
+        if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
+          gIE[kNeuron - NE] += expSum[mNeuron];
+        }
       }
     }
     else {
       for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
-	gEE[kNeuron] = EXP_SUM * gEE[kNeuron];
+        gEE[kNeuron] = EXP_SUM * gEE[kNeuron];
       }
       for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
-	gIE[kNeuron - NE] = EXP_SUM * gIE[kNeuron - NE];
+        gIE[kNeuron - NE] = EXP_SUM * gIE[kNeuron - NE];
       }
     }
   }
   for(mNeuron = NE + 1; mNeuron <= N_Neurons; ++mNeuron) {
     if(IF_SPK[mNeuron] == 1) {  // if mNeuron fired, then add expSum to all the neurons to which it projects
       for(kNeuron = 1; kNeuron <= NE; ++kNeuron) { // I --> E connections
-	if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
-	  gEI[kNeuron] += expSum[mNeuron];
-	}
+        if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
+          gEI[kNeuron] += expSum[mNeuron];
+        }
       }
       for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) { // I --> I connections
-	if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
-	  gII[kNeuron - NE] += expSum[mNeuron];
-	}
+        if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
+          gII[kNeuron - NE] += expSum[mNeuron];
+        }
       }
     }
     else {
       for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
-	gEI[kNeuron] = EXP_SUM * gEI[kNeuron];
+        gEI[kNeuron] = EXP_SUM * gEI[kNeuron];
       }
       for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
-	gII[kNeuron - NE] = EXP_SUM * gII[kNeuron - NE];
+        gII[kNeuron - NE] = EXP_SUM * gII[kNeuron - NE];
       }
     }
   }
   for(mNeuron = 1; mNeuron <= NE; ++mNeuron) {
-    tempCurE =  -1 *  gEE[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE 
-                   * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    tempCurI = -1 * gEI[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EI 
-                         * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
-    iSynap[mNeuron] =  tempCurE + tempCurI;
+    tempCurE[mNeuron] =  -1 *  gEE[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE 
+      * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
+    tempCurI[mNeuron] = -1 * gEI[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EI 
+      * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
+    iSynap[mNeuron] =  tempCurE[mNeuron] + tempCurI[mNeuron];
     
-/* -1 *  gEE[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE  */
-/*                          * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E)) */
-/*                       - gEI[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EI  */
-/*                          * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I)); */
-    fprintf(isynapFP, "%f %f \n", tempCurE, tempCurI);
+    /* -1 *  gEE[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE  */
+    /*                          * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E)) */
+    /*                       - gEI[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EI  */
+    /*                          * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I)); */
   }
   for(mNeuron = NE + 1; mNeuron <= N_Neurons; ++mNeuron) {
-    tempCurI = -1 * gII[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_II  
- 	              * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
-    tempCurE = -1 * gIE[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_IE
-                  * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    iSynap[mNeuron] = tempCurE + tempCurI;
-/* -1 * gIE[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_IE  */
-/* 	                     * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E)) */
-/*                          - gII[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_II  */
-/* 	                     * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I)); */
-    fprintf(isynapFP, "%f %f \n", tempCurE, tempCurI);
+    tempCurI[mNeuron] = -1 * gII[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_II  
+      * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
+    tempCurE[mNeuron] = -1 * gIE[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_IE
+      * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
+    iSynap[mNeuron] = tempCurE[mNeuron] + tempCurI[mNeuron];
+    /* -1 * gIE[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_IE  */
+    /* 	                     * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E)) */
+    /*                          - gII[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_II  */
+    /* 	                     * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I)); */
   }
-  //  fp = fopen("isyynap", "a");
   //fprintf(fp, "%f %f %f %f\n", gIE[1], expSum[1], gEI[1], iSynap[2]);
   //fclose(fp);
 }
@@ -304,43 +300,43 @@ void Gff(double theta, double t) {
   if(t > DT) {
     for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
       idem = -1 * rand();
-      //tempRandnPrev[kNeuron] = tempRandnNew[kNeuron];
-      //      tempRandnNew[kNeuron] = gasdev(&idem);
-      //printf("%ld %f\n", idem, gasdev(&idem));
       ItgrlOld[kNeuron] = Itgrl[kNeuron];
       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem) / SQRT_DT;
-      gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-DT / TAU_SYNAP) + Itgrl[kNeuron]);
-      //fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
-      fprintf(rTotalFP, "%f ", Itgrl[kNeuron]);
+      //      Itgrl[kNeuron] = 1;
+      gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-1 * (t - DT) / TAU_SYNAP) + Itgrl[kNeuron] * exp(-1 * t / TAU_SYNAP));
+      fprintf(rTotalFP, "%f ", gFF[kNeuron]);
+      //fprintf(rTotalFP, "%f %f", gFF[kNeuron], rTotal[kNeuron]);
     }
     for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
       idem = -1 * rand();
       ItgrlOld[kNeuron] = Itgrl[kNeuron];
       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem) / SQRT_DT;
-      gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-DT / TAU_SYNAP) + Itgrl[kNeuron]);
-      //gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP * (
-//              (rTotalPrev[kNeuron] + sqrt(rTotalPrev[kNeuron]) * tempRandnPrev[kNeuron] / SQRT_DT) * exp(-DT / TAU_SYNAP) + 
-      //                     rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * tempRandnNew[kNeuron] / SQRT_DT);
-      //fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
-      fprintf(rTotalFP, "%f ", Itgrl[kNeuron]);
+      //      Itgrl[kNeuron] = 1;
+      gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-1 * (t - DT) / TAU_SYNAP) + Itgrl[kNeuron] * exp(-1 * t / TAU_SYNAP));
+      //      fprintf(rTotalFP, "%f %f", gFF[kNeuron], rTotal[kNeuron]);
+      fprintf(rTotalFP, "%f ", gFF[kNeuron]);
     }
     fprintf(rTotalFP, "\n");
+
   }
   else {
-     for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
+     for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
        idem = -1 * rand();
        Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem) / SQRT_DT;
-       //      fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
-      fprintf(rTotalFP, "%f ", Itgrl[kNeuron]);
+       //Itgrl[kNeuron] = 1;
+       gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-1 * (t - DT) / TAU_SYNAP) + Itgrl[kNeuron] * exp(-1 * t / TAU_SYNAP));
+       // fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
+       fprintf(rTotalFP, "%f ", gFF[kNeuron]);
      }  
      for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
        idem = -1 * rand();
        Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem) / SQRT_DT;
-       gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-DT / TAU_SYNAP) + Itgrl[kNeuron]);
-       //       fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
-       fprintf(rTotalFP, "%f ", Itgrl[kNeuron]);
+       //Itgrl[kNeuron] = 1;
+      gFF[kNeuron] = gFF[kNeuron] + DT * 0.5 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP * (ItgrlOld[kNeuron] * exp(-1 * (t - DT) / TAU_SYNAP) + Itgrl[kNeuron] * exp(-1 * t / TAU_SYNAP));
+      //       fprintf(rTotalFP, "%f %f", gFF[kNeuron], Itgrl[kNeuron]);
+      fprintf(rTotalFP, "%f ", gFF[kNeuron]);
      }
-     fprintf(rTotalFP, "\n");
+        fprintf(rTotalFP, "\n");
   }
 }
 void IFF(double *vm) {
