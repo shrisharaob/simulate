@@ -7,6 +7,6 @@ double XCordinate(int neuronIdx, double nA);
 double YCordinate(int neuronIdx, double nA);
 void GenConMat02();
 double gaussrand( long int *seed );
-
+void LinSpace(double startVal, double stopVal, double stepSize, double *outVector, int* nSteps);
 //double ran1(int *);
 //float gasdev(long *);

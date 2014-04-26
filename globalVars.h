@@ -17,6 +17,8 @@
 #define G_adapt 0.5
 #define Tau_adapt 60.0 // in ms
 
+double dt;
+
 // params network
 #define N_StateVars 4
 #define NI 10

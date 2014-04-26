@@ -1,0 +1,2 @@
+thetaStep = 10;
+theta = 0 : thetaStep : 360;

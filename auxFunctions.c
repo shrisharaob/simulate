@@ -255,7 +255,6 @@ void AuxRffTotal() {
   }
 }
 
-
 void RffTotal(double theta, double t) {
   double etaE, etaI;
   int lNeuron;
@@ -358,3 +357,16 @@ void GenConMat02() {
 }
 
 
+void LinSpace(double startVal, double stopVal, double stepSize, double *outVector, int* nSteps)  {
+  // generate equally spaced vector
+  int loopId = 0, nVecSteps;
+  nSteps = &nVecSteps;
+  *nSteps = (int)(stopVal - startVal) / stepSize;
+  outVector = vector(1, *nSteps);
+  if(*nSteps > 1) {
+    outVector[1] = startVal;
+   for(loopId = 2; loopId <= *nSteps; ++loopId) {
+     outVector[loopId] = outVector[loopId - 1] + stepSize;
+   }
+  }
+}

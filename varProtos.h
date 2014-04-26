@@ -1,3 +1,4 @@
+extern double dt;// integration time step 
 extern double  *randnXiA, // norm rand number
   **randwZiA, // weibul rand number
   *randuDelta, // uniform rand (0, PI)

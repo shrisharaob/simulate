@@ -21,21 +21,16 @@
 extern double **y, *xx, *input_cur, *IF_SPK, *expSum, *iSynap, 
   *gaussNoiseE, *gaussNoise, theta, contrast, *gFF, *iFF, *rTotal, muE, muI;
 extern FILE *spkTimesF, *outVars;
-double dt; //integration time step
 void main(int argc, char **argv) {
-    // declare
+    // ***** DECLARATION *****//
     int dim = 4;
-    double *vstart;
-    double x1 = 0;
-    double x2 = 100;
-    int nSteps;
+    double *vstart, *thetaVec, *spkTimes;;
+    double x1 = 0, // simulation start time
+           x2 = 100; // simulation end time
+    int nSteps, *nThetaSteps;
     FILE *fp;
-    int loopIdx=0;
-    int kNeuron, clmNo;
-    double *spkTimes;
-    int nSpks = 0;
-    // initialize
-    spkTimes = vector(1, nSteps);
+    int kNeuron, clmNo, loopIdx=0;
+    // ***** INITIALIZATION *****//
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
     xx = vector(1, nSteps);
@@ -43,13 +38,13 @@ void main(int argc, char **argv) {
     input_cur = vector(1, nSteps);
     vstart = vector(1, N_StateVars * N_Neurons);
     IF_SPK = vector(1, N_Neurons);   
-    spkTimesFp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/spkTimes","w");
     expSum = vector(1, N_Neurons); // synap input
     iSynap = vector(1, N_Neurons); 
     gEE = vector(1, NE);   
     gEI = vector(1, NE);   
     gIE = vector(1, NI);   
     gII = vector(1, NI);
+    spkTimes = vector(1, nSteps);
     conMat = matrix(1, N_Neurons, 1, N_Neurons);
     gaussNoiseE = vector(1, NE);
     gaussNoiseI = vector(1, NI);
@@ -68,14 +63,18 @@ void main(int argc, char **argv) {
     randwZiA = matrix(1, N_Neurons, 1, 4);
     randuDelta = vector(1, N_Neurons);
     randuPhi = matrix(1, N_Neurons, 1, 3);
+    spkTimesFp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/spkTimes","w");
     outVars = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outvars", "w");
     isynapFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/isynapEI", "w");
     rTotalFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/rTotal", "w");
     gbgrndFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gBg", "w");
-    srand(time(NULL));
-    genConMat();
-    AuxRffTotal();
+    srand(time(NULL)); // set the seed for random number generator
+    genConMat(); // Generate conection matrix
+    AuxRffTotal(); /* auxillary function, generates random variables for the 
+                      simulation run; which are used approximating FF input */
+    LinSpace(0, 360, 10, thetaVec, nThetaSteps); 
     //    GenConMat02();
+
     /* /\********\/ */
     //conMat[1][1] = 0; 
     //conMat[1][2] = 1; 
@@ -91,19 +90,20 @@ void main(int argc, char **argv) {
     printf("\nNI = %d\n", NI);
     printf("\nK = %d\n", (int)K);
     printf("computing...\n");
-    //Parse inputs
+    //***** PARSE INPUT ARGS *****//
     if(argc > 1) {
       theta = atof(argv[2]);
       contrast = atof(argv[3]);
       muE = atof(argv[4]);
       muI = atof(argv[5]);
+      // current pulse - tStart, tStop, stepSize
       for(loopIdx = 1; loopIdx < nSteps+1;  ++loopIdx) {
-	if(loopIdx * dt > atof(argv[6]) && loopIdx *dt <= atof(argv[7])) {
-	  input_cur[loopIdx] = atof(argv[8]); 
-	}
-	else { 
-	  input_cur[loopIdx] = 0;
-	}
+        if(loopIdx * dt > atof(argv[6]) && loopIdx *dt <= atof(argv[7])) { 
+          input_cur[loopIdx] = atof(argv[8]); 
+        }
+        else { 
+          input_cur[loopIdx] = 0;
+        }
       }
     }
     else {
@@ -112,10 +112,10 @@ void main(int argc, char **argv) {
       muE = 0.1;
       muI = 0.1;
       for(loopIdx =1; loopIdx < nSteps+1;  ++loopIdx) {
-	input_cur[loopIdx] = 10; 
+        input_cur[loopIdx] = 0; 
       }
     }
-    // initialize states
+    //***** INITIALIZE STATE VARIABLES *****//
     for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
       clmNo =  (kNeuron - 1) * N_StateVars;
       vstart[1 + clmNo] = 0;
@@ -123,26 +123,34 @@ void main(int argc, char **argv) {
       vstart[3 + clmNo] = 0.1;
       vstart[4 + clmNo] = 0.5961;
     }
-    rkdumb(vstart, N_StateVars * N_Neurons, x1, x2, nSteps, derivs);
+    //***** INTEGRATE *****//
+    for(loopIdx = 1; loopIdx <= *nThetaSteps; ++loopIdx) {
+      theta = thetaVec[loopIdx];
+      fprintf(spkTimesFp, "%f %f\n", theta, theta);
+      rkdumb(vstart, N_StateVars * N_Neurons, x1, x2, nSteps, derivs);
+      fprintf(spkTimesFp, "%d %d\n", 11, 11); // delimiters for thetas 
+      fprintf(spkTimesFp, "%d %d\n", 73, 73);
+    }
     printf("Done! \n");
     fclose(spkTimesFp);
-    fp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outputFile.csv", "w");
-    for(loopIdx = 1; loopIdx < nSteps+1; ++loopIdx) {
-        fprintf(fp, "%f ", xx[loopIdx]);
-        for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
-          clmNo =  (kNeuron - 1) * N_StateVars;
-          //[t, V_m, n, z, h, I_input]
-	  //	  fprintf(fp, "%f %f %f %f %f ", y[1 + clmNo][loopIdx], y[2 + clmNo][loopIdx], y[3 + clmNo][loopIdx], y[4 + clmNo][loopIdx], input_cur[loopIdx]);
-	  fprintf(fp, "%f ", y[1 + clmNo][loopIdx]);
-      }
-       fprintf(fp, "\n");
-       if(loopIdx%100 == 0) {
-         printf("\r%d", loopIdx);
-       }
-      }
-    printf("\n");
-    printf("nSteps = %d \n", loopIdx);
-    fclose(fp);
+    //***** SAVE TO DISK *****//
+    /* fp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outputFile.csv", "w"); */
+    /* for(loopIdx = 1; loopIdx < nSteps+1; ++loopIdx) { */
+    /*   fprintf(fp, "%f ", xx[loopIdx]); */
+    /*   for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) { */
+    /*     clmNo =  (kNeuron - 1) * N_StateVars; */
+    /*     // y = [t, V_m, n, z, h, I_input] */
+	/*   //	  fprintf(fp, "%f %f %f %f %f ", y[1 + clmNo][loopIdx], y[2 + clmNo][loopIdx], y[3 + clmNo][loopIdx], y[4 + clmNo][loopIdx], input_cur[loopIdx]); */
+	/*   fprintf(fp, "%f ", y[1 + clmNo][loopIdx]); */
+    /*   } */
+    /*    fprintf(fp, "\n"); */
+    /*    if(loopIdx%100 == 0) { */
+    /*      printf("\r%d", loopIdx); */
+    /*    } */
+    /*   } */
+    /* printf("\n"); */
+    /* printf("nSteps = %d \n", loopIdx); */
+    /* fclose(fp); */
     fclose(outVars);
     fclose(isynapFP);
     fclose(rTotalFP);
