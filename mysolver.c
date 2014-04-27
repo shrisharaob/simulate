@@ -24,10 +24,11 @@ extern FILE *spkTimesF, *outVars;
 void main(int argc, char **argv) {
     // ***** DECLARATION *****//
     int dim = 4;
-    double *vstart, *thetaVec, *spkTimes;;
+    double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-           x2 = 100; // simulation end time
-    int nSteps, *nThetaSteps;
+      x2 = 50, // simulation end time
+      thetaStep = 0;
+    int nSteps, nThetaSteps;
     FILE *fp;
     int kNeuron, clmNo, loopIdx=0;
     // ***** INITIALIZATION *****//
@@ -72,7 +73,17 @@ void main(int argc, char **argv) {
     genConMat(); // Generate conection matrix
     AuxRffTotal(); /* auxillary function, generates random variables for the 
                       simulation run; which are used approximating FF input */
-    LinSpace(0, 360, 10, thetaVec, nThetaSteps); 
+    if(thetaStep > 0) {
+      thetaVec = vector(1, 360 / thetaStep);
+      LinSpace(0, 360, thetaStep, thetaVec, &nThetaSteps); 
+    }
+    else {
+      thetaVec = vector(1, 1);
+      thetaVec[1] = 0;
+      nThetaSteps = 1;
+    }
+    printf("theta = %f %d\n", thetaVec[1], nThetaSteps);
+    //    thetaVec = {0, 0}; nThetaSteps = 1;
     //    GenConMat02();
 
     /* /\********\/ */
@@ -124,7 +135,7 @@ void main(int argc, char **argv) {
       vstart[4 + clmNo] = 0.5961;
     }
     //***** INTEGRATE *****//
-    for(loopIdx = 1; loopIdx <= *nThetaSteps; ++loopIdx) {
+    for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
       theta = thetaVec[loopIdx];
       fprintf(spkTimesFp, "%f %f\n", theta, theta);
       rkdumb(vstart, N_StateVars * N_Neurons, x1, x2, nSteps, derivs);
@@ -134,27 +145,29 @@ void main(int argc, char **argv) {
     printf("Done! \n");
     fclose(spkTimesFp);
     //***** SAVE TO DISK *****//
-    /* fp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outputFile.csv", "w"); */
-    /* for(loopIdx = 1; loopIdx < nSteps+1; ++loopIdx) { */
-    /*   fprintf(fp, "%f ", xx[loopIdx]); */
-    /*   for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) { */
-    /*     clmNo =  (kNeuron - 1) * N_StateVars; */
-    /*     // y = [t, V_m, n, z, h, I_input] */
-	/*   //	  fprintf(fp, "%f %f %f %f %f ", y[1 + clmNo][loopIdx], y[2 + clmNo][loopIdx], y[3 + clmNo][loopIdx], y[4 + clmNo][loopIdx], input_cur[loopIdx]); */
-	/*   fprintf(fp, "%f ", y[1 + clmNo][loopIdx]); */
-    /*   } */
-    /*    fprintf(fp, "\n"); */
-    /*    if(loopIdx%100 == 0) { */
-    /*      printf("\r%d", loopIdx); */
-    /*    } */
-    /*   } */
-    /* printf("\n"); */
-    /* printf("nSteps = %d \n", loopIdx); */
-    /* fclose(fp); */
+    fp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outputFile.csv", "w");
+    for(loopIdx = 1; loopIdx < nSteps+1; ++loopIdx) {
+      fprintf(fp, "%f ", xx[loopIdx]);
+      for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
+        clmNo =  (kNeuron - 1) * N_StateVars;
+        // y = [t, V_m, n, z, h, I_input]
+	  //	  fprintf(fp, "%f %f %f %f %f ", y[1 + clmNo][loopIdx], y[2 + clmNo][loopIdx], y[3 + clmNo][loopIdx], y[4 + clmNo][loopIdx], input_cur[loopIdx]);
+	  fprintf(fp, "%f ", y[1 + clmNo][loopIdx]);
+      }
+       fprintf(fp, "\n");
+       if(loopIdx%100 == 0) {
+         printf("\r%d", loopIdx);
+       }
+      }
+    printf("\n");
+    printf("nSteps = %d \n", loopIdx);
+    
+    fclose(fp);
     fclose(outVars);
     fclose(isynapFP);
     fclose(rTotalFP);
     fclose(gbgrndFP);
+    //***** FREE MEMORY *****//
     free_vector(expSum, 1, N_Neurons);
     free_vector(iSynap, 1, N_Neurons); 
     free_vector(gEE, 1, NE);   

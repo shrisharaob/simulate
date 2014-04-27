@@ -17,14 +17,14 @@
 #define G_adapt 0.5
 #define Tau_adapt 60.0 // in ms
 
-double dt;
+double dt, *thetaVec;
 
 // params network
 #define N_StateVars 4
-#define NI 10
-#define NE 10
+#define NI 200
+#define NE 200
 #define N_Neurons (NE + NI)
-#define K 2.0 // use decimal point to assign, keeps it double 
+#define K 100.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0
@@ -83,6 +83,6 @@ double *gFF, *iFF, *rTotal, muE, muI,
   *Itgrl, *ItgrlOld;
 FILE *rTotalFP;
 
-#define RHO 0.4 // ratio - smatic / dendritic synapses
+#define RHO 0.1// ratio - smatic / dendritic synapses
 
 #define SPK_THRESH 20.0
