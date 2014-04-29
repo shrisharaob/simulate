@@ -1,9 +1,9 @@
 #include<math.h>
 #include<stdio.h>
-
+// time in ms
 #define PI 3.14159265359
 
-#define DT 0.025
+#define DT 0.025 // ms
 #define SQRT_DT sqrt(DT)
 
 #define Cm 1 //microF / cm^2
@@ -20,18 +20,18 @@
 double dt, *thetaVec;
 
 // params network
-#define N_StateVars 4
-#define NI 200
-#define NE 200
+#define N_StateVars 4 // equals the number of 1st order ode's
+#define NI 2000
+#define NE 0
 #define N_Neurons (NE + NI)
-#define K 100.0 // use decimal point to assign, keeps it double 
+#define K 200.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0
 #define CON_SIGMA (L / 5.0)
 
  // params synapse
-#define TAU_SYNAP 3.0
+#define TAU_SYNAP 3.0  // ms
 #define INV_TAU_SYNAP (1 / TAU_SYNAP)
 #define V_E 0.0
 #define V_I -80.0
@@ -45,8 +45,8 @@ double dt, *thetaVec;
 double *tempCurE, *tempCurI;
 
 // backgrund input
-#define RB_E 2.0
-#define RB_I 2.0
+#define RB_E 3.0
+#define RB_I 3.0
 double *iBg, *gaussNoiseE, *gaussNoiseI;
 #define G_EB (0.3 /sqrt(K))
 #define G_IB (0.4 /sqrt(K))
@@ -70,7 +70,6 @@ FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP;
 #define GFF_E 0.95
 #define GFF_I 1.26
 
-
 double contrast, theta;
 double *gFF, *iFF, *rTotal, muE, muI,
   *randnXiA, // norm rand number
@@ -83,6 +82,6 @@ double *gFF, *iFF, *rTotal, muE, muI,
   *Itgrl, *ItgrlOld;
 FILE *rTotalFP;
 
-#define RHO 0.1// ratio - smatic / dendritic synapses
+#define RHO 0.5 // ratio - smatic / dendritic synapses
 
-#define SPK_THRESH 20.0
+#define SPK_THRESH 0.0

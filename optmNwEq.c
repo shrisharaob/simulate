@@ -81,28 +81,27 @@ void derivs(double t, double stateVar[], double dydx[]) {
   tIdx = (int)(t / dt) + 1;
   for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
     colNo = (kNeuron - 1) * N_StateVars;
-    /* if(kNeuron == 1 & t >= 10 & t <= 12 ) {  */
-    /* cur = 20;//input_cur[tIdx]; */
-    /* } */
+     /* if(kNeuron == 1 & t >= 10 & t <= 12 ) { */
+    /*  cur = 20;//input_cur[tIdx]; */
+    /*  } */
     /* else {cur = 0;} */
-    /*     //cur = 10; */
-    cur = 0;
+    //     cur = 10;
+    cur = 0.1 * sqrt(K);
     if (kNeuron <= NE) { 
       dydx[1 + colNo] =  1/Cm * (cur 
                                  - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
                                  - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
                                  - G_L_E * (stateVar[1 + colNo] - E_L)
-                                 - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBg[kNeuron] + iFF[kNeuron]); // N = [NE; NI]
+                                 - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron]);// iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
       }
       else {
         dydx[1 + colNo] =  1/Cm * (cur  
                                    - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
                                    - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
                                    - G_L_I * (stateVar[1 + colNo] - E_L)
-                                   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBg[kNeuron] + iFF[kNeuron]); // N = [NE; NI]
+                                   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron]); // + iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
       }
      
-            //, iBg[kNeuron], iFF[kNeuron]);
     dydx[2 + colNo] = alpha_n(stateVar[1 + colNo]) * (1 - stateVar[2 + colNo]) 
                       - beta_n(stateVar[1 + colNo]) * stateVar[2 + colNo];
   

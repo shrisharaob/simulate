@@ -50,8 +50,6 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
           v[i]=vout[i];
           y[i][k+1] = v[i];
         }
-
-
       // detect spike - three consequtive time points are checked -->  ../^\..
       if(k>3) {
         fprintf(outVars, "%f", x); // first clm  is time 
@@ -59,14 +57,19 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
           clmNo = (mNeuron - 1) * N_StateVars;
           IF_SPK[mNeuron] = 0;
           vm[mNeuron] = v[1 + clmNo]; 
-          if(v[1 + clmNo] > SPK_THRESH 
-             & v[1 + clmNo] < y[1 + clmNo][k] 
-             & y[1 + clmNo][k] > y[1 + clmNo][k-1]) {
-            IF_SPK[mNeuron] = 1;
-            fprintf(spkTimesFp, "%f %d\n", xx[k], mNeuron);
+          /* if(v[1 + clmNo] > SPK_THRESH  */
+          /*    & v[1 + clmNo] < y[1 + clmNo][k]  */
+          /*    & y[1 + clmNo][k] > y[1 + clmNo][k-1]) { */
+          /*   IF_SPK[mNeuron] = 1; */
+          /*   fprintf(spkTimesFp, "%f %d\n", xx[k], mNeuron); */
+          /* } */
+          if(v[1 + clmNo] > SPK_THRESH) { 
+            if(y[1 + clmNo][k] <= SPK_THRESH) {
+              IF_SPK[mNeuron] = 1;
+              fprintf(spkTimesFp, "%f %d\n", xx[k+1], mNeuron);
+            }
           }
           fprintf(outVars, "%f %f %f ", iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
-          //          printf("%f \n", x);
           fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
         }
         fprintf(outVars, "\n");

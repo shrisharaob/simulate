@@ -26,11 +26,12 @@ void main(int argc, char **argv) {
     int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 50, // simulation end time
+      x2 = 100, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     FILE *fp;
     int kNeuron, clmNo, loopIdx=0;
+    long idem;
     // ***** INITIALIZATION *****//
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
@@ -70,7 +71,8 @@ void main(int argc, char **argv) {
     rTotalFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/rTotal", "w");
     gbgrndFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gBg", "w");
     srand(time(NULL)); // set the seed for random number generator
-    genConMat(); // Generate conection matrix
+    //    genConMat(); // Generate conection matrix
+    GenConMat02();
     AuxRffTotal(); /* auxillary function, generates random variables for the 
                       simulation run; which are used approximating FF input */
     if(thetaStep > 0) {
@@ -83,15 +85,15 @@ void main(int argc, char **argv) {
       nThetaSteps = 1;
     }
     printf("theta = %f %d\n", thetaVec[1], nThetaSteps);
-    //    thetaVec = {0, 0}; nThetaSteps = 1;
-    //    GenConMat02();
-
     /* /\********\/ */
     //conMat[1][1] = 0; 
-    //conMat[1][2] = 1; 
-    /* conMat[1][3] = 1; */
-    //    conMat[2][1] = 1; 
-    /* conMat[2][2] = 0; */
+    //    conMat[1][2] = 1; 
+    //for(loopIdx = 3; loopIdx <=N_Neurons; ++loopIdx) {
+    //conMat[loopIdx][2] = 1;
+    //    }
+    // conMat[1][3] = 1; */
+    //    conMat[2][1] = 0; 
+    //conMat[2][2] = 0; 
     /* conMat[2][3] = 1; */
     /* conMat[3][1] = 1; */
     /* conMat[3][2] = 0; */
@@ -129,7 +131,8 @@ void main(int argc, char **argv) {
     //***** INITIALIZE STATE VARIABLES *****//
     for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
       clmNo =  (kNeuron - 1) * N_StateVars;
-      vstart[1 + clmNo] = 0;
+      idem = -1 * rand();
+      vstart[1 + clmNo] = -70 +  40 * ran1(&idem); // Vm(0) ~ U(-70, -30)
       vstart[2 + clmNo] = 0.3176;
       vstart[3 + clmNo] = 0.1;
       vstart[4 + clmNo] = 0.5961;
