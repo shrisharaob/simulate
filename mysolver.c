@@ -21,12 +21,13 @@
 extern double **y, *xx, *input_cur, *IF_SPK, *expSum, *iSynap, 
   *gaussNoiseE, *gaussNoise, theta, contrast, *gFF, *iFF, *rTotal, muE, muI;
 extern FILE *spkTimesF, *outVars;
+sparseMat *sConMat[N_Neurons + 1]; // index staring with 1
 void main(int argc, char **argv) {
     // ***** DECLARATION *****//
     int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 100, // simulation end time
+      x2 = 1000, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     FILE *fp;
@@ -42,12 +43,11 @@ void main(int argc, char **argv) {
     IF_SPK = vector(1, N_Neurons);   
     expSum = vector(1, N_Neurons); // synap input
     iSynap = vector(1, N_Neurons); 
-    gEE = vector(1, NE);   
-    gEI = vector(1, NE);   
-    gIE = vector(1, NI);   
-    gII = vector(1, NI);
+    gEI_I = vector(1, N_Neurons); // E --> E & E --> I
+    gEI_E = vector(1, N_Neurons); // I --> E & I --> I  
     spkTimes = vector(1, nSteps);
     conMat = matrix(1, N_Neurons, 1, N_Neurons);
+    //    sConMat = (sparseMat *)malloc((N_Neurons+1) * sizeof(sparseMat));
     gaussNoiseE = vector(1, NE);
     gaussNoiseI = vector(1, NI);
     iBg = vector(1, N_Neurons);
@@ -70,9 +70,12 @@ void main(int argc, char **argv) {
     isynapFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/isynapEI", "w");
     rTotalFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/rTotal", "w");
     gbgrndFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gBg", "w");
+    gEEEIFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gEEEI", "w");
+
     srand(time(NULL)); // set the seed for random number generator
     //    genConMat(); // Generate conection matrix
     GenConMat02();
+    GenSparseConMat(sConMat);
     AuxRffTotal(); /* auxillary function, generates random variables for the 
                       simulation run; which are used approximating FF input */
     if(thetaStep > 0) {
@@ -86,14 +89,14 @@ void main(int argc, char **argv) {
     }
     printf("theta = %f %d\n", thetaVec[1], nThetaSteps);
     /* /\********\/ */
-    //conMat[1][1] = 0; 
-    //    conMat[1][2] = 1; 
+    //    conMat[1][1] = 0; 
+    //    conMat[1][2] = 0; 
     //for(loopIdx = 3; loopIdx <=N_Neurons; ++loopIdx) {
     //conMat[loopIdx][2] = 1;
     //    }
     // conMat[1][3] = 1; */
-    //    conMat[2][1] = 0; 
-    //conMat[2][2] = 0; 
+    //    conMat[2][1] = 1; 
+    //    conMat[2][2] = 0; 
     /* conMat[2][3] = 1; */
     /* conMat[3][1] = 1; */
     /* conMat[3][2] = 0; */
@@ -170,13 +173,12 @@ void main(int argc, char **argv) {
     fclose(isynapFP);
     fclose(rTotalFP);
     fclose(gbgrndFP);
+    fclose(gEEEIFP);
     //***** FREE MEMORY *****//
     free_vector(expSum, 1, N_Neurons);
     free_vector(iSynap, 1, N_Neurons); 
-    free_vector(gEE, 1, NE);   
-    free_vector(gIE, 1, NI);   
-    free_vector(gEI, 1, NE);   
-    free_vector(gII, 1, NI);   
+    free_vector(gEI_E, 1, N_Neurons);   
+    free_vector(gEI_I, 1, N_Neurons);   
     free_vector( gaussNoiseE, 1, NE);
     free_vector(gaussNoiseI, 1, NI);
     free_vector(rTotal, 1, N_Neurons);
@@ -191,4 +193,5 @@ void main(int argc, char **argv) {
     free_matrix(conMat, 1, N_Neurons, 1, N_Neurons);
     free_matrix(randwZiA, 1, N_Neurons, 1, 4);
     free_matrix(randuPhi, 1, N_Neurons, 1, 3);
+    FreeSparseMat(sConMat);
 }

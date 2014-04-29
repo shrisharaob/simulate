@@ -8,12 +8,14 @@ extern double  *randnXiA, // norm rand number
   *tempRandnPrev,
   *tempRandnNew,
   *Itgrl, *ItgrlOld;
-extern FILE *isynapFP, *rTotalFP, *gbgrndFP;
+extern FILE *isynapFP, *rTotalFP, *gbgrndFP, *gEEEIFP;
 
 
 // recurrent input 
-double *tempCurE, *tempCurI;
+extern double *tempCurE, *tempCurI;
 
-extern double **conMat, *iSynap, *expSum, *gEE, *gEI, *gIE, *gII, *rTotal;
+extern double **conMat, *iSynap, *expSum, *gEI_I, *gEI_E, *rTotal;
 
 extern double contrast, *gFF, *iFF;
+
+extern sparseMat *sConMat[];

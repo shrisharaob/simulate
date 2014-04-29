@@ -22,52 +22,65 @@ void Isynap1(double *vm) {
     }
   }
   for(mNeuron = 1; mNeuron <= NE; ++mNeuron) {
-    if(IF_SPK[mNeuron] == 1) {  // if mNeuron fired, then add expSum to all the neurons to which it projects
-      for(kNeuron = 1; kNeuron <= NE; ++kNeuron) { // E --> E connections
-        if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
-          gEE[kNeuron] += expSum[mNeuron];
+      for(kNeuron = 1; kNeuron <= sConMat[mNeuron]->nPostNeurons; ++kNeuron) { // E --> E connections
+        if(IF_SPK[mNeuron] == 1) {  // if mNeuron fired, then add expSum to all the neurons to which it projects
+          // kNeuron has a synap input from mNeuron ?
+          gEI_E[sConMat[mNeuron]->postNeuronIds[kNeuron]] += expSum[mNeuron];
         }
-      }
-      for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) { // E --> I connections
-        if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
-          gIE[kNeuron - NE] += expSum[mNeuron];
+        else {
+          gEI_E[sConMat[mNeuron]->postNeuronIds[kNeuron]] *= EXP_SUM;
         }
-      }
     }
-    else {
-      for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
-        gEE[kNeuron] = EXP_SUM * gEE[kNeuron];
-      }
-      for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
-        gIE[kNeuron - NE] = EXP_SUM * gIE[kNeuron - NE];
-      }
-    }
+      //  fprintf(gEEEIFP, "%f ", gEI_E[mNeuron]);
   }
   for(mNeuron = NE + 1; mNeuron <= N_Neurons; ++mNeuron) {
-    if(IF_SPK[mNeuron] == 1) {  // if mNeuron fired, then add expSum to all the neurons to which it projects
-      for(kNeuron = 1; kNeuron <= NE; ++kNeuron) { // I --> E connections
-        if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
-          gEI[kNeuron] += expSum[mNeuron];
-        }
+    for(kNeuron = 1; kNeuron <= sConMat[mNeuron]->nPostNeurons; ++kNeuron) { // E --> E connections
+      if(IF_SPK[mNeuron] == 1) {  // if mNeuron fired, then add expSum to all the neurons to which it projects
+        // kNeuron has a synap input from mNeuron ?
+        gEI_I[sConMat[mNeuron]->postNeuronIds[kNeuron]] += expSum[mNeuron];
       }
-      for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) { // I --> I connections
-        if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ?
-          gII[kNeuron - NE] += expSum[mNeuron];
-          //fprintf(gIIFP, "%f ", gII[kNeuron - NE]);
-        }
+      else {
+        gEI_I[sConMat[mNeuron]->postNeuronIds[kNeuron]] *= EXP_SUM;
       }
     }
-    else {
-      for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
-        gEI[kNeuron] = EXP_SUM * gEI[kNeuron];
-      }
-      for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
-        gII[kNeuron - NE] = EXP_SUM * gII[kNeuron - NE];
-        //        
-      }
-    }
-
+    //  fprintf(gEEEIFP, "%f ", gEI_I[mNeuron]);
   }
+  //  fprintf(gEEEIFP, "\n");
+
+    /* else { */
+    /*   for(kNeuron = 1; kNeuron <= NE; ++kNeuron) { */
+    /*     gE_EI[kNeuron] = EXP_SUM * gEE[kNeuron]; */
+    /*   } */
+    /*   for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) { */
+    /*     gIE[kNeuron - NE] = EXP_SUM * gIE[kNeuron - NE]; */
+    /*   } */
+    /* } */
+    //  }
+  /* for(mNeuron = NE + 1; mNeuron <= N_Neurons; ++mNeuron) { */
+  /*   if(IF_SPK[mNeuron] == 1) {  // if mNeuron fired, then add expSum to all the neurons to which it projects */
+  /*     for(kNeuron = 1; kNeuron <= NE; ++kNeuron) { // I --> E connections */
+  /*       if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ? */
+  /*         gEI[kNeuron] += expSum[mNeuron]; */
+  /*       } */
+  /*     } */
+  /*     for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) { // I --> I connections */
+  /*       if(conMat[mNeuron][kNeuron] == 1) { // kNeuron has a synap input from mNeuron ? */
+  /*         gII[kNeuron - NE] += expSum[mNeuron]; */
+  /*         //fprintf(gIIFP, "%f ", gII[kNeuron - NE]); */
+  /*       } */
+  /*     } */
+  /*   } */
+  /*   else { */
+  /*     for(kNeuron = 1; kNeuron <= NE; ++kNeuron) { */
+  /*       gEI[kNeuron] = EXP_SUM * gEI[kNeuron]; */
+  /*     } */
+  /*     for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) { */
+  /*       gII[kNeuron - NE] = EXP_SUM * gII[kNeuron - NE]; */
+  /*       //         */
+  /*     } */
+  /*   } */
+  //}
+
 
   /* for(mNeuron = 1; mNeuron <= NE; ++mNeuron) { // ISynap for E neurons */
   /*   tempCurE[mNeuron] = 0; */
@@ -97,21 +110,31 @@ void Isynap1(double *vm) {
   /*   iSynap[mNeuron] = tempCurE[mNeuron] + tempCurI[mNeuron];   */
   /* } */
 
-  for(mNeuron = 1; mNeuron <= NE; ++mNeuron) { // ISynap for E neurons
-    tempCurE[mNeuron] = -1 *  gEE[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE
-        * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    tempCurI[mNeuron] = -1 * gEI[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EI
-          * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
+  for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) { // ISynap for E neurons
+    if(mNeuron <=NE) {
+      tempCurE[mNeuron] = -1 *  gEI_E[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE
+                          * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
+      tempCurI[mNeuron] = -1 * gEI_I[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EI
+                          * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
+    }
+    else {
+      tempCurE[mNeuron] = -1 * gEI_E[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_IE
+                          * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
+      tempCurI[mNeuron] = -1 * gEI_I[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_II
+                          * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
+    }
+  
       iSynap[mNeuron] = tempCurE[mNeuron] + tempCurI[mNeuron];
   }
-  for(mNeuron = NE + 1; mNeuron <= N_Neurons; ++mNeuron) { // Isynap for I neurons
-    tempCurI[mNeuron] = -1 * gII[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_II
-        * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
-    tempCurE[mNeuron] = -1 * gIE[mNeuron -NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_IE
-        * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    iSynap[mNeuron] = tempCurE[mNeuron] + tempCurI[mNeuron];
+
+  /* for(mNeuron = NE + 1; mNeuron <= N_Neurons; ++mNeuron) { // Isynap for I neurons */
+  /*   tempCurI[mNeuron] = -1 * gII[mNeuron - NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_II */
+  /*       * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I)); */
+  /*   tempCurE[mNeuron] = -1 * gIE[mNeuron -NE] * (1/sqrt(K)) * INV_TAU_SYNAP * G_IE */
+  /*       * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E)); */
+  /*   iSynap[mNeuron] = tempCurE[mNeuron] + tempCurI[mNeuron]; */
     //    fprintf(gIIFP, "%f ", gII[mNeuron - NE]);
-  }
+  //}
   //  fprintf(gIIFP, "/n");
 }
 
@@ -380,6 +403,42 @@ void GenConMat02() {
   fclose(conMatFP);
 }
 
+void GenSparseConMat(sparseMat *sPtr[]) {
+  int row, clm, count;
+  for(row = 1; row <= N_Neurons; ++row) {
+    sPtr[row] = (sparseMat *)malloc(sizeof(sparseMat));
+    sPtr[row]->neuronId = row;
+    //tempSMat.neuronId = row;
+    //    printf("neurn %d connects to : ", sPtr[row]->neuronId);
+    count = 0;
+    for(clm = 1; clm <= N_Neurons; ++clm) {
+      if(conMat[row][clm] == 1) {
+        count += 1;
+      }
+    }
+    sPtr[row]->nPostNeurons = count;
+    //tempSMat.nPostNeurons = count;
+    sPtr[row]->postNeuronIds = (int *)malloc((count + 1) * sizeof(int));
+    for(clm = 1; clm <= N_Neurons; ++clm) {
+      count = 0;
+      if(conMat[row][clm] == 1) {
+        count += 1; 
+        sPtr[row]->postNeuronIds[count] = clm;
+        //printf(" %d", sPtr[row]->postNeuronIds[count]);
+      }
+    }
+    //    printf("\n");
+    //    sPtr[row] = &tempSMat;
+  }
+}
+
+void FreeSparseMat(sparseMat *sPtr[]) {
+  int kNeuron;
+  for(kNeuron = 1;  kNeuron<= N_Neurons; ++kNeuron) {
+      free(sPtr[kNeuron]->postNeuronIds);
+      free(sPtr[kNeuron]);
+  }
+}
 void LinSpace(double startVal, double stopVal, double stepSize, double *outVector, int* nSteps)  {
   // generate equally spaced vector
   int loopId = 0;
@@ -400,3 +459,4 @@ void LinSpace(double startVal, double stopVal, double stepSize, double *outVecto
     *nSteps = 1;
   }
 }
+

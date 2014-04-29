@@ -8,5 +8,6 @@ double YCordinate(int neuronIdx, double nA);
 void GenConMat02();
 double gaussrand( long int *seed );
 void LinSpace(double startVal, double stopVal, double stepSize, double *outVector, int* nSteps);
-//double ran1(int *);
-//float gasdev(long *);
+void GenSparseConMat(sparseMat *sPtr[]);
+void FreeSparseMat(sparseMat *sPtr[]);
+

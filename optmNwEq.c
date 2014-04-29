@@ -81,12 +81,13 @@ void derivs(double t, double stateVar[], double dydx[]) {
   tIdx = (int)(t / dt) + 1;
   for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
     colNo = (kNeuron - 1) * N_StateVars;
-     /* if(kNeuron == 1 & t >= 10 & t <= 12 ) { */
-    /*  cur = 20;//input_cur[tIdx]; */
+    /*  if(kNeuron == 2 & t >= 200 & t <= 220 ) { */
+    /*  cur = 3;//input_cur[tIdx]; */
     /*  } */
     /* else {cur = 0;} */
     //     cur = 10;
     cur = 0.1 * sqrt(K);
+     //          cur=3;
     if (kNeuron <= NE) { 
       dydx[1 + colNo] =  1/Cm * (cur 
                                  - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 

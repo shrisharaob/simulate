@@ -52,8 +52,8 @@ double *iBg, *gaussNoiseE, *gaussNoiseI;
 #define G_IB (0.4 /sqrt(K))
 
 double *input_cur, *IF_SPK, **conMat;
-double *iSynap, *expSum, *gEE, *gEI, *gIE, *gII;
-FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP;
+double *iSynap, *expSum, *gEI_E, *gEI_I;
+FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP;
 
 // ff input
 #define CFF 0.1
@@ -85,3 +85,13 @@ FILE *rTotalFP;
 #define RHO 0.5 // ratio - smatic / dendritic synapses
 
 #define SPK_THRESH 0.0
+
+
+typedef struct 
+{
+  int neuronId, 
+      nPostNeurons,  
+      *postNeuronIds;
+} sparseMat;
+
+
