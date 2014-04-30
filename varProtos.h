@@ -8,7 +8,7 @@ extern double  *randnXiA, // norm rand number
   *tempRandnPrev,
   *tempRandnNew,
   *Itgrl, *ItgrlOld;
-extern FILE *isynapFP, *rTotalFP, *gbgrndFP, *gEEEIFP;
+extern FILE *isynapFP, *rTotalFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 
 // recurrent input 

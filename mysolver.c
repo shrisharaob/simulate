@@ -24,20 +24,19 @@ extern FILE *spkTimesF, *outVars;
 sparseMat *sConMat[N_Neurons + 1]; // index staring with 1
 void main(int argc, char **argv) {
     // ***** DECLARATION *****//
-  int dim = 4, *yay;
+  int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
       x2 = 1000, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
-    FILE *fp, *fp2;
     int kNeuron, clmNo, loopIdx=0;
     long idem;
+    FILE *vmFP1;
     // ***** INITIALIZATION *****//
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
     xx = vector(1, nSteps);
-    yay = ivector(1, 0);
     y = matrix(1, N_StateVars * N_Neurons, 1, nSteps);
     input_cur = vector(1, nSteps);
     vstart = vector(1, N_StateVars * N_Neurons);
@@ -66,6 +65,8 @@ void main(int argc, char **argv) {
     randwZiA = matrix(1, N_Neurons, 1, 4);
     randuDelta = vector(1, N_Neurons);
     randuPhi = matrix(1, N_Neurons, 1, 3);
+    vmFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/vm", "w");
+    vmFP1 = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/vm1", "w");
     spkTimesFp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/spkTimes","w");
     outVars = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outvars", "w");
     isynapFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/isynapEI", "w");
@@ -153,26 +154,34 @@ void main(int argc, char **argv) {
     printf("Done! \n");
     fclose(spkTimesFp);
     //***** SAVE TO DISK *****//
-    fp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/vm", "w");
-    fp2 =  fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/time", "w");
+    
     for(loopIdx = 1; loopIdx <= nSteps; ++loopIdx) {
-      fprintf(fp, "%f ", xx[loopIdx]);
-      fprintf(fp2, "%f ", xx[loopIdx]);
-      //      printf("%f \n", xx[loopIdx]);
-      for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
-        clmNo =  (kNeuron - 1) * N_StateVars;
-        // y = [t, V_m, n, z, h, I_input]
-	  //	  fprintf(fp, "%f %f %f %f %f ", y[1 + clmNo][loopIdx], y[2 + clmNo][loopIdx], y[3 + clmNo][loopIdx], y[4 + clmNo][loopIdx], input_cur[loopIdx]);
-	  fprintf(fp2, "%f ", y[1 + clmNo][loopIdx]);
+      if(loopIdx <= 2e4) {
+        fprintf(vmFP, "%f ", xx[loopIdx]);
+        for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
+          clmNo =  (kNeuron - 1) * N_StateVars;
+          // y = [t, V_m, n, z, h, I_input]
+          fprintf(vmFP, "%f ", y[1 + clmNo][loopIdx]);
+        }
+        fprintf(vmFP, "\n");
       }
-      fprintf(fp, "\n");
-      fprintf(fp2, "\n");
+      else {
+       fprintf(vmFP1, "%f ", xx[loopIdx]);
+        for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
+          clmNo =  (kNeuron - 1) * N_StateVars;
+          // y = [t, V_m, n, z, h, I_input]
+          fprintf(vmFP1, "%f ", y[1 + clmNo][loopIdx]);
+        }
+        fprintf(vmFP1, "\n");
+      } 
     }
-    printf("\n");
-    printf("nSteps = %d \n", loopIdx);
-    fclose(fp);
-    fclose(fp2);
+    printf("\nnSteps = %d \n", nSteps);
+    fflush(vmFP);
+    fclose(vmFP);
+    fflush(vmFP1);
+    fclose(vmFP1);
     fclose(outVars);
+
     fclose(isynapFP);
     fclose(rTotalFP);
     fclose(gbgrndFP);

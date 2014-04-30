@@ -21,10 +21,10 @@ double dt, *thetaVec;
 
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 10
+#define NI 2000
 #define NE 0
 #define N_Neurons (NE + NI)
-#define K 2.0 // use decimal point to assign, keeps it double 
+#define K 200.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0
@@ -53,7 +53,7 @@ double *iBg, *gaussNoiseE, *gaussNoiseI;
 
 double *input_cur, *IF_SPK, **conMat;
 double *iSynap, *expSum, *gEI_E, *gEI_I;
-FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP;
+FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 // ff input
 #define CFF 0.1

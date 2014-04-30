@@ -15,28 +15,18 @@ void Isynap1(double *vm) {
   FILE *gIIFP;
   //  gIIFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gII", "a");
   for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
-    for(kNeuron = 1; kNeuron <= sConMat[mNeuron]->nPostNeurons; ++kNeuron) { 
-      gEI_E[sConMat[mNeuron]->postNeuronIds[kNeuron]] *= EXP_SUM;
-      gEI_I[sConMat[mNeuron]->postNeuronIds[kNeuron]] *= EXP_SUM;
+      gEI_E[mNeuron] *= EXP_SUM;
+      gEI_I[mNeuron] *= EXP_SUM;
       if(IF_SPK[mNeuron] == 1) {  
-        if(mNeuron <= NE) {
-          gEI_E[sConMat[mNeuron]->postNeuronIds[kNeuron]] += 1;
+        for(kNeuron = 1; kNeuron <= sConMat[mNeuron]->nPostNeurons; ++kNeuron) { 
+          if(mNeuron <= NE) {       
+            gEI_E[sConMat[mNeuron]->postNeuronIds[kNeuron]] += 1;
+          }
+          else
+            gEI_I[sConMat[mNeuron]->postNeuronIds[kNeuron]] += 1;
         }
-        else
-          gEI_I[sConMat[mNeuron]->postNeuronIds[kNeuron]] += 1;
       }
-    }
   }
- //  fprintf(gEEEIFP, "%f ", gEI_E[mNeuron]);
-  /* for(mNeuron = NE + 1; mNeuron <= N_Neurons; ++mNeuron) { */
-  /*   for(kNeuron = 1; kNeuron <= sConMat[mNeuron]->nPostNeurons; ++kNeuron) { // E --> E connections */
-  /*     gEI_I[sConMat[mNeuron]->postNeuronIds[kNeuron]] *= EXP_SUM; */
-  /*     if(IF_SPK[mNeuron] == 1) {  // if mNeuron fired, then add expSum to all the neurons to which it projects */
-  /*       // kNeuron has a synap input from mNeuron ? */
-  /*       gEI_I[sConMat[mNeuron]->postNeuronIds[kNeuron]] += 1; */
-  /*     } */
-  /*   } */
-  /* } */
   for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) { // ISynap for E neurons
     if(mNeuron <=NE) {
       tempCurE[mNeuron] = -1 *  gEI_E[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE

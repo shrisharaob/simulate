@@ -11,7 +11,7 @@
 #include "globalVars.h"
 #include "auxFuncProtos.h"
 
-extern FILE *spkTimesFp;
+extern FILE *spkTimesFp, *vmFP;
 double **y, *xx;
 
 void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*derivs)(double, double [], double [])) { 
@@ -50,39 +50,39 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
           v[i]=vout[i];
           y[i][k+1] = v[i];
         }
+      //      fprintf(vmFP, "%f ", xx[k]);
       // detect spike - three consequtive time points are checked -->  ../^\..
       if(k>3) {
-        fprintf(outVars, "%f", x); // first clm  is time 
+        //fprintf(outVars, "%f", x); // first clm  is time 
         for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
           clmNo = (mNeuron - 1) * N_StateVars;
           IF_SPK[mNeuron] = 0;
           vm[mNeuron] = v[1 + clmNo]; 
-          /* if(v[1 + clmNo] > SPK_THRESH  */
-          /*    & v[1 + clmNo] < y[1 + clmNo][k]  */
-          /*    & y[1 + clmNo][k] > y[1 + clmNo][k-1]) { */
-          /*   IF_SPK[mNeuron] = 1; */
-          /*   fprintf(spkTimesFp, "%f %d\n", xx[k], mNeuron); */
-          /* } */
           if(v[1 + clmNo] > SPK_THRESH) { 
             if(y[1 + clmNo][k] <= SPK_THRESH) {
               IF_SPK[mNeuron] = 1;
               fprintf(spkTimesFp, "%f %d\n", xx[k+1], mNeuron);
             }
           }
-          fprintf(outVars, "%f %f %f ", iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
-          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
+          //  fprintf(vmFP, "%f ", y[1+clmNo][k]);
+          //          fprintf(outVars, "%f %f %f ", iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
+          //          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
         }
-        fprintf(outVars, "\n");
-        fprintf(isynapFP, "\n"); 
+        //        fprintf(outVars, "\n");
+        //        fprintf(isynapFP, "\n");
+        //        fprintf(vmFP, "\n");
       }
-      else {
-        for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
-          fprintf(outVars, "%f %f %f %f ", x, iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
-          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
-        }
-        fprintf(outVars, "\n");
-        fprintf(isynapFP, "\n"); 
-      }
+      /* /\* else { *\/ */
+      /* /\*   for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) { *\/ */
+      /* /\*     clmNo = (mNeuron - 1) * N_StateVars; *\/ */
+      /* /\*     fprintf(vmFP, "%f ", y[1+clmNo][k]); *\/ */
+      /* /\*     //fprintf(outVars, "%f %f %f %f ", x, iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]); *\/ */
+      /* /\*     //          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]); *\/ */
+      /* /\*   } *\/ */
+      /* /\*   //fprintf(outVars, "\n"); *\/ */
+      /* /\*   //fprintf(isynapFP, "\n");  *\/ */
+      /* /\*   fprintf(vmFP, "\n"); *\/ */
+      /* /\* }  */
       // compute synaptic current
       Isynap1(vm);
       //compute background current
@@ -91,6 +91,7 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
       RffTotal(theta, x);
       Gff(theta, x);
       IFF(vm);
+
     }
   free_vector(v,1,nvar);
   free_vector(vout,1,nvar);
