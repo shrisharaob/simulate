@@ -24,19 +24,20 @@ extern FILE *spkTimesF, *outVars;
 sparseMat *sConMat[N_Neurons + 1]; // index staring with 1
 void main(int argc, char **argv) {
     // ***** DECLARATION *****//
-    int dim = 4;
+  int dim = 4, *yay;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 100, // simulation end time
+      x2 = 1000, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
-    FILE *fp;
+    FILE *fp, *fp2;
     int kNeuron, clmNo, loopIdx=0;
     long idem;
     // ***** INITIALIZATION *****//
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
     xx = vector(1, nSteps);
+    yay = ivector(1, 0);
     y = matrix(1, N_StateVars * N_Neurons, 1, nSteps);
     input_cur = vector(1, nSteps);
     vstart = vector(1, N_StateVars * N_Neurons);
@@ -76,7 +77,7 @@ void main(int argc, char **argv) {
     //    genConMat(); // Generate conection matrix
     GenConMat02();
     GenSparseConMat(sConMat);
-    GenSparseConMatDisp(sConMat);
+    //    GenSparseConMatDisp(sConMat);
     AuxRffTotal(); /* auxillary function, generates random variables for the 
                       simulation run; which are used approximating FF input */
     if(thetaStep > 0) {
@@ -152,24 +153,25 @@ void main(int argc, char **argv) {
     printf("Done! \n");
     fclose(spkTimesFp);
     //***** SAVE TO DISK *****//
-    fp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outputFile.csv", "w");
-    for(loopIdx = 1; loopIdx < nSteps+1; ++loopIdx) {
+    fp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/vm", "w");
+    fp2 =  fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/time", "w");
+    for(loopIdx = 1; loopIdx <= nSteps; ++loopIdx) {
       fprintf(fp, "%f ", xx[loopIdx]);
-      for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
+      fprintf(fp2, "%f ", xx[loopIdx]);
+      //      printf("%f \n", xx[loopIdx]);
+      for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
         clmNo =  (kNeuron - 1) * N_StateVars;
         // y = [t, V_m, n, z, h, I_input]
 	  //	  fprintf(fp, "%f %f %f %f %f ", y[1 + clmNo][loopIdx], y[2 + clmNo][loopIdx], y[3 + clmNo][loopIdx], y[4 + clmNo][loopIdx], input_cur[loopIdx]);
-	  fprintf(fp, "%f ", y[1 + clmNo][loopIdx]);
+	  fprintf(fp2, "%f ", y[1 + clmNo][loopIdx]);
       }
-       fprintf(fp, "\n");
-       if(loopIdx%100 == 0) {
-         printf("\r%d", loopIdx);
-       }
-      }
+      fprintf(fp, "\n");
+      fprintf(fp2, "\n");
+    }
     printf("\n");
     printf("nSteps = %d \n", loopIdx);
-    
     fclose(fp);
+    fclose(fp2);
     fclose(outVars);
     fclose(isynapFP);
     fclose(rTotalFP);

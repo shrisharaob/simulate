@@ -21,10 +21,10 @@ double dt, *thetaVec;
 
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 2000
+#define NI 10
 #define NE 0
 #define N_Neurons (NE + NI)
-#define K 200.0 // use decimal point to assign, keeps it double 
+#define K 2.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0

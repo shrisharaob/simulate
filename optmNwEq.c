@@ -86,8 +86,8 @@ void derivs(double t, double stateVar[], double dydx[]) {
     /*  } */
     /* else {cur = 0;} */
     //     cur = 10;
-    cur = 0.1 * sqrt(K);
-     //          cur=3;
+    cur = 0.2 * sqrt(K);
+    cur=2.8;
     if (kNeuron <= NE) { 
       dydx[1 + colNo] =  1/Cm * (cur 
                                  - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 

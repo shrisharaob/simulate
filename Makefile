@@ -4,7 +4,8 @@ OUT_EXE = mysolver
 CFLAGS = -lm -g
 build: $(DEPS)
 ##	$(CC) -Wall -fPIC $(DEPS) $(CFLAGS) -o $(OUT_EXE) -O3 -ftree-vectorizer-verbose=1
-	$(CC) -fPIC $(DEPS) $(CFLAGS) -o $(OUT_EXE)
+	$(CC) -fPIC $(DEPS) $(CFLAGS) -o $(OUT_EXE) -O3 -ftree-vectorizer-verbose=1
+##	$(CC) -fPIC $(DEPS) $(CFLAGS) -o $(OUT_EXE)
 clean:
 	-rm -f *.o core
 

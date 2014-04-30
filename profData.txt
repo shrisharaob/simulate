@@ -1,0 +1,269 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 60.27      6.09     6.09     4000     1.52     1.52  Isynap1
+ 24.84      8.60     2.51 17010000     0.00     0.00  ran1
+  3.07      8.92     0.31                             rkdumb
+  1.78      9.10     0.18    16000     0.01     0.05  derivs
+  1.48      9.25     0.15  8001000     0.00     0.00  gasdev
+  1.29      9.38     0.13 16000000     0.00     0.00  alpha_m
+  1.09      9.49     0.11 16000000     0.00     0.00  alpha_n
+  0.99      9.59     0.10 16000000     0.00     0.00  beta_m
+  0.79      9.67     0.08 16000000     0.00     0.00  beta_h
+  0.79      9.75     0.08 16000000     0.00     0.00  m_inf
+  0.69      9.82     0.07     4000     0.02     0.33  IBackGrnd
+  0.59      9.88     0.06     4000     0.02     0.02  RffTotal
+  0.49      9.93     0.05 16000000     0.00     0.00  z_inf
+  0.49      9.98     0.05     4000     0.01     0.16  rk4
+  0.40     10.02     0.04 16000000     0.00     0.00  beta_n
+  0.40     10.06     0.04     4000     0.01     0.32  Gff
+  0.30     10.09     0.03 16000000     0.00     0.00  alpha_h
+  0.20     10.11     0.02                             GenConMat02
+  0.10     10.12     0.01                             GenSparseConMat
+  0.00     10.12     0.00    16004     0.00     0.00  vector
+  0.00     10.12     0.00    12003     0.00     0.00  free_vector
+  0.00     10.12     0.00     4000     0.00     0.00  IFF
+  0.00     10.12     0.00     2001     0.00     0.00  ivector
+  0.00     10.12     0.00     1000     0.00     0.00  free_ivector
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.10% of 10.12 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     98.2    0.31    9.63                 rkdumb [1]
+                6.09    0.00    4000/4000        Isynap1 [2]
+                0.07    1.26    4000/4000        IBackGrnd [5]
+                0.04    1.26    4000/4000        Gff [6]
+                0.05    0.60    4000/4000        rk4 [8]
+                0.05    0.16    4000/16000       derivs [7]
+                0.06    0.00    4000/4000        RffTotal [15]
+                0.00    0.00    4003/12003       free_vector [22]
+                0.00    0.00    4000/4000        IFF [23]
+                0.00    0.00       4/16004       vector [21]
+-----------------------------------------------
+                6.09    0.00    4000/4000        rkdumb [1]
+[2]     60.2    6.09    0.00    4000         Isynap1 [2]
+                0.00    0.00    4000/16004       vector [21]
+-----------------------------------------------
+                0.00    0.00    1000/8001000     AuxRffTotal [20]
+                0.08    1.18 4000000/8001000     IBackGrnd [5]
+                0.08    1.18 4000000/8001000     Gff [6]
+[3]     24.8    0.15    2.36 8001000         gasdev [3]
+                2.36    0.00 16002000/17010000     ran1 [4]
+-----------------------------------------------
+                0.00    0.00    8000/17010000     AuxRffTotal [20]
+                0.15    0.00 1000000/17010000     GenConMat02 [10]
+                2.36    0.00 16002000/17010000     gasdev [3]
+[4]     24.8    2.51    0.00 17010000         ran1 [4]
+-----------------------------------------------
+                0.07    1.26    4000/4000        rkdumb [1]
+[5]     13.1    0.07    1.26    4000         IBackGrnd [5]
+                0.08    1.18 4000000/8001000     gasdev [3]
+-----------------------------------------------
+                0.04    1.26    4000/4000        rkdumb [1]
+[6]     12.8    0.04    1.26    4000         Gff [6]
+                0.08    1.18 4000000/8001000     gasdev [3]
+-----------------------------------------------
+                0.05    0.16    4000/16000       rkdumb [1]
+                0.14    0.47   12000/16000       rk4 [8]
+[7]      7.9    0.18    0.62   16000         derivs [7]
+                0.08    0.23 16000000/16000000     m_inf [9]
+                0.11    0.00 16000000/16000000     alpha_n [12]
+                0.08    0.00 16000000/16000000     beta_h [14]
+                0.05    0.00 16000000/16000000     z_inf [16]
+                0.04    0.00 16000000/16000000     beta_n [17]
+                0.03    0.00 16000000/16000000     alpha_h [18]
+-----------------------------------------------
+                0.05    0.60    4000/4000        rkdumb [1]
+[8]      6.4    0.05    0.60    4000         rk4 [8]
+                0.14    0.47   12000/16000       derivs [7]
+                0.00    0.00   12000/16004       vector [21]
+                0.00    0.00    8000/12003       free_vector [22]
+-----------------------------------------------
+                0.08    0.23 16000000/16000000     derivs [7]
+[9]      3.1    0.08    0.23 16000000         m_inf [9]
+                0.13    0.00 16000000/16000000     alpha_m [11]
+                0.10    0.00 16000000/16000000     beta_m [13]
+-----------------------------------------------
+                                                 <spontaneous>
+[10]     1.7    0.02    0.15                 GenConMat02 [10]
+                0.15    0.00 1000000/17010000     ran1 [4]
+-----------------------------------------------
+                0.13    0.00 16000000/16000000     m_inf [9]
+[11]     1.3    0.13    0.00 16000000         alpha_m [11]
+-----------------------------------------------
+                0.11    0.00 16000000/16000000     derivs [7]
+[12]     1.1    0.11    0.00 16000000         alpha_n [12]
+-----------------------------------------------
+                0.10    0.00 16000000/16000000     m_inf [9]
+[13]     1.0    0.10    0.00 16000000         beta_m [13]
+-----------------------------------------------
+                0.08    0.00 16000000/16000000     derivs [7]
+[14]     0.8    0.08    0.00 16000000         beta_h [14]
+-----------------------------------------------
+                0.06    0.00    4000/4000        rkdumb [1]
+[15]     0.6    0.06    0.00    4000         RffTotal [15]
+-----------------------------------------------
+                0.05    0.00 16000000/16000000     derivs [7]
+[16]     0.5    0.05    0.00 16000000         z_inf [16]
+-----------------------------------------------
+                0.04    0.00 16000000/16000000     derivs [7]
+[17]     0.4    0.04    0.00 16000000         beta_n [17]
+-----------------------------------------------
+                0.03    0.00 16000000/16000000     derivs [7]
+[18]     0.3    0.03    0.00 16000000         alpha_h [18]
+-----------------------------------------------
+                                                 <spontaneous>
+[19]     0.1    0.01    0.00                 GenSparseConMat [19]
+                0.00    0.00    2001/2001        ivector [24]
+                0.00    0.00    1000/1000        free_ivector [25]
+-----------------------------------------------
+                                                 <spontaneous>
+[20]     0.0    0.00    0.00                 AuxRffTotal [20]
+                0.00    0.00    8000/17010000     ran1 [4]
+                0.00    0.00    1000/8001000     gasdev [3]
+-----------------------------------------------
+                0.00    0.00       4/16004       rkdumb [1]
+                0.00    0.00    4000/16004       Isynap1 [2]
+                0.00    0.00   12000/16004       rk4 [8]
+[21]     0.0    0.00    0.00   16004         vector [21]
+-----------------------------------------------
+                0.00    0.00    4003/12003       rkdumb [1]
+                0.00    0.00    8000/12003       rk4 [8]
+[22]     0.0    0.00    0.00   12003         free_vector [22]
+-----------------------------------------------
+                0.00    0.00    4000/4000        rkdumb [1]
+[23]     0.0    0.00    0.00    4000         IFF [23]
+-----------------------------------------------
+                0.00    0.00    2001/2001        GenSparseConMat [19]
+[24]     0.0    0.00    0.00    2001         ivector [24]
+-----------------------------------------------
+                0.00    0.00    1000/1000        GenSparseConMat [19]
+[25]     0.0    0.00    0.00    1000         free_ivector [25]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+  [10] GenConMat02            [11] alpha_m                 [3] gasdev
+  [19] GenSparseConMat        [12] alpha_n                [24] ivector
+   [6] Gff                    [14] beta_h                  [9] m_inf
+   [5] IBackGrnd              [13] beta_m                  [4] ran1
+  [23] IFF                    [17] beta_n                  [8] rk4
+   [2] Isynap1                 [7] derivs                  [1] rkdumb
+  [15] RffTotal               [25] free_ivector           [21] vector
+  [18] alpha_h                [22] free_vector            [16] z_inf
