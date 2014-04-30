@@ -27,7 +27,7 @@ void main(int argc, char **argv) {
     int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 1000, // simulation end time
+      x2 = 100, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     FILE *fp;
@@ -76,6 +76,7 @@ void main(int argc, char **argv) {
     //    genConMat(); // Generate conection matrix
     GenConMat02();
     GenSparseConMat(sConMat);
+    GenSparseConMatDisp(sConMat);
     AuxRffTotal(); /* auxillary function, generates random variables for the 
                       simulation run; which are used approximating FF input */
     if(thetaStep > 0) {

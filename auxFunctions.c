@@ -42,6 +42,7 @@ void Isynap1(double *vm) {
       else {
         gEI_I[sConMat[mNeuron]->postNeuronIds[kNeuron]] *= EXP_SUM;
       }
+      //      printf("\n");
     }
     //  fprintf(gEEEIFP, "%f ", gEI_I[mNeuron]);
   }
@@ -404,31 +405,36 @@ void GenConMat02() {
 }
 
 void GenSparseConMat(sparseMat *sPtr[]) {
-  int row, clm, count;
+  int row, clm, *count, loopid, *idx, tmpCntr;
+  count = ivector(1, N_Neurons);
   for(row = 1; row <= N_Neurons; ++row) {
     sPtr[row] = (sparseMat *)malloc(sizeof(sparseMat));
     sPtr[row]->neuronId = row;
-    //tempSMat.neuronId = row;
     //    printf("neurn %d connects to : ", sPtr[row]->neuronId);
-    count = 0;
     for(clm = 1; clm <= N_Neurons; ++clm) {
       if(conMat[row][clm] == 1) {
-        count += 1;
+        count[row] += 1;
       }
     }
-    sPtr[row]->nPostNeurons = count;
-    //tempSMat.nPostNeurons = count;
-    sPtr[row]->postNeuronIds = (int *)malloc((count + 1) * sizeof(int));
+    //    printf("\n count = %d \n ", count[row]);
+    sPtr[row]->nPostNeurons = count[row];
+    sPtr[row]->postNeuronIds = ivector(1, count[row]);
+    idx = ivector(1, count[row]);
+    tmpCntr = 0;
     for(clm = 1; clm <= N_Neurons; ++clm) {
-      count = 0;
       if(conMat[row][clm] == 1) {
-        count += 1; 
-        sPtr[row]->postNeuronIds[count] = clm;
-        //printf(" %d", sPtr[row]->postNeuronIds[count]);
+        tmpCntr+=1;
+        idx[tmpCntr] = clm;
+        //        printf("idx = %d ", idx[tmpCntr]);
       }
     }
-    //    printf("\n");
-    //    sPtr[row] = &tempSMat;
+    for(loopid = 1; loopid <= count[row]; ++loopid) { 
+      sPtr[row]->postNeuronIds[loopid] = idx[loopid];
+      //printf(" %d ", sPtr[row]->postNeuronIds[loopid]);
+      //      printf(" idx = %d", idx[loopid]);
+    }
+    //        printf("\n");
+    free_ivector(idx, 1, count[row]);
   }
 }
 
@@ -460,3 +466,14 @@ void LinSpace(double startVal, double stopVal, double stepSize, double *outVecto
   }
 }
 
+void GenSparseConMatDisp(sparseMat *sPtr[]) {
+  int row, clm, count, kNeuron;
+  printf("\n****** DISP FUNC *******\n");
+  for(row = 1; row <= N_Neurons; ++row) {
+    printf(" neurn %d is connected to :", row);
+    for(kNeuron = 1; kNeuron <= sPtr[row]->nPostNeurons; ++kNeuron) { 
+      printf(" %d", sPtr[row]->postNeuronIds[kNeuron]);
+    }   
+    printf("\n");
+  }
+}

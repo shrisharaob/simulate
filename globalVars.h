@@ -89,9 +89,7 @@ FILE *rTotalFP;
 
 typedef struct 
 {
-  int neuronId, 
-      nPostNeurons,  
-      *postNeuronIds;
+  int neuronId, nPostNeurons, *postNeuronIds;
 } sparseMat;
 
 

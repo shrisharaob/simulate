@@ -10,4 +10,4 @@ double gaussrand( long int *seed );
 void LinSpace(double startVal, double stopVal, double stepSize, double *outVector, int* nSteps);
 void GenSparseConMat(sparseMat *sPtr[]);
 void FreeSparseMat(sparseMat *sPtr[]);
-
+void GenSparseConMatDisp(sparseMat *sPtr[]);
