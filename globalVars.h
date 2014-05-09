@@ -91,5 +91,3 @@ typedef struct
 {
   int neuronId, nPostNeurons, *postNeuronIds;
 } sparseMat;
-
-
