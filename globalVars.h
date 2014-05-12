@@ -1,5 +1,7 @@
 #include<math.h>
 #include<stdio.h>
+#include "devHostConstants.h"
+#include "devHostGlobals.h"
 // time in ms
 #define PI 3.14159265359
 
@@ -21,10 +23,12 @@ double dt, *thetaVec;
 
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 2000
-#define NE 0
-#define N_Neurons (NE + NI)
-#define K 200.0 // use decimal point to assign, keeps it double 
+#ifndef _NEURON_COUNTS
+  #define NI 1
+  #define NE 2
+  #define N_Neurons (NE + NI)
+#endif
+#define K 1.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0
@@ -52,7 +56,7 @@ double *iBg, *gaussNoiseE, *gaussNoiseI;
 #define G_IB (0.4 /sqrt(K))
 
 double *input_cur, *IF_SPK, **conMat;
-double *iSynap, *expSum, *gEI_E, *gEI_I;
+double *iSynap, *expSum;// *gEI_E, *gEI_I;
 FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 // ff input

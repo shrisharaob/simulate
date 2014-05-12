@@ -10,6 +10,7 @@
 #include "nr.h"
 #include "globalVars.h"
 #include "auxFuncProtos.h"
+#include "cudaAuxFuncProtos.h"
 
 extern FILE *spkTimesFp, *vmFP;
 double **y, *xx;
@@ -19,6 +20,7 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
   int i, k, mNeuron, clmNo;
   double x, h, *vm;
   double *v, *vout, *dv;
+  int nSpks, spkNeuronId[N_Neurons];
   v = vector(1,nvar);
   vout = vector(1,nvar);
   dv = vector(1,nvar);
@@ -39,6 +41,7 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
   //  fprintf(outVars, "\n");
   for (k = 1; k <= nstep; k++) 
     {
+      nSpks = 0;
       (*derivs)(x,v,dv);
       rk4(v,dv,nvar,x,h,vout,derivs);
       if ((double)(x+h) == x) nrerror("Step size too small in routine rkdumb");
@@ -61,6 +64,8 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
           if(v[1 + clmNo] > SPK_THRESH) { 
             if(y[1 + clmNo][k] <= SPK_THRESH) {
               IF_SPK[mNeuron] = 1;
+	      spkNeuronId[nSpks] = mNeuron;
+	      nSpks += 1;
               fprintf(spkTimesFp, "%f %d\n", xx[k+1], mNeuron);
             }
           }
@@ -84,7 +89,8 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
       /* /\*   fprintf(vmFP, "\n"); *\/ */
       /* /\* }  */
       // compute synaptic current
-      Isynap1(vm);
+      //      Isynap1(vm);
+      CudaISynap(nSpks, spkNeuronId);
       //compute background current
       IBackGrnd(vm);
       // FF input current

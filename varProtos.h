@@ -14,8 +14,8 @@ extern FILE *isynapFP, *rTotalFP, *gbgrndFP, *gEEEIFP, *vmFP;
 // recurrent input 
 extern double *tempCurE, *tempCurI;
 
-extern double **conMat, *iSynap, *expSum, *gEI_I, *gEI_E, *rTotal;
-
+extern double **conMat, *iSynap, *expSum, *rTotal;
+extern float *gEI_I, *gEI_E;
 extern double contrast, *gFF, *iFF;
 
 extern sparseMat *sConMat[];

@@ -1,0 +1,11 @@
+cudaSynap: cudaSynap.o cudakernel.o maindemo.o
+	gcc -o cudaSynap cudaSynap.o maindemo.o cudakernel.o -L/usr/local/cuda/lib64 -lcuda -lcudart -lm 
+cudakernel.o: cudakernel.cu
+	nvcc -g -G -I/usr/local/cuda/include -c -o cudakernel.o cudakernel.cu
+cudaSynap.o: cudaAuxFuncs.c
+	gcc -I/usr/local/cuda/include -c -o cudaSynap.o cudaAuxFuncs.c 
+maindemo.o: maindemo.c
+	gcc -c -o maindemo.o maindemo.c
+clean:
+	-rm *.o cudaSynap
+.PHONY: clean

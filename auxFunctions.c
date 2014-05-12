@@ -11,8 +11,8 @@
 // recurrent synaptic current
 void Isynap1(double *vm) {
   int kNeuron, mNeuron;
-  double out; 
-  FILE *gIIFP;
+  //  double out; 
+  //  FILE *gIIFP;
   //  gIIFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gII", "a");
   for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
       gEI_E[mNeuron] *= EXP_SUM;
@@ -28,6 +28,26 @@ void Isynap1(double *vm) {
       }
   }
   for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) { // ISynap for E neurons
+    if(mNeuron <=NE) {
+      tempCurE[mNeuron] = -1 *  gEI_E[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE
+                          * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
+      tempCurI[mNeuron] = -1 * gEI_I[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EI
+                          * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
+    }
+    else {
+      tempCurE[mNeuron] = -1 * gEI_E[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_IE
+                          * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
+      tempCurI[mNeuron] = -1 * gEI_I[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_II
+                          * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
+    }
+    iSynap[mNeuron] = tempCurE[mNeuron] + tempCurI[mNeuron];
+  }
+}
+// aux func that computes currents after the conductance is computed on the GPU 
+// move this to the GPU ??? 
+void ISynapCudaAux(double *vm) { 
+  int kNeuron, mNeuron;
+ for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) { // ISynap for E neurons
     if(mNeuron <=NE) {
       tempCurE[mNeuron] = -1 *  gEI_E[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE
                           * (RHO * (vm[mNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
@@ -382,3 +402,5 @@ void GenSparseConMatDisp(sparseMat *sPtr[]) {
     printf("\n");
   }
 }
+
+//void 
