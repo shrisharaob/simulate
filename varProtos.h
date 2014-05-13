@@ -19,3 +19,4 @@ extern float *gEI_I, *gEI_E;
 extern double contrast, *gFF, *iFF;
 
 extern sparseMat *sConMat[];
+extern float conVec[];

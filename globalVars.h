@@ -28,7 +28,7 @@ double dt, *thetaVec;
 /*   #define NE 2 */
 /*   #define N_Neurons (NE + NI) */
 /* #endif */
-#define K 1.0 // use decimal point to assign, keeps it double 
+//#define K 1.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0

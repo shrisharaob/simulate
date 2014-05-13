@@ -7,7 +7,6 @@
 #include "globalVars.h"
 #include "varProtos.h"
 #include "auxFuncProtos.h"
-
 // recurrent synaptic current
 void Isynap1(double *vm) {
   int kNeuron, mNeuron;
@@ -305,28 +304,44 @@ void IFF(double *vm) {
 
 // minimal conmat for balance
 void GenConMat02() {
-  int i, j;
+  int i, j, row, clm;
   long idem;
-  FILE *conMatFP;
-  conMatFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conMatFp", "w");
+  //  FILE *conMatFP;
+  //  conMatFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conMatFp", "w");
+  printf("\n");
   for(i = 1; i <= NE + NI; ++i) {
     for(j = 1; j <= NE + NI; ++j) {
       if(i <= NE & j <= NE) {conMat[i][j] = 0;} // E --> E
       if (i <= NE & j > NE) {conMat[i][j] = 0;} // E --> I
-      if (i > NE & j <= NE) {conMat[i][j] = 1;} // I --> E
+      if (i > NE & j <= NE) {conMat[i][j] = 0;} // I --> E
       if (i > NE & j > NE) { // I --> I
         idem = -1 * rand();
-        if((K / NI) >= ran1(&idem)) {
+	if((K / NI) >= ran1(&idem)) {
           conMat[i][j] = 1;
         }
       }
-      fprintf(conMatFP,"%f ", conMat[i][j]);
+      //  fprintf(conMatFP,"%f ", conMat[i][j]);
+      //      printf(" %f ", conMat[i][j]);
     }
-    fprintf(conMatFP, "\n");
+    //    fprintf(conMatFP, "\n");
     //    printf("%f %f %f %f", conMat[i][1], conMat[i][2], conMat[i][3], conMat[i][4]);
+    //    printf("\n");
   }
+
   //  printf("\n");
-  fclose(conMatFP);
+  //  fclose(conMatFP);
+  //   printf("here 01 ---> \n");
+  for(i = 1; i < (N_Neurons + 1) * (N_Neurons + 1); ++i) {
+    clm = i % (N_Neurons + 1);
+    row = (i - clm) / (N_Neurons + 1);
+    if(row>0 && clm >0) {
+      //      printf("\ni = %d : (%d, %d) \n", i, row, clm);
+      //printf("%d", (int)conMat[row][clm]);
+      conVec[i] = (float)conMat[row][clm]; 
+    }
+    //    conVec[i] = (float)conMat[row][clm]; 
+  }
+  //  printf("\n here 02 ---> \n");
 }
 
 void GenSparseConMat(sparseMat *sPtr[]) {

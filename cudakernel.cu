@@ -9,7 +9,7 @@ __constant__ int DEV_N_NEURONS = N_NEURONS, DEV_NE = NE;
 __global__ void kernel(int nSpks, int *dev_spkNeuronId, float *dev_conVec, 
 		       float *gE_data, float *gI_data){
   //
-  int nNeuron = blockIdx.x;// + blockDim.x * blockIdx.x;
+  int nNeuron = threadIdx.x + blockDim.x * blockIdx.x;
   int i;
   /* compute squares of entries in data array */
   // !!!!! neurons ids start from ZERO  !!!!!! 
@@ -36,12 +36,13 @@ extern "C"
   void cudakernel(int nSpks, int *dev_spkNeuronId, float *dev_conVec,
 		  float *gE_data, float *gI_data){
     /* choose 256 threads per block for high occupancy */
-    //int ThreadsPerBlock = 256;
+    int ThreadsPerBlock = 128;
       /* find number of blocks */
-    //    int BlocksPerGrid = (DEV_N_NEURONS+ThreadsPerBlock-1)/ThreadsPerBlock;
+    int BlocksPerGrid = (N_NEURONS + ThreadsPerBlock - 1) / ThreadsPerBlock;
       /* invoke device on this block/thread grid */
     // kernel <<< BlocksPerGrid, ThreadsPerBlock >>> (DEV_N_NEURONS, nSpks, dev_spkNeuronId, dev_conVec, 
     // 						   g_data, g_result);
-    kernel <<< 8, 1>>> (nSpks, dev_spkNeuronId, dev_conVec, gE_data, gI_data);
+    kernel <<<BlocksPerGrid,ThreadsPerBlock>>> (nSpks, dev_spkNeuronId, dev_conVec, gE_data, gI_data);
+    // kernel <<< 8, 1>>> (nSpks, dev_spkNeuronId, dev_conVec, gE_data, gI_data);
   }
 }

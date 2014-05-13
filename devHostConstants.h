@@ -9,10 +9,11 @@
 #define _NEURON_COUNTS
 #endif
 
-#define NE 1
-#define NI 1
+#define NE 0
+#define NI 2000
 #define N_Neurons (NE+NI)
 #define N_NEURONS N_Neurons
+#define K 200.0
 #define DT 0.025 // ms
 #define TAU_SYNAP 3.0  // ms
 #define EXP_SUM 0.997//exp(-1 * DT / TAU_SYNAP)

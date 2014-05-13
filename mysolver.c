@@ -21,22 +21,27 @@
 extern double **y, *xx, *input_cur, *IF_SPK, *expSum, *iSynap, 
   *gaussNoiseE, *gaussNoise, theta, contrast, *gFF, *iFF, *rTotal, muE, muI;
 extern FILE *spkTimesF, *outVars;
+
+float conVec[(N_Neurons + 1) * (N_Neurons + 1)]; 
 sparseMat *sConMat[N_Neurons + 1]; // index staring with 1
 void main(int argc, char **argv) {
     // ***** DECLARATION *****//
   int dim = 4;
   double *vstart, *spkTimes;;
   double x1 = 0, // simulation start time
-         x2 = 200, // simulation end time
+         x2 = 1000, // simulation end time
          thetaStep = 0;
   int nSteps, nThetaSteps;
   int kNeuron, clmNo, loopIdx=0;
   long idem;
   FILE *vmFP1;
+  clock_t begin, end;
   //    int *conVec; // conMat(:)
-  float conVec[] = {0, 0, 0, 
-		    0, 0, 0, 
-		    0, 1, 0};
+
+  printf("\n size fo convec %ld \n", (N_Neurons + 1) * (N_Neurons + 1) *sizeof(float));
+  //= {0, 0, 0, 
+  //		    0, 0, 0, 
+  //		    0, 1, 0};
     // ***** INITIALIZATION *****//
   dt = DT;
   nSteps = (int)((x2 - x1) / dt);
@@ -81,7 +86,7 @@ void main(int argc, char **argv) {
   srand(time(NULL)); // set the seed for random number generator
   //    genConMat(); // Generate conection matrix
   GenConMat02();
-  GenSparseConMat(sConMat);
+  //  GenSparseConMat(sConMat);
   printf("\n convec 0x: %p ", conVec);
   CudaInitISynap(conVec);    // CUDA INITIALIZATION 
   
@@ -99,14 +104,14 @@ void main(int argc, char **argv) {
   }
   printf("theta = %f %d\n", thetaVec[1], nThetaSteps);
   /* /\********\/ */
-  conMat[1][1] = 0; 
-  conMat[1][2] = 1; 
+  //  conMat[1][1] = 0; 
+  //  conMat[1][2] = 1; 
   //for(loopIdx = 3; loopIdx <=N_Neurons; ++loopIdx) {
   //conMat[loopIdx][2] = 1;
   //    }
   // conMat[1][3] = 1; */
-  conMat[2][1] = 0; 
-  conMat[2][2] = 0; 
+  //  conMat[2][1] = 0; 
+  //  conMat[2][2] = 0; 
   /* conMat[2][3] = 1; */
   /* conMat[3][1] = 1; */
   /* conMat[3][2] = 0; */
@@ -151,6 +156,7 @@ void main(int argc, char **argv) {
     vstart[4 + clmNo] = 0.5961;
   }
     //***** INTEGRATE *****//
+  begin = clock();
   for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
     theta = thetaVec[loopIdx];
     fprintf(spkTimesFp, "%f %f\n", theta, theta);
@@ -159,6 +165,8 @@ void main(int argc, char **argv) {
     fprintf(spkTimesFp, "%d %d\n", 73, 73);
   }
   printf("Done! \n");
+  end = clock();
+  printf("\ntime spent in integrating : %f\n", (double)(end - begin) / CLOCKS_PER_SEC);
   fclose(spkTimesFp);
   //***** SAVE TO DISK *****//
   
@@ -212,6 +220,6 @@ void main(int argc, char **argv) {
   free_matrix(conMat, 1, N_Neurons, 1, N_Neurons);
   free_matrix(randwZiA, 1, N_Neurons, 1, 4);
   free_matrix(randuPhi, 1, N_Neurons, 1, 3);
-  FreeSparseMat(sConMat);
+  //  FreeSparseMat(sConMat);
   CudaFreeMem();
 }

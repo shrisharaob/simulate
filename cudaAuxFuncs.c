@@ -23,7 +23,7 @@ void CudaInitISynap(float *conVec) {
   dev_gEI_E = NULL;
   dev_gEI_E = NULL;
   dev_conVec = NULL;
-  //  printf("here 0---> \n");
+
   MyCudaErrorHandler(cudaMallocHost((void **)&gEI_I, (N_NEURONS + 1) * sizeof(float))); 
   MyCudaErrorHandler(cudaMallocHost((void **)&gEI_E, (N_NEURONS + 1) * sizeof(float))); 
   MyCudaErrorHandler(cudaMalloc((void **)&dev_gEI_E, (N_NEURONS + 1) * sizeof(float)));
@@ -46,14 +46,14 @@ void CudaInitISynap(float *conVec) {
   /* printf("%p \n", dev_gEI_I); */
   /* printf("%p \n", dev_conVec); */
 
-  printf("\n convec ");
+ //  printf("\n convec ");
   MyCudaErrorHandler(cudaMallocHost((void **)&tmp, (N_NEURONS + 1) * (N_NEURONS + 1) * sizeof(float))); 
  MyCudaErrorHandler(cudaMemcpy(tmp, dev_conVec, (N_NEURONS + 1) * (N_NEURONS + 1) * sizeof(float), cudaMemcpyDeviceToHost));
    printf("\n convec 0x on cuda aux: %p \n", conVec);
-   for(n = 0; n < (N_NEURONS + 1) * (N_NEURONS + 1); ++n) {
-    printf("%d ", (int)tmp[n]);
-  }
-  printf("\n");
+  /*  for(n = 0; n < (N_NEURONS + 1) * (N_NEURONS + 1); ++n) { */
+  /*   printf("%d ", (int)tmp[n]); */
+  /* } */
+  /* printf("\n"); */
 }
 void CudaISynap(int nSpks, int *spkNeuronId) {
   int loopIdx;
@@ -71,16 +71,16 @@ void CudaISynap(int nSpks, int *spkNeuronId) {
   MyCudaErrorHandler(cudaMemcpy(gEI_I, dev_gEI_I, (N_NEURONS + 1) * sizeof(float), cudaMemcpyDeviceToHost));
   MyCudaErrorHandler(cudaGetLastError());
   
-  if(nSpks >0) { 
-    // printf("address spkneuronid on cuda aux =  %p \n", spkNeuronId);
-    printf("\n  SPIKE !!!! \n");
-    for(loopIdx=0; loopIdx < nSpks; ++loopIdx) {
-      printf("nSpks = %d\n", nSpks);
-      printf("spkneuron ids %d , idx = %d \n", spkNeuronId[loopIdx], loopIdx);
-      printf("%f %f %f", gEI_E[0], gEI_E[1], gEI_E[2]);
-    }
-    printf("\n");
-  }
+  /* if(nSpks >0) {  */
+  /*   // printf("address spkneuronid on cuda aux =  %p \n", spkNeuronId); */
+  /*   printf("\n  SPIKE !!!! \n"); */
+  /*   for(loopIdx=0; loopIdx < nSpks; ++loopIdx) { */
+  /*     printf("nSpks = %d\n", nSpks); */
+  /*     printf("spkneuron ids %d , idx = %d \n", spkNeuronId[loopIdx], loopIdx); */
+  /*     printf("%f %f %f", gEI_E[0], gEI_E[1], gEI_E[2]); */
+  /*   } */
+  /*   printf("\n"); */
+  /* } */
 }
 
 void CudaFreeMem() {
