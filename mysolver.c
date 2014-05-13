@@ -33,6 +33,7 @@ void main(int argc, char **argv) {
     int kNeuron, clmNo, loopIdx=0;
     long idem;
     FILE *vmFP1;
+    clock_t begin, end;
     // ***** INITIALIZATION *****//
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
@@ -144,6 +145,7 @@ void main(int argc, char **argv) {
       vstart[4 + clmNo] = 0.5961;
     }
     //***** INTEGRATE *****//
+    begin = clock();
     for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
       theta = thetaVec[loopIdx];
       fprintf(spkTimesFp, "%f %f\n", theta, theta);
@@ -152,6 +154,8 @@ void main(int argc, char **argv) {
       fprintf(spkTimesFp, "%d %d\n", 73, 73);
     }
     printf("Done! \n");
+    end = clock();
+    printf("\n time spent integrating : %f", (double)(end - begin) / CLOCKS_PER_SEC);
     fclose(spkTimesFp);
     //***** SAVE TO DISK *****//
     
