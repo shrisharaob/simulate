@@ -5,7 +5,7 @@
 // time in ms
 #define PI 3.14159265359
 
-#define DT 0.025 // ms
+//#define DT 0.025 // ms
 #define SQRT_DT sqrt(DT)
 
 #define Cm 1 //microF / cm^2
@@ -23,11 +23,11 @@ double dt, *thetaVec;
 
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#ifndef _NEURON_COUNTS
-  #define NI 1
-  #define NE 2
-  #define N_Neurons (NE + NI)
-#endif
+/* #ifndef _NEURON_COUNTS */
+/*   #define NI 0 */
+/*   #define NE 2 */
+/*   #define N_Neurons (NE + NI) */
+/* #endif */
 #define K 1.0 // use decimal point to assign, keeps it double 
 
 // params patch
@@ -35,7 +35,7 @@ double dt, *thetaVec;
 #define CON_SIGMA (L / 5.0)
 
  // params synapse
-#define TAU_SYNAP 3.0  // ms
+//#define TAU_SYNAP 3.0  // ms
 #define INV_TAU_SYNAP (1 / TAU_SYNAP)
 #define V_E 0.0
 #define V_I -80.0
@@ -43,7 +43,7 @@ double dt, *thetaVec;
 #define G_EI 2.0
 #define G_IE 0.45
 #define G_II 3.0
-#define EXP_SUM exp(-1 * DT / TAU_SYNAP)
+//#define EXP_SUM exp(-1 * DT / TAU_SYNAP)
 
 // recurrent input 
 double *tempCurE, *tempCurI;

@@ -1,8 +1,9 @@
 #include "cuda.h"
 #include <math.h>
+#include "devHostConstants.h"
 //#include "devGlobalVars.h"
-__constant__ float DEV_EXP = 0.9917;
-__constant__ int DEV_N_NEURONS = 3, DEV_NE = 2;
+__constant__ float DEV_EXP = EXP_SUM;
+__constant__ int DEV_N_NEURONS = N_NEURONS, DEV_NE = NE;
 
 /* gpu kernel */
 __global__ void kernel(int nSpks, int *dev_spkNeuronId, float *dev_conVec, 

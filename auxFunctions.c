@@ -46,7 +46,9 @@ void Isynap1(double *vm) {
 // aux func that computes currents after the conductance is computed on the GPU 
 // move this to the GPU ??? 
 void ISynapCudaAux(double *vm) { 
-  int kNeuron, mNeuron;
+  int mNeuron;
+  //  FILE *fp;
+  //  fp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/"
  for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) { // ISynap for E neurons
     if(mNeuron <=NE) {
       tempCurE[mNeuron] = -1 *  gEI_E[mNeuron] * (1/sqrt(K)) * INV_TAU_SYNAP * G_EE

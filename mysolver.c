@@ -27,7 +27,7 @@ void main(int argc, char **argv) {
   int dim = 4;
   double *vstart, *spkTimes;;
   double x1 = 0, // simulation start time
-         x2 = 1000, // simulation end time
+         x2 = 200, // simulation end time
          thetaStep = 0;
   int nSteps, nThetaSteps;
   int kNeuron, clmNo, loopIdx=0;
@@ -35,8 +35,8 @@ void main(int argc, char **argv) {
   FILE *vmFP1;
   //    int *conVec; // conMat(:)
   float conVec[] = {0, 0, 0, 
-		    0, 0, 1, 
-		    0, 0, 0};
+		    0, 0, 0, 
+		    0, 1, 0};
     // ***** INITIALIZATION *****//
   dt = DT;
   nSteps = (int)((x2 - x1) / dt);
@@ -80,8 +80,9 @@ void main(int argc, char **argv) {
   
   srand(time(NULL)); // set the seed for random number generator
   //    genConMat(); // Generate conection matrix
-  // GenConMat02();
-  //  GenSparseConMat(sConMat);
+  GenConMat02();
+  GenSparseConMat(sConMat);
+  printf("\n convec 0x: %p ", conVec);
   CudaInitISynap(conVec);    // CUDA INITIALIZATION 
   
     //    GenSparseConMatDisp(sConMat);

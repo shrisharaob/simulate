@@ -17,14 +17,15 @@ double **y, *xx;
 
 void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*derivs)(double, double [], double [])) { 
   void rk4(double y[], double dydx[], int n,  double x, double h, double yout[], void (*derivs)(double, double [], double []));
-  int i, k, mNeuron, clmNo;
+  int i, k, mNeuron, clmNo, loopIdx, kNeuron;
   double x, h, *vm;
   double *v, *vout, *dv;
-  int nSpks, spkNeuronId[N_Neurons];
+  int nSpks, *spkNeuronId;
   v = vector(1,nvar);
   vout = vector(1,nvar);
   dv = vector(1,nvar);
   vm = vector(1, N_Neurons);
+  spkNeuronId = ivector(1, N_Neurons);
   //*** START ***//
   for (i=1;i<=nvar;i++) 
     {
@@ -65,16 +66,19 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
             if(y[1 + clmNo][k] <= SPK_THRESH) {
               IF_SPK[mNeuron] = 1;
 	      spkNeuronId[nSpks] = mNeuron;
+	      /* printf("spkneuronid addrs on rkdumb =  %p \n", spkNeuronId); */
+	      /* printf("\n SPIKE on Neurons %d  !!!! \n", spkNeuronId[nSpks]); */
 	      nSpks += 1;
               fprintf(spkTimesFp, "%f %d\n", xx[k+1], mNeuron);
             }
           }
           //  fprintf(vmFP, "%f ", y[1+clmNo][k]);
           //          fprintf(outVars, "%f %f %f ", iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
-          //          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
+	  //fprintf(isynapFP, "%f %f %f", tempCurE[mNeuron], tempCurI[mNeuron]);
+	  //	  fprintf(isynapFP, "%f ", iSynap[mNeuron]);
         }
         //        fprintf(outVars, "\n");
-        //        fprintf(isynapFP, "\n");
+	//	fprintf(isynapFP, "\n");
         //        fprintf(vmFP, "\n");
       }
       /* /\* else { *\/ */
@@ -91,6 +95,13 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
       // compute synaptic current
       //      Isynap1(vm);
       CudaISynap(nSpks, spkNeuronId);
+
+      ISynapCudaAux(vm); // returns current 
+      for(kNeuron = 1; kNeuron <=N_Neurons; ++kNeuron) {
+	//	fprintf(isynapFP, "%f %f %f ", tempCurE[kNeuron], gEI_E[kNeuron], iSynap[kNeuron]);
+	fprintf(isynapFP, "%f %f %f ", gEI_I[kNeuron], gEI_E[kNeuron], iSynap[kNeuron]);
+      }
+      fprintf(isynapFP, "\n");
       //compute background current
       IBackGrnd(vm);
       // FF input current
