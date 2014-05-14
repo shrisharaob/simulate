@@ -2,11 +2,13 @@
 SRC = ran1.c gasdev.c nrutil.c rk4.c auxFunctions.c rkdumb.c mysolver.c
 
 mysolver: cudaAuxFuncs.o cudakernel.o $(SRC)
-	gcc -o mysolver $(SRC) cudaAuxFuncs.o cudakernel.o -L/usr/local/cuda/lib64 -lcuda -lcudart -lm 
+##	gcc -o mysolver $(SRC) cudaAuxFuncs.o cudakernel.o -L/usr/local/cuda/lib64 -lcuda -lcudart -lm 
+	gcc -o mysolver $(SRC) cudaAuxFuncs.o cudakernel.o -L/usr/local/cuda/lib64 -lcuda -lcudart -lm -pg
 cudakernel.o: cudakernel.cu
 	nvcc -g -G -I/usr/local/cuda/include -c -o cudakernel.o cudakernel.cu
 cudaAuxFuncs.o: cudaAuxFuncs.c
-	gcc -I/usr/local/cuda/include -c -o cudaAuxFuncs.o cudaAuxFuncs.c 
+##	gcc -I/usr/local/cuda/include -c -o cudaAuxFuncs.o cudaAuxFuncs.c 
+	gcc -I/usr/local/cuda/include -c -o cudaAuxFuncs.o cudaAuxFuncs.c -pg
 clean:
 	-rm *.o cudaSynap
 .PHONY: clean

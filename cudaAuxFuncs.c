@@ -49,7 +49,8 @@ void CudaInitISynap(float *conVec) {
  //  printf("\n convec ");
   MyCudaErrorHandler(cudaMallocHost((void **)&tmp, (N_NEURONS + 1) * (N_NEURONS + 1) * sizeof(float))); 
  MyCudaErrorHandler(cudaMemcpy(tmp, dev_conVec, (N_NEURONS + 1) * (N_NEURONS + 1) * sizeof(float), cudaMemcpyDeviceToHost));
-   printf("\n convec 0x on cuda aux: %p \n", conVec);
+ MyCudaErrorHandler(cudaMalloc((void **)&dev_spkNeuronId, nSpks * sizeof(float)));
+ // printf("\n convec 0x on cuda aux: %p \n", conVec);
   /*  for(n = 0; n < (N_NEURONS + 1) * (N_NEURONS + 1); ++n) { */
   /*   printf("%d ", (int)tmp[n]); */
   /* } */
@@ -59,7 +60,7 @@ void CudaISynap(int nSpks, int *spkNeuronId) {
   int loopIdx;
   //  FILE *fp;
    if(nSpks > 0) {  // optimize - malloc called on every timestep !!!! latency ???
-    MyCudaErrorHandler(cudaMalloc((void **)&dev_spkNeuronId, nSpks * sizeof(float)));
+     //  MyCudaErrorHandler(cudaMalloc((void **)&dev_spkNeuronId, nSpks * sizeof(float)));
     MyCudaErrorHandler(cudaMemcpy(dev_spkNeuronId, spkNeuronId, nSpks * sizeof(int), cudaMemcpyHostToDevice));
   }
   else {

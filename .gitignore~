@@ -23,8 +23,6 @@
 *.i*86
 *.x86_64
 *.hexfindPeaks
-
-#profdata
 analysis*
 
 findPeaks
