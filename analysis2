@@ -1,0 +1,311 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls   s/call   s/call  name    
+ 56.14     11.51    11.51 32042200     0.00     0.00  ran1
+  9.02     13.36     1.85   160000     0.00     0.00  derivs
+  5.63     14.52     1.16        1     1.16    20.16  rkdumb
+  4.63     15.47     0.95 32000000     0.00     0.00  m_inf
+  3.12     16.11     0.64    40000     0.00     0.00  rk4
+  2.85     16.70     0.59 32000000     0.00     0.00  alpha_m
+  2.73     17.26     0.56    40000     0.00     0.00  RffTotal
+  2.34     17.74     0.48 16000200     0.00     0.00  gasdev
+  2.29     18.21     0.47 32000000     0.00     0.00  alpha_n
+  2.15     18.65     0.44 32000000     0.00     0.00  beta_h
+  2.05     19.07     0.42 32000000     0.00     0.00  z_inf
+  1.71     19.42     0.35    40000     0.00     0.00  IBackGrnd
+  1.61     19.75     0.33                             main
+  1.17     19.99     0.24    40000     0.00     0.00  Gff
+  0.73     20.14     0.15    40000     0.00     0.00  ISynapCudaAux
+  0.59     20.26     0.12 32000000     0.00     0.00  alpha_h
+  0.49     20.36     0.10 32000000     0.00     0.00  beta_m
+  0.39     20.44     0.08 32000000     0.00     0.00  beta_n
+  0.24     20.49     0.05    40000     0.00     0.00  IFF
+  0.10     20.51     0.02    40000     0.00     0.00  CudaISynap
+  0.05     20.52     0.01                             frame_dummy
+  0.00     20.52     0.00   120542     0.00     0.00  MyCudaErrorHandler
+  0.00     20.52     0.00   120027     0.00     0.00  vector
+  0.00     20.52     0.00   120017     0.00     0.00  free_vector
+  0.00     20.52     0.00        4     0.00     0.00  matrix
+  0.00     20.52     0.00        3     0.00     0.00  free_matrix
+  0.00     20.52     0.00        1     0.00     0.00  AuxRffTotal
+  0.00     20.52     0.00        1     0.00     0.00  CudaFreeMem
+  0.00     20.52     0.00        1     0.00     0.00  CudaInitISynap
+  0.00     20.52     0.00        1     0.00     0.01  GenConMat02
+  0.00     20.52     0.00        1     0.00     0.00  ivector
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.05% of 20.52 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]    100.0    0.33   20.18                 main [1]
+                1.16   19.01       1/1           rkdumb [2]
+                0.00    0.01       1/1           GenConMat02 [21]
+                0.00    0.00       1/1           AuxRffTotal [23]
+                0.00    0.00     200/32042200     ran1 [4]
+                0.00    0.00      23/120027      vector [25]
+                0.00    0.00      13/120017      free_vector [26]
+                0.00    0.00       4/4           matrix [27]
+                0.00    0.00       3/3           free_matrix [28]
+                0.00    0.00       1/1           CudaInitISynap [30]
+                0.00    0.00       1/1           CudaFreeMem [29]
+-----------------------------------------------
+                1.16   19.01       1/1           main [1]
+[2]     98.3    1.16   19.01       1         rkdumb [2]
+                0.35    5.99   40000/40000       IBackGrnd [5]
+                0.24    5.99   40000/40000       Gff [6]
+                0.64    3.76   40000/40000       rk4 [8]
+                0.46    0.79   40000/160000      derivs [7]
+                0.56    0.00   40000/40000       RffTotal [11]
+                0.15    0.00   40000/40000       ISynapCudaAux [15]
+                0.05    0.00   40000/40000       IFF [19]
+                0.02    0.00   40000/40000       CudaISynap [20]
+                0.00    0.00       4/120027      vector [25]
+                0.00    0.00       4/120017      free_vector [26]
+                0.00    0.00       1/1           ivector [31]
+-----------------------------------------------
+                0.00    0.00     200/16000200     AuxRffTotal [23]
+                0.24    5.75 8000000/16000200     IBackGrnd [5]
+                0.24    5.75 8000000/16000200     Gff [6]
+[3]     58.4    0.48   11.50 16000200         gasdev [3]
+               11.50    0.00 32000400/32042200     ran1 [4]
+-----------------------------------------------
+                0.00    0.00     200/32042200     main [1]
+                0.00    0.00    1600/32042200     AuxRffTotal [23]
+                0.01    0.00   40000/32042200     GenConMat02 [21]
+               11.50    0.00 32000400/32042200     gasdev [3]
+[4]     56.1   11.51    0.00 32042200         ran1 [4]
+-----------------------------------------------
+                0.35    5.99   40000/40000       rkdumb [2]
+[5]     30.9    0.35    5.99   40000         IBackGrnd [5]
+                0.24    5.75 8000000/16000200     gasdev [3]
+-----------------------------------------------
+                0.24    5.99   40000/40000       rkdumb [2]
+[6]     30.4    0.24    5.99   40000         Gff [6]
+                0.24    5.75 8000000/16000200     gasdev [3]
+-----------------------------------------------
+                0.46    0.79   40000/160000      rkdumb [2]
+                1.39    2.37  120000/160000      rk4 [8]
+[7]     24.5    1.85    3.17  160000         derivs [7]
+                0.95    0.69 32000000/32000000     m_inf [9]
+                0.47    0.00 32000000/32000000     alpha_n [12]
+                0.44    0.00 32000000/32000000     beta_h [13]
+                0.42    0.00 32000000/32000000     z_inf [14]
+                0.12    0.00 32000000/32000000     alpha_h [16]
+                0.08    0.00 32000000/32000000     beta_n [18]
+-----------------------------------------------
+                0.64    3.76   40000/40000       rkdumb [2]
+[8]     21.5    0.64    3.76   40000         rk4 [8]
+                1.39    2.37  120000/160000      derivs [7]
+                0.00    0.00  120000/120027      vector [25]
+                0.00    0.00  120000/120017      free_vector [26]
+-----------------------------------------------
+                0.95    0.69 32000000/32000000     derivs [7]
+[9]      8.0    0.95    0.69 32000000         m_inf [9]
+                0.59    0.00 32000000/32000000     alpha_m [10]
+                0.10    0.00 32000000/32000000     beta_m [17]
+-----------------------------------------------
+                0.59    0.00 32000000/32000000     m_inf [9]
+[10]     2.9    0.59    0.00 32000000         alpha_m [10]
+-----------------------------------------------
+                0.56    0.00   40000/40000       rkdumb [2]
+[11]     2.7    0.56    0.00   40000         RffTotal [11]
+-----------------------------------------------
+                0.47    0.00 32000000/32000000     derivs [7]
+[12]     2.3    0.47    0.00 32000000         alpha_n [12]
+-----------------------------------------------
+                0.44    0.00 32000000/32000000     derivs [7]
+[13]     2.1    0.44    0.00 32000000         beta_h [13]
+-----------------------------------------------
+                0.42    0.00 32000000/32000000     derivs [7]
+[14]     2.0    0.42    0.00 32000000         z_inf [14]
+-----------------------------------------------
+                0.15    0.00   40000/40000       rkdumb [2]
+[15]     0.7    0.15    0.00   40000         ISynapCudaAux [15]
+-----------------------------------------------
+                0.12    0.00 32000000/32000000     derivs [7]
+[16]     0.6    0.12    0.00 32000000         alpha_h [16]
+-----------------------------------------------
+                0.10    0.00 32000000/32000000     m_inf [9]
+[17]     0.5    0.10    0.00 32000000         beta_m [17]
+-----------------------------------------------
+                0.08    0.00 32000000/32000000     derivs [7]
+[18]     0.4    0.08    0.00 32000000         beta_n [18]
+-----------------------------------------------
+                0.05    0.00   40000/40000       rkdumb [2]
+[19]     0.2    0.05    0.00   40000         IFF [19]
+-----------------------------------------------
+                0.02    0.00   40000/40000       rkdumb [2]
+[20]     0.1    0.02    0.00   40000         CudaISynap [20]
+                0.00    0.00  120532/120542      MyCudaErrorHandler [24]
+-----------------------------------------------
+                0.00    0.01       1/1           main [1]
+[21]     0.1    0.00    0.01       1         GenConMat02 [21]
+                0.01    0.00   40000/32042200     ran1 [4]
+-----------------------------------------------
+                                                 <spontaneous>
+[22]     0.0    0.01    0.00                 frame_dummy [22]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[23]     0.0    0.00    0.00       1         AuxRffTotal [23]
+                0.00    0.00    1600/32042200     ran1 [4]
+                0.00    0.00     200/16000200     gasdev [3]
+-----------------------------------------------
+                0.00    0.00      10/120542      CudaInitISynap [30]
+                0.00    0.00  120532/120542      CudaISynap [20]
+[24]     0.0    0.00    0.00  120542         MyCudaErrorHandler [24]
+-----------------------------------------------
+                0.00    0.00       4/120027      rkdumb [2]
+                0.00    0.00      23/120027      main [1]
+                0.00    0.00  120000/120027      rk4 [8]
+[25]     0.0    0.00    0.00  120027         vector [25]
+-----------------------------------------------
+                0.00    0.00       4/120017      rkdumb [2]
+                0.00    0.00      13/120017      main [1]
+                0.00    0.00  120000/120017      rk4 [8]
+[26]     0.0    0.00    0.00  120017         free_vector [26]
+-----------------------------------------------
+                0.00    0.00       4/4           main [1]
+[27]     0.0    0.00    0.00       4         matrix [27]
+-----------------------------------------------
+                0.00    0.00       3/3           main [1]
+[28]     0.0    0.00    0.00       3         free_matrix [28]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[29]     0.0    0.00    0.00       1         CudaFreeMem [29]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[30]     0.0    0.00    0.00       1         CudaInitISynap [30]
+                0.00    0.00      10/120542      MyCudaErrorHandler [24]
+-----------------------------------------------
+                0.00    0.00       1/1           rkdumb [2]
+[31]     0.0    0.00    0.00       1         ivector [31]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+  [23] AuxRffTotal            [16] alpha_h                [31] ivector
+  [29] CudaFreeMem            [10] alpha_m                 [9] m_inf
+  [20] CudaISynap             [12] alpha_n                 [1] main
+  [30] CudaInitISynap         [13] beta_h                 [27] matrix
+  [21] GenConMat02            [17] beta_m                  [4] ran1
+   [6] Gff                    [18] beta_n                  [8] rk4
+   [5] IBackGrnd               [7] derivs                  [2] rkdumb
+  [19] IFF                    [22] frame_dummy            [25] vector
+  [15] ISynapCudaAux          [28] free_matrix            [14] z_inf
+  [24] MyCudaErrorHandler     [26] free_vector
+  [11] RffTotal                [3] gasdev

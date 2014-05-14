@@ -1,0 +1,234 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  us/call  us/call  name    
+ 64.10      7.29     7.29 32042000     0.23     0.23  ran1
+ 15.40      9.04     1.75   160000    10.94    10.94  derivs
+  7.74      9.92     0.88                             rkdumb
+  3.26     10.29     0.37    40000     9.25     9.25  RffTotal
+  2.73     10.60     0.31    40000     7.75    40.58  rk4
+  2.38     10.87     0.27 16000200     0.02     0.47  gasdev
+  2.02     11.10     0.23    40000     5.75   100.12  IBackGrnd
+  1.67     11.29     0.19    40000     4.75    99.12  Gff
+  0.35     11.33     0.04    40000     1.00     1.00  ISynapCudaAux
+  0.18     11.35     0.02    40000     0.50     0.50  IFF
+  0.09     11.36     0.01    40000     0.25     0.25  CudaISynap
+  0.09     11.37     0.01                             __device_stub__Z6kerneliPiPfS0_S0_(int, int*, float*, float*, float*)
+  0.04     11.38     0.01                             frame_dummy
+  0.00     11.38     0.00   120566     0.00     0.00  MyCudaErrorHandler
+  0.00     11.38     0.00   120004     0.00     0.00  vector
+  0.00     11.38     0.00   120003     0.00     0.00  free_vector
+  0.00     11.38     0.00        1     0.00     0.00  ivector
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+ 
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this 
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 0.09% of 11.38 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     99.8    0.88   10.47                 rkdumb [1]
+                0.23    3.77   40000/40000       IBackGrnd [4]
+                0.19    3.77   40000/40000       Gff [5]
+                0.31    1.31   40000/40000       rk4 [7]
+                0.44    0.00   40000/160000      derivs [6]
+                0.37    0.00   40000/40000       RffTotal [8]
+                0.04    0.00   40000/40000       ISynapCudaAux [9]
+                0.02    0.00   40000/40000       IFF [10]
+                0.01    0.00   40000/40000       CudaISynap [11]
+                0.00    0.00   40003/120003      free_vector [18]
+                0.00    0.00       4/120004      vector [17]
+                0.00    0.00       1/1           ivector [19]
+-----------------------------------------------
+                0.00    0.00     200/16000200     AuxRffTotal [15]
+                0.14    3.64 8000000/16000200     IBackGrnd [4]
+                0.14    3.64 8000000/16000200     Gff [5]
+[2]     66.4    0.27    7.28 16000200         gasdev [2]
+                7.28    0.00 32000400/32042000     ran1 [3]
+-----------------------------------------------
+                0.00    0.00    1600/32042000     AuxRffTotal [15]
+                0.01    0.00   40000/32042000     GenConMat02 [13]
+                7.28    0.00 32000400/32042000     gasdev [2]
+[3]     64.1    7.29    0.00 32042000         ran1 [3]
+-----------------------------------------------
+                0.23    3.77   40000/40000       rkdumb [1]
+[4]     35.2    0.23    3.77   40000         IBackGrnd [4]
+                0.14    3.64 8000000/16000200     gasdev [2]
+-----------------------------------------------
+                0.19    3.77   40000/40000       rkdumb [1]
+[5]     34.9    0.19    3.77   40000         Gff [5]
+                0.14    3.64 8000000/16000200     gasdev [2]
+-----------------------------------------------
+                0.44    0.00   40000/160000      rkdumb [1]
+                1.31    0.00  120000/160000      rk4 [7]
+[6]     15.4    1.75    0.00  160000         derivs [6]
+-----------------------------------------------
+                0.31    1.31   40000/40000       rkdumb [1]
+[7]     14.3    0.31    1.31   40000         rk4 [7]
+                1.31    0.00  120000/160000      derivs [6]
+                0.00    0.00  120000/120004      vector [17]
+                0.00    0.00   80000/120003      free_vector [18]
+-----------------------------------------------
+                0.37    0.00   40000/40000       rkdumb [1]
+[8]      3.3    0.37    0.00   40000         RffTotal [8]
+-----------------------------------------------
+                0.04    0.00   40000/40000       rkdumb [1]
+[9]      0.4    0.04    0.00   40000         ISynapCudaAux [9]
+-----------------------------------------------
+                0.02    0.00   40000/40000       rkdumb [1]
+[10]     0.2    0.02    0.00   40000         IFF [10]
+-----------------------------------------------
+                0.01    0.00   40000/40000       rkdumb [1]
+[11]     0.1    0.01    0.00   40000         CudaISynap [11]
+                0.00    0.00  120556/120566      MyCudaErrorHandler [16]
+-----------------------------------------------
+                                                 <spontaneous>
+[12]     0.1    0.01    0.00                 __device_stub__Z6kerneliPiPfS0_S0_(int, int*, float*, float*, float*) [12]
+-----------------------------------------------
+                                                 <spontaneous>
+[13]     0.1    0.00    0.01                 GenConMat02 [13]
+                0.01    0.00   40000/32042000     ran1 [3]
+-----------------------------------------------
+                                                 <spontaneous>
+[14]     0.0    0.01    0.00                 frame_dummy [14]
+-----------------------------------------------
+                                                 <spontaneous>
+[15]     0.0    0.00    0.00                 AuxRffTotal [15]
+                0.00    0.00    1600/32042000     ran1 [3]
+                0.00    0.00     200/16000200     gasdev [2]
+-----------------------------------------------
+                0.00    0.00      10/120566      CudaInitISynap [21]
+                0.00    0.00  120556/120566      CudaISynap [11]
+[16]     0.0    0.00    0.00  120566         MyCudaErrorHandler [16]
+-----------------------------------------------
+                0.00    0.00       4/120004      rkdumb [1]
+                0.00    0.00  120000/120004      rk4 [7]
+[17]     0.0    0.00    0.00  120004         vector [17]
+-----------------------------------------------
+                0.00    0.00   40003/120003      rkdumb [1]
+                0.00    0.00   80000/120003      rk4 [7]
+[18]     0.0    0.00    0.00  120003         free_vector [18]
+-----------------------------------------------
+                0.00    0.00       1/1           rkdumb [1]
+[19]     0.0    0.00    0.00       1         ivector [19]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+
+Index by function name
+
+  [11] CudaISynap              [8] RffTotal               [19] ivector
+   [5] Gff                    [12] __device_stub__Z6kerneliPiPfS0_S0_(int, int*, float*, float*, float*) [3] ran1
+   [4] IBackGrnd               [6] derivs                  [7] rk4
+  [10] IFF                    [14] frame_dummy             [1] rkdumb
+   [9] ISynapCudaAux          [18] free_vector            [17] vector
+  [16] MyCudaErrorHandler      [2] gasdev
