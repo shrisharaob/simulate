@@ -15,8 +15,9 @@ extern FILE *isynapFP, *rTotalFP, *gbgrndFP, *gEEEIFP, *vmFP;
 extern double *tempCurE, *tempCurI;
 
 extern double **conMat, *iSynap, *expSum, *rTotal;
-extern float *gEI_I, *gEI_E;
+extern float *gEI_I, *gEI_E,  *randList;
 extern double contrast, *gFF, *iFF;
 
 extern sparseMat *sConMat[];
 extern float conVec[];
+extern int randListCounter;

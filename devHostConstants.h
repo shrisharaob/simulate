@@ -17,3 +17,4 @@
 #define DT 0.025 // ms
 #define TAU_SYNAP 3.0  // ms
 #define EXP_SUM 0.997//exp(-1 * DT / TAU_SYNAP)
+#define MAX_UNI_RANDOM_VEC_LENGTH 10000000 //make constant 1e7

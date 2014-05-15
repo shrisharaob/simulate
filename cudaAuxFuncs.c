@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 #include "cuda.h"
+#include <curand.h>
 #include "cuda_runtime_api.h"
 #include "devHostConstants.h"
 #include "cudaAuxFuncProtos.h"
 
-extern float *dev_gEI_E, *dev_gEI_I, *dev_conVec, *gEI_E, *gEI_I;
+extern float *dev_gEI_E, *dev_gEI_I, *dev_conVec, *gEI_E, *gEI_I, *randList;
+extern int randListCounter;
 extern int *dev_spkNeuronId;
 
 void MyCudaErrorHandler(cudaError_t err);
@@ -100,3 +103,78 @@ void CudaFreeMem() {
     }
 }
 
+// uniform random number generator
+void CudaRandGen(size_t n) {
+  curandGenerator_t gen;  
+  float *dev_vec;
+  //  randList = (float *)calloc(n, sizeof(float));
+  /* Allocate n floats on device */
+  cudaMalloc((void **)&dev_vec, n * sizeof(float));
+  /* Create pseudo-random number generator */
+  curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
+  /* Set seed */
+  curandSetPseudoRandomGeneratorSeed(gen, time(NULL));
+  /* Generate n floats on device */
+  curandGenerateUniform(gen, dev_vec, n);
+  /* Copy device memory to host */
+  cudaMemcpy(randList, dev_vec, n * sizeof(float), cudaMemcpyDeviceToHost);
+  curandDestroyGenerator(gen); 
+  cudaFree(dev_vec);
+}
+
+void CudaAccessURandList(int n, float **randVec) {
+  int row = 0;
+  int ii = 0;
+  float *tmpVec;
+  printf("Inside cudagenrandlist cntr = %d, randList ptr = %p \n", randListCounter, randList);
+  if(randListCounter >= 0 && randListCounter < MAX_UNI_RANDOM_VEC_LENGTH) {
+    //    printf("Accessing randList at %p \n", randList);
+    //    printf("ranVec at %p of length %d \n", *randVec, n);
+    *randVec= (float *)malloc(n * sizeof(float));
+    tmpVec = *randVec;
+    //    printf("created ranVec at %p of length %d, tmpVec = %p \n", *randVec, n, tmpVec);
+    //    printf("ranVec at %f\n ", tmpVec[10]);
+    //    pause(5000);
+    //printf("\n Accessing randList at %p  \n", randList);
+    for(ii = 0; ii < n; ++ii) {
+      tmpVec[ii] = randList[randListCounter];
+      //printf("%f ", tmpVec[ii]);
+      randListCounter += 1;
+      if(randListCounter >= MAX_UNI_RANDOM_VEC_LENGTH) {
+      	randListCounter = -1;
+      	CudaGenURandList();
+      }
+    }
+  }
+  //  printf("\n done with access ! \n");
+}
+
+
+void CudaGenURandList() {
+  printf("Malloc randList at %p \n", randList);
+  printf("Generating list of %d rand floats on GPU...", (int)MAX_UNI_RANDOM_VEC_LENGTH);
+  fflush(stdout);
+  CudaRandGen((size_t) MAX_UNI_RANDOM_VEC_LENGTH);
+  randListCounter = 0;
+  printf("done ! \n");
+    //    printf("ranVe at %p %p \n", *randVec, randList);
+    //pause(5000);
+  /*   if(*randVec != randList) { */
+  /*     *randVec = (float *)malloc(n * sizeof(float)); */
+  /*     //printf("\n Accessing randList at %p  \n", randList); */
+  /*     for(i = 0; i < n; ++i) { */
+  /* 	*randVec[i] = randList[randListCounter]; */
+  /* 	randListCounter += 1; */
+  /*     } */
+  /*     printf("returned randVec at %p \n", randVec); */
+  /*   } */
+  /*   //    else{printf("did not malloc randVec !!! \n");} */
+  /* } */
+}
+
+float CudaURand() {
+  float *tmpVec;
+  //tmpVec = NULL;
+  CudaAccessURandList(1, &tmpVec);
+  return tmpVec[0];
+}

@@ -156,10 +156,10 @@ void genConMat() {
   for(rowId = 1; rowId <= NE; ++rowId) {
     for(clmId = 1; clmId <= N_Neurons; ++clmId) {
 //      srand(time(NULL));
-      idum = -1 * rand();
-      ranttt = ran1(&idum);
+//      idum = -1 * rand();
+      //    ranttt = ran1(&idum);
       //    printf("%f %ld \n", ranttt, idum);
-      if(ranttt <=  zE[clmId] * conProb[rowId][clmId]) {
+      if(zE[clmId] * conProb[rowId][clmId] >= CudaURand()) {
         conMat[rowId][clmId] = 1;
       }
       fprintf(conMatFP ,"%f ", conMat[rowId][clmId]);
@@ -306,26 +306,32 @@ void IFF(double *vm) {
 void GenConMat02() {
   int i, j, row, clm;
   long idem;
-  //  FILE *conMatFP;
-  //  conMatFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conMatFp", "w");
-  printf("\n");
+  float *randVec;
+  FILE *conMatFP;
+  conMatFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conMatFp", "w");
+  printf("\nconmat fptr is %p\n", conMatFP);
+  randVec = NULL;
+  CudaAccessURandList(N_Neurons * N_Neurons, &randVec);
+  printf("randvec at %p, N_NEURONS = %d \n ", randVec, N_Neurons);
   for(i = 1; i <= NE + NI; ++i) {
     for(j = 1; j <= NE + NI; ++j) {
       if(i <= NE & j <= NE) {conMat[i][j] = 0;} // E --> E
       if (i <= NE & j > NE) {conMat[i][j] = 0;} // E --> I
       if (i > NE & j <= NE) {conMat[i][j] = 0;} // I --> E
       if (i > NE & j > NE) { // I --> I
-        idem = -1 * rand();
-	if((K / NI) >= ran1(&idem)) {
+	//        idem = -1 * rand();
+	//	if((K / NI) >= ran1(&idem)) {
+	//	printf("%d \n", (i - 1) * (N_Neurons) + (j - 1));
+	if(K / NI >= randVec[(i - 1)*(N_Neurons) + (j-1)]) {
           conMat[i][j] = 1;
         }
       }
-      //  fprintf(conMatFP,"%f ", conMat[i][j]);
-      //      printf(" %f ", conMat[i][j]);
+      fprintf(conMatFP,"%f ", conMat[i][j]);
+      //printf(" %f ", conMat[i][j]);
     }
-    //    fprintf(conMatFP, "\n");
+    fprintf(conMatFP, "\n");
     //    printf("%f %f %f %f", conMat[i][1], conMat[i][2], conMat[i][3], conMat[i][4]);
-    //    printf("\n");
+    //   printf("\n");
   }
 
   //  printf("\n");
@@ -341,7 +347,9 @@ void GenConMat02() {
     }
     //    conVec[i] = (float)conMat[row][clm]; 
   }
-  //  printf("\n here 02 ---> \n");
+  free(randVec);
+  fclose(conMatFP);
+  //  printf("\n here 02 ---> \n"); pause(5000);
 }
 
 void GenSparseConMat(sparseMat *sPtr[]) {

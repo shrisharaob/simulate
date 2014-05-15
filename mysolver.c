@@ -22,7 +22,7 @@ extern double **y, *xx, *input_cur, *IF_SPK, *expSum, *iSynap,
   *gaussNoiseE, *gaussNoise, theta, contrast, *gFF, *iFF, *rTotal, muE, muI;
 extern FILE *spkTimesF, *outVars;
 
-float conVec[(N_Neurons + 1) * (N_Neurons + 1)]; 
+float conVec[(N_Neurons + 1) * (N_Neurons + 1)], *randList; 
 sparseMat *sConMat[N_Neurons + 1]; // index staring with 1
 void main(int argc, char **argv) {
     // ***** DECLARATION *****//
@@ -85,12 +85,16 @@ void main(int argc, char **argv) {
   
   srand(time(NULL)); // set the seed for random number generator
   //    genConMat(); // Generate conection matrix
+  randListCounter = -1;
+  randList = (float*) malloc(MAX_UNI_RANDOM_VEC_LENGTH * sizeof(float));
+  CudaGenURandList();
+  //  printf("%f \n", CudaURand());
+  //  printf("%f %f %f \n", CudaURand(), CudaURand(), CudaURand()); pause(5000);
   GenConMat02();
   //  GenSparseConMat(sConMat);
   printf("\n convec 0x: %p ", conVec);
   CudaInitISynap(conVec);    // CUDA INITIALIZATION 
-  
-    //    GenSparseConMatDisp(sConMat);
+  //    GenSparseConMatDisp(sConMat);
   AuxRffTotal(); /* auxillary function, generates random variables for the 
 		    simulation run; which are used approximating FF input */
   if(thetaStep > 0) {
@@ -222,4 +226,5 @@ void main(int argc, char **argv) {
   free_matrix(randuPhi, 1, N_Neurons, 1, 3);
   //  FreeSparseMat(sConMat);
   CudaFreeMem();
+  free(randList);
 }
