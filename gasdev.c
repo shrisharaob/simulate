@@ -79,8 +79,8 @@ double gasdev(long int *idum)
   const double r8_pi = 3.141592653589793;
   double x;
     
-  r1 = ran1(idum);
-  r2 = ran1(idum );
+  r1 = CudaURand();
+  r2 = CudaURand();
   x = sqrt ( - 2.0 * log ( r1 ) ) * cos ( 2.0 * r8_pi * r2 );
 
   return x;

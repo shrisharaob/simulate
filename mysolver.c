@@ -89,7 +89,7 @@ void main(int argc, char **argv) {
   randList = (float*) malloc(MAX_UNI_RANDOM_VEC_LENGTH * sizeof(float));
   CudaGenURandList();
   //  printf("%f \n", CudaURand());
-  //  printf("%f %f %f \n", CudaURand(), CudaURand(), CudaURand()); pause(5000);
+  //printf("%f %f %f \n", CudaURand(), CudaURand(), CudaURand()); pause(5000);
   GenConMat02();
   //  GenSparseConMat(sConMat);
   printf("\n convec 0x: %p ", conVec);
@@ -154,7 +154,7 @@ void main(int argc, char **argv) {
   for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
     clmNo =  (kNeuron - 1) * N_StateVars;
     idem = -1 * rand();
-    vstart[1 + clmNo] = -70 +  40 * ran1(&idem); // Vm(0) ~ U(-70, -30)
+    vstart[1 + clmNo] = -70 +  40 * CudaURand(); // Vm(0) ~ U(-70, -30)
     vstart[2 + clmNo] = 0.3176;
     vstart[3 + clmNo] = 0.1;
     vstart[4 + clmNo] = 0.5961;

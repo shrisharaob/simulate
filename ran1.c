@@ -39,6 +39,7 @@ int *idum;
 	iy = iv[j];
 	iv[j] = *idum;
 	return MIN(AM*iy,RNMX);
+	printf("\n RAN1 !!!!!! \n");
 }
 #undef IA 
 #undef IM 

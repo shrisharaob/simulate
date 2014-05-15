@@ -173,8 +173,19 @@ void CudaGenURandList() {
 }
 
 float CudaURand() {
-  float *tmpVec;
+  //  float *tmpVec;
   //tmpVec = NULL;
-  CudaAccessURandList(1, &tmpVec);
-  return tmpVec[0];
+  //  CudaAccessURandList(1, &tmpVec);
+  if(randListCounter >= 0) {
+    randListCounter += 1;
+    if(randListCounter < MAX_UNI_RANDOM_VEC_LENGTH) {
+      return randList[randListCounter];
+    }
+  }
+  else {
+    randListCounter = -1;
+    CudaGenURandList();
+    randListCounter += 1;
+    return randList[0];
+  }
 }

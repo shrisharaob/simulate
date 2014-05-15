@@ -171,7 +171,7 @@ for(rowId = 1 + NE; rowId <= N_Neurons; ++rowId) {
   for(clmId = 1; clmId <= N_Neurons; ++clmId) {
     idum = -1 * rand();
     //  printf("%ld \n", idum);
-    if(ran1(&idum) <=  zI[clmId] * conProb[rowId][clmId]) {
+    if(CudaURand() <=  zI[clmId] * conProb[rowId][clmId]) {
       conMat[rowId][clmId] = 1;
     }
     fprintf(conMatFP,"%f ", conMat[rowId][clmId]);
@@ -215,14 +215,14 @@ void AuxRffTotal() {
     idem1 = -1 * rand();
     idem2 = -1 * rand();
     randnXiA[lNeuron] =  gasdev(&idem1);
-    randuDelta[lNeuron] = PI * ran1(&idem2);
+    randuDelta[lNeuron] = PI * CudaURand();
     for(i = 1; i <= 4; ++i) {
       idem3 = -1 * rand();
-      randwZiA[lNeuron][i] = 1.4142135 * sqrt(-1 * log(ran1(&idem3)));
+      randwZiA[lNeuron][i] = 1.4142135 * sqrt(-1 * log(CudaURand()));
     }
     for(i = 1; i <= 3; ++i) {
       idem4 = -1 * rand();
-      randuPhi[lNeuron][i] = 2 * PI * ran1(&idem4);
+      randuPhi[lNeuron][i] = 2 * PI * CudaURand();
     }
   }
 }
