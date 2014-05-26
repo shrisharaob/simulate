@@ -21,3 +21,4 @@ extern double contrast, *gFF, *iFF;
 extern sparseMat *sConMat[];
 extern float conVec[];
 extern int randListCounter;
+extern double K; 

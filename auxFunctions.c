@@ -62,7 +62,14 @@ void ISynapCudaAux(double *vm) {
                           * (RHO * (vm[mNeuron] - V_I) + (1 - RHO) * (E_L - V_I));
     }
     iSynap[mNeuron] = tempCurE[mNeuron] + tempCurI[mNeuron];
+    //fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
+    //    fprintf(isynapFP, "%f %f %f ", tempCurE[mNeuron], tempCurI[mNeuron], iSynap[mNeuron]);
+    //    printf("%f %f %f ", tempCurE[mNeuron], tempCurI[mNeuron], iSynap[mNeuron]);
+    //    printf("%f ", tempCurE[mNeuron]);
+    fprintf(isynapFP, "%f ", iSynap[mNeuron]);
   }
+ fprintf(isynapFP, "\n");
+ // printf("\n");
 }
 /* GENERATE CONNECTION MATRIX */
 double XCordinate(int neuronIdx, double nA) {
@@ -194,16 +201,16 @@ void IBackGrnd(double *vm) {
     gaussNoiseE[kNeuron]  = gaussNoiseE[kNeuron] + DT * ( D * gasdev(&idum) / SQRT_DT -  gaussNoiseE[kNeuron] * INV_TAU_SYNAP);
     gE = G_EB * K * (RB_E + sqrt(RB_E / K) * gaussNoiseE[kNeuron]);
     iBg[kNeuron] = -1 * gE * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    fprintf(gbgrndFP, "%f ", gE);
+    //    fprintf(gbgrndFP, "%f ", gE);
   }
   for(kNeuron = 1; kNeuron <= NI; ++kNeuron) {
     idum = -1 * rand();
     gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] + DT * ( D * gasdev(&idum) / SQRT_DT -  gaussNoiseI[kNeuron] * INV_TAU_SYNAP);
     gI = G_IB * K * (RB_I + sqrt(RB_I / K) * gaussNoiseI[kNeuron]);
     iBg[kNeuron + NE] = -1 * gI * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    fprintf(gbgrndFP,"%f ", gI);
+    //fprintf(gbgrndFP,"%f ", gI);
   }
-  fprintf(gbgrndFP,"\n");
+  //  fprintf(gbgrndFP,"\n");
 }
 
 // ff input 
@@ -272,7 +279,7 @@ void Gff(double theta, double t) {
       //gFF[kNeuron] += DT * (- 0.5*(1/1000) * ( (1/K) * gFF[kNeuron] - Itgrl[kNeuron]));
       gFF[kNeuron] += DT * (-1 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP 
                             * ( INV_TAU_SYNAP * gFF[kNeuron] - Itgrl[kNeuron]));
-      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], Itgrl[kNeuron]);
+      //      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], Itgrl[kNeuron]);
     }
     for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
       idem = -1 * rand();
@@ -280,9 +287,9 @@ void Gff(double theta, double t) {
       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem); // / SQRT_DT;
       gFF[kNeuron] += DT * (-1 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP 
                             * ( INV_TAU_SYNAP * gFF[kNeuron] - Itgrl[kNeuron]));
-      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], rTotal[kNeuron]);
+      //      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], rTotal[kNeuron]);
     }
-    fprintf(rTotalFP, "\n");
+    //    fprintf(rTotalFP, "\n");
   }
   else {
      for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
@@ -308,30 +315,39 @@ void GenConMat02() {
   long idem;
   float *randVec;
   FILE *conMatFP;
-  conMatFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conMatFp", "w");
-  printf("\nconmat fptr is %p\n", conMatFP);
+  //  conMatFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conMatFp", "w");
+  //  printf("\nconmat fptr is %p\n", conMatFP);
   randVec = NULL;
-  CudaAccessURandList(N_Neurons * N_Neurons, &randVec);
+  CudaAccessURandList(N_Neurons * N_Neurons, &randVec); // return a random vector randVec of length N^2 
   printf("randvec at %p, N_NEURONS = %d \n ", randVec, N_Neurons);
   for(i = 1; i <= NE + NI; ++i) {
-    for(j = 1; j <= NE + NI; ++j) {
-      if(i <= NE & j <= NE) {conMat[i][j] = 0;} // E --> E
-      if (i <= NE & j > NE) {conMat[i][j] = 0;} // E --> I
-      if (i > NE & j <= NE) {conMat[i][j] = 0;} // I --> E
-      if (i > NE & j > NE) { // I --> I
-	//        idem = -1 * rand();
-	//	if((K / NI) >= ran1(&idem)) {
-	//	printf("%d \n", (i - 1) * (N_Neurons) + (j - 1));
-	if(K / NI >= randVec[(i - 1)*(N_Neurons) + (j-1)]) {
+    for(j = 1; j <= NE + NI; ++j) {             // E --> E
+      if(i <= NE & j <= NE) {
+        if(K / NE >= randVec[(i - 1)*(N_Neurons) + (j-1)]) {
+          conMat[i][j] = 0;
+        }
+      }
+      if (i <= NE & j > NE) {                   // E --> I
+        if(K / NE >= randVec[(i - 1)*(N_Neurons) + (j-1)]) {
+          conMat[i][j] = 0;
+        }
+      }
+      if (i > NE & j <= NE) {                   // I --> E
+        if(K / NI >= randVec[(i - 1)*(N_Neurons) + (j-1)]) {
+          conMat[i][j] = 0;
+        }
+      } 
+      if (i > NE & j > NE) {                   // I --> I
+        if(K / NI >= randVec[(i - 1)*(N_Neurons) + (j-1)]) {
           conMat[i][j] = 1;
         }
       }
-      fprintf(conMatFP,"%f ", conMat[i][j]);
+      //      fprintf(conMatFP,"%f ", conMat[i][j]);
       //printf(" %f ", conMat[i][j]);
     }
-    fprintf(conMatFP, "\n");
+    //    fprintf(conMatFP, "\n");
     //    printf("%f %f %f %f", conMat[i][1], conMat[i][2], conMat[i][3], conMat[i][4]);
-    //   printf("\n");
+    //    printf("\n done with GenConMat02 \n");
   }
 
   //  printf("\n");
@@ -348,7 +364,7 @@ void GenConMat02() {
     //    conVec[i] = (float)conMat[row][clm]; 
   }
   free(randVec);
-  fclose(conMatFP);
+  //  fclose(conMatFP);
   //  printf("\n here 02 ---> \n"); pause(5000);
 }
 

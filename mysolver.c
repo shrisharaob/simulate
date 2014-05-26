@@ -37,6 +37,27 @@ void main(int argc, char **argv) {
   FILE *vmFP1;
   clock_t begin, end;
   //    int *conVec; // conMat(:)
+  
+  //***** PARSE INPUT ARGS *****//
+  printf("argc = %d \n", argc);  
+  if(argc > 1) {
+    /* theta = atof(argv[2]); */
+    /* contrast = atof(argv[3]); */
+    /* muE = atof(argv[4]); */
+    /* muI = atof(argv[5]); */
+    /* // current pulse - tStart, tStop, stepSize */
+    /* for(loopIdx = 1; loopIdx < nSteps+1;  ++loopIdx) { */
+    /*   if(loopIdx * dt > atof(argv[6]) && loopIdx *dt <= atof(argv[7])) {  */
+	/* input_cur[loopIdx] = atof(argv[8]);  */
+    /*   } */
+    /*   else {  */
+	/* input_cur[loopIdx] = 0; */
+    /*   } */
+    /* } */
+    /* K = atof(argv[6]); */
+    K = atof(argv[1]);
+    printf("\nK input = %f \n", K); 
+  }
 
   printf("\n size fo convec %ld \n", (N_Neurons + 1) * (N_Neurons + 1) *sizeof(float));
   //= {0, 0, 0, 
@@ -125,23 +146,9 @@ void main(int argc, char **argv) {
   printf("\nNI = %d\n", NI);
   printf("\nK = %d\n", (int)K);
   printf("computing...\n");
-    //***** PARSE INPUT ARGS *****//
-  if(argc > 1) {
-    theta = atof(argv[2]);
-    contrast = atof(argv[3]);
-    muE = atof(argv[4]);
-    muI = atof(argv[5]);
-    // current pulse - tStart, tStop, stepSize
-    for(loopIdx = 1; loopIdx < nSteps+1;  ++loopIdx) {
-      if(loopIdx * dt > atof(argv[6]) && loopIdx *dt <= atof(argv[7])) { 
-	input_cur[loopIdx] = atof(argv[8]); 
-      }
-      else { 
-	input_cur[loopIdx] = 0;
-      }
-    }
-  }
-  else {
+
+
+  //  else {
     theta = 0;
     contrast = 0.25;
     muE = 0.1;
@@ -149,7 +156,8 @@ void main(int argc, char **argv) {
     for(loopIdx =1; loopIdx < nSteps+1;  ++loopIdx) {
       input_cur[loopIdx] = 0; 
     }
-  }
+
+    //  }
   //***** INITIALIZE STATE VARIABLES *****//
   for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
     clmNo =  (kNeuron - 1) * N_StateVars;
@@ -174,26 +182,26 @@ void main(int argc, char **argv) {
   fclose(spkTimesFp);
   //***** SAVE TO DISK *****//
   
-  for(loopIdx = 1; loopIdx <= nSteps; ++loopIdx) {
-    if(loopIdx <= 2e4) {
-      fprintf(vmFP, "%f ", xx[loopIdx]);
-      for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
-	clmNo =  (kNeuron - 1) * N_StateVars;
-	// y = [t, V_m, n, z, h, I_input]
-	fprintf(vmFP, "%f ", y[1 + clmNo][loopIdx]);
-      }
-      fprintf(vmFP, "\n");
-    }
-    else {
-      fprintf(vmFP1, "%f ", xx[loopIdx]);
-      for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
-	clmNo =  (kNeuron - 1) * N_StateVars;
-	// y = [t, V_m, n, z, h, I_input]
-	fprintf(vmFP1, "%f ", y[1 + clmNo][loopIdx]);
-      }
-      fprintf(vmFP1, "\n");
-    } 
-  }
+  /* for(loopIdx = 1; loopIdx <= nSteps; ++loopIdx) { */
+  /*   if(loopIdx <= 2e4) { */
+  /*     fprintf(vmFP, "%f ", xx[loopIdx]); */
+  /*     for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) { */
+  /*   clmNo =  (kNeuron - 1) * N_StateVars; */
+  /*   // y = [t, V_m, n, z, h, I_input] */
+  /*   fprintf(vmFP, "%f ", y[1 + clmNo][loopIdx]); */
+  /*     } */
+  /*     fprintf(vmFP, "\n"); */
+  /*   } */
+  /*   else { */
+  /*     fprintf(vmFP1, "%f ", xx[loopIdx]); */
+  /*     for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) { */
+  /*   clmNo =  (kNeuron - 1) * N_StateVars; */
+  /*   // y = [t, V_m, n, z, h, I_input] */
+  /*   fprintf(vmFP1, "%f ", y[1 + clmNo][loopIdx]); */
+  /*     } */
+  /*     fprintf(vmFP1, "\n"); */
+  /*   }  */
+  /* } */
   printf("\nnSteps = %d \n", nSteps);
   fflush(vmFP);
   fclose(vmFP);

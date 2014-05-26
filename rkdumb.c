@@ -13,7 +13,7 @@
 #include "cudaAuxFuncProtos.h"
 
 extern FILE *spkTimesFp, *vmFP;
-double **y, *xx;
+double **y, *xx, *tempCurE, *tempCurI;
 
 void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*derivs)(double, double [], double [])) { 
   void rk4(double y[], double dydx[], int n,  double x, double h, double yout[], void (*derivs)(double, double [], double []));
@@ -73,12 +73,12 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
             }
           }
           //  fprintf(vmFP, "%f ", y[1+clmNo][k]);
-          //          fprintf(outVars, "%f %f %f ", iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
-	  //fprintf(isynapFP, "%f %f %f", tempCurE[mNeuron], tempCurI[mNeuron]);
+	  //fprintf(outVars, "%f %f %f ", iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
+          //	
 	  //	  fprintf(isynapFP, "%f ", iSynap[mNeuron]);
         }
         //        fprintf(outVars, "\n");
-	//	fprintf(isynapFP, "\n");
+        //	fprintf(isynapFP, "\n");
         //        fprintf(vmFP, "\n");
       }
       /* /\* else { *\/ */
@@ -97,11 +97,11 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
       CudaISynap(nSpks, spkNeuronId);
 
       ISynapCudaAux(vm); // returns current 
-      for(kNeuron = 1; kNeuron <=N_Neurons; ++kNeuron) {
-	//	fprintf(isynapFP, "%f %f %f ", tempCurE[kNeuron], gEI_E[kNeuron], iSynap[kNeuron]);
-	fprintf(isynapFP, "%f %f %f ", gEI_I[kNeuron], gEI_E[kNeuron], iSynap[kNeuron]);
-      }
-      fprintf(isynapFP, "\n");
+      /* for(kNeuron = 1; kNeuron <=N_Neurons; ++kNeuron) { */
+      /*   //fprintf(isynapFP, "%f %f %f ", gEI_I[kNeuron], gEI_E[kNeuron], iSynap[kNeuron]); */
+      /*   fprintf(isynapFP, "%f %f %f ", tempCurE[kNeuron], tempCurI[kNeuron], iSynap[kNeuron]); */
+      /* } */
+      /* fprintf(isynapFP, "\n"); */
       //compute background current
       IBackGrnd(vm);
       // FF input current
