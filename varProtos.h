@@ -8,6 +8,7 @@ extern double  *randnXiA, // norm rand number
   *tempRandnPrev,
   *tempRandnNew,
   *Itgrl, *ItgrlOld;
+extern char filebase[256];
 extern FILE *isynapFP, *rTotalFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 

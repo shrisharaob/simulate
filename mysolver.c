@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include "nr.h"
 #include "nrutil.h"
+#include "config.h"
 #include "globalVars.h"
 #include "varProtos.h"
 #include "auxFuncProtos.h"
@@ -35,6 +37,7 @@ void main(int argc, char **argv) {
     FILE *vmFP1;
     clock_t begin, end;
     // ***** INITIALIZATION *****//
+
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
     xx = vector(1, nSteps);
@@ -66,15 +69,23 @@ void main(int argc, char **argv) {
     randwZiA = matrix(1, N_Neurons, 1, 4);
     randuDelta = vector(1, N_Neurons);
     randuPhi = matrix(1, N_Neurons, 1, 3);
-    vmFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/vm", "w");
-    vmFP1 = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/vm1", "w");
-    spkTimesFp = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/spkTimes","w");
-    outVars = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/outvars", "w");
-    isynapFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/isynapEI", "w");
-    rTotalFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/rTotal", "w");
-    gbgrndFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gBg", "w");
-    gEEEIFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/gEEEI", "w");
-
+    strcpy(filebase, FILEBASE);
+    vmFP = fopen(strcat(filebase, "vm"), "w");
+    strcpy(filebase, FILEBASE);
+    vmFP1 = fopen(strcat(filebase, "vm1"), "w");
+    strcpy(filebase, FILEBASE);
+    spkTimesFp = fopen(strcat(filebase, "spkTimes"),"w");
+    strcpy(filebase, FILEBASE);
+    outVars = fopen(strcat(filebase, "outvars"), "w");
+    strcpy(filebase, FILEBASE);
+    isynapFP = fopen(strcat(filebase, "isynapEI"), "w");
+    strcpy(filebase, FILEBASE);
+    rTotalFP = fopen(strcat(filebase, "rTotal"), "w");
+    strcpy(filebase, FILEBASE);
+    gbgrndFP = fopen(strcat(filebase, "gBg"), "w");
+    strcpy(filebase, FILEBASE);
+    gEEEIFP = fopen(strcat(filebase, "gEEEI"), "w");
+    strcpy(filebase, FILEBASE);
     srand(time(NULL)); // set the seed for random number generator
     //    genConMat(); // Generate conection matrix
     GenConMat02();

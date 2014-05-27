@@ -1,0 +1,10 @@
+#!/bin/sh
+# Shell script to be run for setup on a new pc to create the file structure for storing simulation results
+set -x
+SRC_CODE_DIR="$HOME/Documents/exp/tmp"
+DIRECTORY="/Documents/cnrs/results/simResults"
+FILEBASE="$HOME$DIRECTORY"
+echo "creating file tree : $FILEBASE"
+mkdir -p $FILEBASE # -p creats the tree structure
+echo "done"
+echo "#define FILEBASE $FILEBASE" > "$SRC_CODE_DIR/config.h"

@@ -2,6 +2,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
+#include "config.h"
 #include "nrutil.h"
 #include "nr.h"
 #include "globalVars.h"
@@ -73,9 +75,13 @@ void genConMat() {
   int clmId, rowId, IF_CONNECT;
   long idum = -1 * rand();
   FILE *conProbFP, *conMatFP;
-  conProbFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conProbMat", "w");
-  conMatFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conMatFp", "w");
+  strcpy(filebase, FILEBASE);
+  conProbFP = fopen(strcat(filebase,"conProbMat"), "w");
+  strcpy(filebase, FILEBASE);
+  conMatFP = fopen(strcat(filebase,"conMatFp"), "w");
+  strcpy(filebase, FILEBASE);
   conProb = matrix(1, N_Neurons, 1, N_Neurons);
+  strcpy(filebase, FILEBASE);
   zI = vector(1, N_Neurons);
   zE = vector(1, N_Neurons);
   z1 =   (1 / sqrt(2 * PI * CON_SIGMA));
@@ -286,7 +292,7 @@ void GenConMat02() {
   int i, j;
   long idem;
   FILE *conMatFP;
-  conMatFP = fopen("/home/shrisha/Documents/cnrs/results/network_model_outFiles/conMatFp", "w");
+  conMatFP = fopen(strcat(filebase,"conMatFp"), "w");
   for(i = 1; i <= NE + NI; ++i) {
     for(j = 1; j <= NE + NI; ++j) {
       if(i <= NE & j <= NE) {conMat[i][j] = 0;} // E --> E
