@@ -60,6 +60,7 @@ void CudaInitISynap(float *conVec) {
   /* printf("\n"); */
 }
 void CudaISynap(int nSpks, int *spkNeuronId) {
+  // func allocates memory on device for spkNeuronId vector
   int loopIdx;
   //  FILE *fp;
    if(nSpks > 0) {  // optimize - malloc called on every timestep !!!! latency ???

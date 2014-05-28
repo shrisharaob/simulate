@@ -1,6 +1,6 @@
 // synaptic input optimized network equations
 #include <cuda.h>
-
+#include "devHostConstants.h"
 //extern double *input_cur, *iSynap, *iBg, *outvars;
 
 __device__ float alpha_n(float vm);
@@ -74,7 +74,7 @@ extern float dt, *iSynap;
 // m_inf 
 // stateVar = [vm, n, z, h]
 // z - gating variable of the adaptation current
-void derivs(float t, float stateVar[], float dydx[]) {
+__device__ void derivs(float t, float stateVar[], float dydx[]) {
   int tIdx, kNeuron, colNo;
   double cur = 0;
   tIdx = (int)(t / dt) + 1;

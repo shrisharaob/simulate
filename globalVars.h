@@ -7,7 +7,6 @@
 
 //#define DT 0.025 // ms
 #define SQRT_DT sqrt(DT)
-
 #define Cm 1 //microF / cm^2
 #define E_Na 55.0 //mV
 #define E_K -90.0
@@ -18,8 +17,6 @@
 #define G_L_I 0.1 // inhibitory
 #define G_adapt 0.5
 #define Tau_adapt 60.0 // in ms
-
-double dt, *thetaVec;
 
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
@@ -45,19 +42,12 @@ double dt, *thetaVec;
 #define G_II 3.0
 //#define EXP_SUM exp(-1 * DT / TAU_SYNAP)
 
-// recurrent input 
-double *tempCurE, *tempCurI;
-
 // backgrund input
 #define RB_E 3.0
 #define RB_I 3.0
-double *iBg, *gaussNoiseE, *gaussNoiseI;
+
 #define G_EB (0.3 /sqrt(K))
 #define G_IB (0.4 /sqrt(K))
-
-double *input_cur, *IF_SPK, **conMat;
-double *iSynap, *expSum;// *gEI_E, *gEI_I;
-FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 // ff input
 #define CFF 0.1
@@ -74,8 +64,15 @@ FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 #define GFF_E 0.95
 #define GFF_I 1.26
 
-double contrast, theta;
-double *gFF, *iFF, *rTotal, muE, muI,
+__device__ double dt, *thetaVec;
+// recurrent input 
+__device__ double *tempCurE, *tempCurI;
+//__device__ double *iBg, *gaussNoiseE, *gaussNoiseI;
+__device__ double *input_cur, *IF_SPK, conMat[N_NEURONS], nSpks;
+__device__ double *iSynap, *expSum;// *gEI_E, *gEI_I;
+//__device__ FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
+__device__ double contrast, theta;
+__device__ double *gFF, *iFF, *rTotal, muE, muI,
   *randnXiA, // norm rand number
   **randwZiA, // weibul rand number
   *randuDelta, // uniform rand (0, PI)
@@ -84,12 +81,10 @@ double *gFF, *iFF, *rTotal, muE, muI,
   *tempRandnPrev, // randn prev (eq. 15)
   *tempRandnNew,
   *Itgrl, *ItgrlOld;
-FILE *rTotalFP;
+//FILE *rTotalFP;
 
 #define RHO 0.5 // ratio - smatic / dendritic synapses
-
 #define SPK_THRESH 0.0
-
 
 typedef struct 
 {

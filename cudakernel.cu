@@ -1,5 +1,5 @@
 #include "cuda.h"
-#include <math.h>
+//#include "math.h"
 #include "devHostConstants.h"
 //#include "devGlobalVars.h"
 __constant__ float DEV_EXP = EXP_SUM;
@@ -30,16 +30,14 @@ __global__ void kernel(int nSpks, int *dev_spkNeuronId, float *dev_conVec,
   }
 }
 
-__global__ void cudaDerivs() {
-}
+
 /* only use extern if calling code is C */
 extern "C" 
 {
   /* driver for kernel */
-  void cudakernel(int nSpks, int *dev_spkNeuronId, float *dev_conVec,
-		  float *gE_data, float *gI_data){
+  void cudakernel(){
     /* choose 256 threads per block for high occupancy */
-    int ThreadsPerBlock = 128;
+   int ThreadsPerBlock = 128;
       /* find number of blocks */
     int BlocksPerGrid = (N_NEURONS + ThreadsPerBlock - 1) / ThreadsPerBlock;
       /* invoke device on this block/thread grid */
