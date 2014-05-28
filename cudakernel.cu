@@ -29,6 +29,9 @@ __global__ void kernel(int nSpks, int *dev_spkNeuronId, float *dev_conVec,
     }
   }
 }
+
+__global__ void cudaDerivs() {
+}
 /* only use extern if calling code is C */
 extern "C" 
 {
