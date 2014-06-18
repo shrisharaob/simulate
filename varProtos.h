@@ -20,3 +20,5 @@ extern double **conMat, *iSynap, *expSum, *gEI_I, *gEI_E, *rTotal;
 extern double contrast, *gFF, *iFF;
 
 extern sparseMat *sConMat[];
+
+extern int totalNSpks;

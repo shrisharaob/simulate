@@ -86,8 +86,9 @@ void derivs(double t, double stateVar[], double dydx[]) {
     /*  } */
     /* else {cur = 0;} */
     //     cur = 10;
-    cur = 0.2 * sqrt(K);
-    //    cur=2.8;
+    //    cur = 0.2 * sqrt(K);
+
+    cur=2.8;
     //    printf("\n ICur : %f", cur);
     if (kNeuron <= NE) { 
       dydx[1 + colNo] =  1/Cm * (cur 

@@ -23,6 +23,7 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
   vout = vector(1,nvar);
   dv = vector(1,nvar);
   vm = vector(1, N_Neurons);
+  totalNSpks = 0;
   //*** START ***//
   for (i=1;i<=nvar;i++) 
     {
@@ -61,15 +62,16 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
           if(v[1 + clmNo] > SPK_THRESH) { 
             if(y[1 + clmNo][k] <= SPK_THRESH) {
               IF_SPK[mNeuron] = 1;
+	      totalNSpks += 1; 
               fprintf(spkTimesFp, "%f %d\n", xx[k+1], mNeuron);
             }
           }
           //  fprintf(vmFP, "%f ", y[1+clmNo][k]);
           //          fprintf(outVars, "%f %f %f ", iSynap[mNeuron], iBg[mNeuron], iFF[mNeuron]);
-          //          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
+	  //	  fprintf(isynapFP, "%f %f %f ", tempCurE[mNeuron], tempCurI[mNeuron], iSynap[mNeuron]);
         }
         //        fprintf(outVars, "\n");
-        //        fprintf(isynapFP, "\n");
+	//        fprintf(isynapFP, "\n");
         //        fprintf(vmFP, "\n");
       }
       /* /\* else { *\/ */
@@ -86,11 +88,11 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
       // compute synaptic current
       Isynap1(vm);
       //compute background current
-      IBackGrnd(vm);
+      //      IBackGrnd(vm);
       // FF input current
-      RffTotal(theta, x);
-      Gff(theta, x);
-      IFF(vm);
+      //      RffTotal(theta, x);
+      //      Gff(theta, x);
+      //      IFF(vm);
 
     }
   free_vector(v,1,nvar);

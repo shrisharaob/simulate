@@ -22,10 +22,10 @@ double dt, *thetaVec;
 
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 10
-#define NE 10
+#define NI 8000
+#define NE 8000
 #define N_Neurons (NE + NI)
-#define K 6.0 // use decimal point to assign, keeps it double 
+#define K 800.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0
@@ -92,3 +92,6 @@ typedef struct
 {
   int neuronId, nPostNeurons, *postNeuronIds;
 } sparseMat;
+
+
+int totalNSpks;

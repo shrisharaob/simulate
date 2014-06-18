@@ -18,7 +18,8 @@
 // gcc ran1.c gasdev.c nrutil.c rk4.c auxFunctions.c rkdumb.c -g mysolver.c -lm -o mysolver
 // -g for gdb
 //-lm reqd. for linking math.h
-// 
+
+
 // GLOBAL VARS
 extern double **y, *xx, *input_cur, *IF_SPK, *expSum, *iSynap, 
   *gaussNoiseE, *gaussNoise, theta, contrast, *gFF, *iFF, *rTotal, muE, muI;
@@ -28,18 +29,20 @@ void main(int argc, char **argv) {
     // ***** DECLARATION *****//
   int dim = 4;
     double *vstart, *spkTimes;;
-    double x1 = 0, // simulation start time
-      x2 = 1000, // simulation end time
-      thetaStep = 0;
+    double x1 = 0.0, // simulation start time
+      x2 = 100.0, // simulation end time
+      thetaStep = 0.0;
     int nSteps, nThetaSteps;
     int kNeuron, clmNo, loopIdx=0;
     long idem;
-    FILE *vmFP1;
+    FILE *fpElapsedTime;
     clock_t begin, end;
+    int IF_SAVE = 1;
     // ***** INITIALIZATION *****//
 
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
+    printf("\nnSteps = %d \n", nSteps);
     xx = vector(1, nSteps);
     y = matrix(1, N_StateVars * N_Neurons, 1, nSteps);
     input_cur = vector(1, nSteps);
@@ -70,22 +73,23 @@ void main(int argc, char **argv) {
     randuDelta = vector(1, N_Neurons);
     randuPhi = matrix(1, N_Neurons, 1, 3);
     strcpy(filebase, FILEBASE);
-    vmFP = fopen(strcat(filebase, "vm"), "w");
+    vmFP = fopen(strcat(filebase, "vm.csv"), "w");
     strcpy(filebase, FILEBASE);
-    vmFP1 = fopen(strcat(filebase, "vm1"), "w");
     strcpy(filebase, FILEBASE);
-    spkTimesFp = fopen(strcat(filebase, "spkTimes"),"w");
+    spkTimesFp = fopen(strcat(filebase, "spkTimes.csv"),"w");
     strcpy(filebase, FILEBASE);
-    outVars = fopen(strcat(filebase, "outvars"), "w");
+    outVars = fopen(strcat(filebase, "outvars.csv"), "w");
     strcpy(filebase, FILEBASE);
-    isynapFP = fopen(strcat(filebase, "isynapEI"), "w");
+    isynapFP = fopen(strcat(filebase, "isynapEI.csv"), "w");
     strcpy(filebase, FILEBASE);
-    rTotalFP = fopen(strcat(filebase, "rTotal"), "w");
+    rTotalFP = fopen(strcat(filebase, "rTotal.csv"), "w");
     strcpy(filebase, FILEBASE);
-    gbgrndFP = fopen(strcat(filebase, "gBg"), "w");
+    gbgrndFP = fopen(strcat(filebase, "gBg.csv"), "w");
     strcpy(filebase, FILEBASE);
-    gEEEIFP = fopen(strcat(filebase, "gEEEI"), "w");
+    gEEEIFP = fopen(strcat(filebase, "gEEEI.csv"), "w");
     strcpy(filebase, FILEBASE);
+
+    begin = clock();
     srand(time(NULL)); // set the seed for random number generator
     //    genConMat(); // Generate conection matrix
     GenConMat02();
@@ -118,8 +122,8 @@ void main(int argc, char **argv) {
     /* conMat[3][3] = 0; */
     // compute
     printf("\nNE = %d\n", NE);
-    printf("\nNI = %d\n", NI);
-    printf("\nK = %d\n", (int)K);
+    printf("NI = %d\n", NI);
+    printf("K = %d\n", (int)K);
     printf("computing...\n");
     //***** PARSE INPUT ARGS *****//
     if(argc > 1) {
@@ -147,16 +151,15 @@ void main(int argc, char **argv) {
       }
     }
     //***** INITIALIZE STATE VARIABLES *****//
+    idem = -1 * time(NULL);
     for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
       clmNo =  (kNeuron - 1) * N_StateVars;
-      idem = -1 * rand();
-      vstart[1 + clmNo] = -70 +  40 * ran1(&idem); // Vm(0) ~ U(-70, -30)
+      vstart[1 + clmNo] = -70 +  40 * ran2(&idem); // Vm(0) ~ U(-70, -30)
       vstart[2 + clmNo] = 0.3176;
       vstart[3 + clmNo] = 0.1;
       vstart[4 + clmNo] = 0.5961;
     }
     //***** INTEGRATE *****//
-    begin = clock();
     for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
       theta = thetaVec[loopIdx];
       fprintf(spkTimesFp, "%f %f\n", theta, theta);
@@ -166,12 +169,14 @@ void main(int argc, char **argv) {
     }
     printf("Done! \n");
     end = clock();
-    printf("\n time spent integrating : %f", (double)(end - begin) / CLOCKS_PER_SEC);
+    printf("\n time spent integrating : %fs", (double)(end - begin) / CLOCKS_PER_SEC);
+    fpElapsedTime = fopen("elapsedTime.csv", "a");
+    fprintf(fpElapsedTime, "%f %d\n", (double)(end - begin) / CLOCKS_PER_SEC, totalNSpks);
     fclose(spkTimesFp);
     //***** SAVE TO DISK *****//
-    
-    for(loopIdx = 1; loopIdx <= nSteps; ++loopIdx) {
-      if(loopIdx <= 2e4) {
+    if(IF_SAVE) {    
+      for(loopIdx = 1; loopIdx <= nSteps; ++loopIdx) {
+        //      if(loopIdx <= 2e4) {
         fprintf(vmFP, "%f ", xx[loopIdx]);
         for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
           clmNo =  (kNeuron - 1) * N_StateVars;
@@ -180,23 +185,10 @@ void main(int argc, char **argv) {
         }
         fprintf(vmFP, "\n");
       }
-      else {
-       fprintf(vmFP1, "%f ", xx[loopIdx]);
-        for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
-          clmNo =  (kNeuron - 1) * N_StateVars;
-          // y = [t, V_m, n, z, h, I_input]
-          fprintf(vmFP1, "%f ", y[1 + clmNo][loopIdx]);
-        }
-        fprintf(vmFP1, "\n");
-      } 
     }
-    printf("\nnSteps = %d \n", nSteps);
     fflush(vmFP);
     fclose(vmFP);
-    fflush(vmFP1);
-    fclose(vmFP1);
     fclose(outVars);
-
     fclose(isynapFP);
     fclose(rTotalFP);
     fclose(gbgrndFP);
