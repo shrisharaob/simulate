@@ -76,9 +76,9 @@ void genConMat() {
   long idum = -1 * rand();
   FILE *conProbFP, *conMatFP;
   strcpy(filebase, FILEBASE);
-  conProbFP = fopen(strcat(filebase,"conProbMat"), "w");
+  conProbFP = fopen(strcat(filebase,"conProbMat.csv"), "w");
   strcpy(filebase, FILEBASE);
-  conMatFP = fopen(strcat(filebase,"conMatFp"), "w");
+  conMatFP = fopen(strcat(filebase,"conMatFp.csv"), "w");
   strcpy(filebase, FILEBASE);
   conProb = matrix(1, N_Neurons, 1, N_Neurons);
   strcpy(filebase, FILEBASE);
@@ -292,7 +292,7 @@ void GenConMat02() {
   int i, j;
   long idem;
   FILE *conMatFP;
-  conMatFP = fopen(strcat(filebase,"conMatFp"), "w");
+  conMatFP = fopen(strcat(filebase,"conMatFp.csv"), "w");
   for(i = 1; i <= NE + NI; ++i) {
     for(j = 1; j <= NE + NI; ++j) {
       if(i <= NE & j <= NE) {conMat[i][j] = 0;} // E --> E
