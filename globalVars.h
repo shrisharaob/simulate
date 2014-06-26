@@ -1,3 +1,5 @@
+#ifndef _GLOBALVARS_
+#define _GLOBALVARS_
 #include<math.h>
 #include<stdio.h>
 // time in ms
@@ -6,6 +8,9 @@ char filebase[256];
 
 #define DT 0.025 // ms
 #define SQRT_DT sqrt(DT)
+
+#define STORE_LAST_T_MILLISEC 100.0
+#define STORE_LAST_N_STEPS (STORE_LAST_T_MILLISEC / DT)
 
 #define Cm 1 //microF / cm^2
 #define E_Na 55.0 //mV
@@ -92,3 +97,4 @@ typedef struct
 {
   int neuronId, nPostNeurons, *postNeuronIds;
 } sparseMat;
+#endif

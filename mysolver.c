@@ -29,7 +29,7 @@ void main(int argc, char **argv) {
   int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 1000, // simulation end time
+      x2 = 100.0, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     int kNeuron, clmNo, loopIdx=0;
@@ -37,11 +37,10 @@ void main(int argc, char **argv) {
     FILE *vmFP1;
     clock_t begin, end;
     // ***** INITIALIZATION *****//
-
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
-    xx = vector(1, nSteps);
-    y = matrix(1, N_StateVars * N_Neurons, 1, nSteps);
+    xx = vector(1, STORE_LAST_N_STEPS);
+    y = matrix(1, N_Neurons, 1, STORE_LAST_N_STEPS);
     input_cur = vector(1, nSteps);
     vstart = vector(1, N_StateVars * N_Neurons);
     IF_SPK = vector(1, N_Neurons);   
@@ -168,18 +167,14 @@ void main(int argc, char **argv) {
     end = clock();
     printf("\n time spent integrating : %f", (double)(end - begin) / CLOCKS_PER_SEC);
     fclose(spkTimesFp);
-    //***** SAVE TO DISK *****//
-    
-    for(loopIdx = 1; loopIdx <= nSteps; ++loopIdx) {
-      //      if(loopIdx <= 2e4) {
+    /* SAVE TO DISK */
+    for(loopIdx = 1; loopIdx <= STORE_LAST_N_STEPS; ++loopIdx) {
         fprintf(vmFP, "%f ", xx[loopIdx]);
         for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
           clmNo =  (kNeuron - 1) * N_StateVars;
-          // y = [t, V_m, n, z, h, I_input]
           fprintf(vmFP, "%f ", y[1 + clmNo][loopIdx]);
         }
         fprintf(vmFP, "\n");
-        //      }
     }
     printf("\nnSteps = %d \n", nSteps);
     fflush(vmFP);

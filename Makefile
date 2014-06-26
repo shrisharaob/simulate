@@ -1,5 +1,5 @@
 CC = gcc
-DEPS = ran1.c gasdev.c nrutil.c rk4.c auxFunctions.c rkdumb.c mysolver.c
+DEPS = ran1.c gasdev.c nrutil.c rk4.c auxFunctions.c rkdumb_proper.c mysolver.c
 OUT_EXE = mysolver
 CFLAGS = -lm
 build: $(DEPS)

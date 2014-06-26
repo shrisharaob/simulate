@@ -6,7 +6,7 @@ h = DT; //(x2 - x1) / nstep;
 isynapNew = 0;
 for (k = 0; k < nstep; k++) 
   {
-    dev_IF_SPK[mNeuron] = 0;
+    IF_SPK[mNeuron] = 0;
     vmOld = v[0];
     derivs(x, v, dv, isynapNew);
     rk4(v, dv, N_STATEVARS, x, h, vout, isynapNew);
@@ -24,13 +24,10 @@ for (k = 0; k < nstep; k++)
     if(k > 2) {
       if(v[0] > SPK_THRESH) { 
         if(vmOld <= SPK_THRESH) {
-          dev_IF_SPK[mNeuron] = 1;
-          atomicAdd(totNSpks, 1); // atomic add on global introduces memory latency
-          localTotNspks = *totNSpks;
-          spkNeuronId[localTotNspks] = mNeuron;
-          spkTimes[localTotNspks] = xx;
+          o  IF_SPK[mNeuron] = 1;
         }
       }
     }
-    __syncthreads(); // CRUTIAL step to ensure that dev_IF_spk is updated by all threads 
-    isynapNew = isynap(v[0], dev_conVec);
+
+    // CALL     isynap;
+  }
