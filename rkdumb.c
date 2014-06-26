@@ -61,7 +61,7 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
           if(v[1 + clmNo] > SPK_THRESH) { 
             if(y[1 + clmNo][k] <= SPK_THRESH) {
               IF_SPK[mNeuron] = 1;
-              fprintf(spkTimesFp, "%f %d\n", xx[k+1], mNeuron);
+              fprintf(spkTimesFp, "%f;%d\n", xx[k+1], mNeuron);
             }
           }
           //  fprintf(vmFP, "%f ", y[1+clmNo][k]);
