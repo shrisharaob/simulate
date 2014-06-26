@@ -159,10 +159,10 @@ void main(int argc, char **argv) {
     begin = clock();
     for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
       theta = thetaVec[loopIdx];
-      fprintf(spkTimesFp, "%f %f\n", theta, theta);
+      //      fprintf(spkTimesFp, "%f %f\n", theta, theta);
       rkdumb(vstart, N_StateVars * N_Neurons, x1, x2, nSteps, derivs);
-      fprintf(spkTimesFp, "%d %d\n", 11, 11); // delimiters for thetas 
-      fprintf(spkTimesFp, "%d %d\n", 73, 73);
+      //      fprintf(spkTimesFp, "%d %d\n", 11, 11); // delimiters for thetas 
+      //      fprintf(spkTimesFp, "%d %d\n", 73, 73);
     }
     printf("Done! \n");
     end = clock();
@@ -222,3 +222,14 @@ void main(int argc, char **argv) {
     free_matrix(randuPhi, 1, N_Neurons, 1, 3);
     FreeSparseMat(sConMat);
 }
+
+
+
+
+
+
+
+
+
+
+

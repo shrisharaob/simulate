@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu # makes your program exit on error or unbound variable
+fldr = "/homecentral/srao/Documents/cnrs/simResults/"
+spkfile = "spkTimes.csv"
+fn = "spkTimes_" 
+extn = ".csv"
+make
+
+for n in {0..1..1}
+do
+    ./mysolver $n
+    mv $fldr$spkfile $fldr$fn$n$extn
+done
+
+
