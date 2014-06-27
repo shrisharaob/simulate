@@ -78,7 +78,7 @@ void genConMat() {
   strcpy(filebase, FILEBASE);
   conProbFP = fopen(strcat(filebase,"conProbMat.csv"), "w");
   strcpy(filebase, FILEBASE);
-  conMatFP = fopen(strcat(filebase,"conMatFp.csv"), "w");
+  conMatFP = fopen(strcat(filebase,"conMat.csv"), "w");
   strcpy(filebase, FILEBASE);
   conProb = matrix(1, N_Neurons, 1, N_Neurons);
   strcpy(filebase, FILEBASE);
@@ -92,16 +92,16 @@ void genConMat() {
       xDiff = XCordinate(rowId, NE) - XCordinate(clmId, NE);
       yDiff = YCordinate(rowId, NE) - YCordinate(clmId, NE);
       conProb[rowId][clmId] =  z1 * z1 * exp(-1 * pow(fmod(xDiff, L), 2) / (denom)) * z1 * z1 * exp(-1 * pow(fmod(yDiff, L), 2) / (denom));
-      fprintf(conProbFP ,"%f ", conProb[rowId][clmId]);
+      //      fprintf(conProbFP ,"%f ", conProb[rowId][clmId]);
     }
     for (clmId = NE + 1; clmId <= N_Neurons; ++clmId) {
       xDiff = XCordinate(rowId, NE) - XCordinate(clmId - NE, NI);
       yDiff = YCordinate(rowId, NE) - YCordinate(clmId - NE, NI);
       conProb[rowId][clmId] =  z1 * z1 * exp(-1 * pow(fmod(xDiff, L), 2) / (denom))
                              * z1 * z1 * exp(-1 * pow(fmod(yDiff, L), 2) / (denom));
-      fprintf(conProbFP, "%f ", conProb[rowId][clmId]);
+      //      fprintf(conProbFP, "%f ", conProb[rowId][clmId]);
     }
-    fprintf(conProbFP, "\n");
+    //    fprintf(conProbFP, "\n");
   }
   // connection probablity for I cells
   for(rowId = 1 + NE; rowId <= N_Neurons; ++rowId) {
@@ -110,16 +110,16 @@ void genConMat() {
       yDiff = YCordinate(rowId - NE, NI) - YCordinate(clmId, NE);
       conProb[rowId][clmId] = z1 * z1 * exp(-1 * pow(fmod(xDiff, L), 2) / (denom)) 
                              * z1 * z1 * exp(-1 * pow(fmod(yDiff, L), 2) / (denom));
-      fprintf(conProbFP ,"%f ", conProb[rowId][clmId]);
+      //      fprintf(conProbFP ,"%f ", conProb[rowId][clmId]);
     }
     for (clmId = NE + 1; clmId <= N_Neurons; ++clmId) {
       xDiff = XCordinate(rowId - NE, NI) - XCordinate(clmId - NE, NI);
       yDiff = YCordinate(rowId - NE, NI) - YCordinate(clmId - NE, NI);
       conProb[rowId][clmId] = z1 * z1 * exp(-1 * pow(fmod(xDiff, L), 2) / (denom))
                              * z1 * z1 * exp(-1 * pow(fmod(yDiff, L), 2) / (denom));
-      fprintf(conProbFP, "%f ", conProb[rowId][clmId]);
+      //      fprintf(conProbFP, "%f ", conProb[rowId][clmId]);
     }
-    fprintf(conProbFP, "\n");
+    //    fprintf(conProbFP, "\n");
   }
   fclose(conProbFP);
   // compute pre-factor zB[clm] = K / sum(conProd(:, clm))
@@ -179,16 +179,16 @@ void IBackGrnd(double *vm) {
     gaussNoiseE[kNeuron]  = gaussNoiseE[kNeuron] + DT * ( D * gasdev(&idum) / SQRT_DT -  gaussNoiseE[kNeuron] * INV_TAU_SYNAP);
     gE = G_EB * K * (RB_E + sqrt(RB_E / K) * gaussNoiseE[kNeuron]);
     iBg[kNeuron] = -1 * gE * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    fprintf(gbgrndFP, "%f ", gE);
+    //    fprintf(gbgrndFP, "%f ", gE);
   }
   for(kNeuron = 1; kNeuron <= NI; ++kNeuron) {
     idum = -1 * rand();
     gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] + DT * ( D * gasdev(&idum) / SQRT_DT -  gaussNoiseI[kNeuron] * INV_TAU_SYNAP);
     gI = G_IB * K * (RB_I + sqrt(RB_I / K) * gaussNoiseI[kNeuron]);
     iBg[kNeuron + NE] = -1 * gI * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    fprintf(gbgrndFP,"%f ", gI);
+    //fprintf(gbgrndFP,"%f ", gI);
   }
-  fprintf(gbgrndFP,"\n");
+  //  fprintf(gbgrndFP,"\n");
 }
 
 // ff input 
@@ -257,7 +257,7 @@ void Gff(double theta, double t) {
       //gFF[kNeuron] += DT * (- 0.5*(1/1000) * ( (1/K) * gFF[kNeuron] - Itgrl[kNeuron]));
       gFF[kNeuron] += DT * (-1 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP 
                             * ( INV_TAU_SYNAP * gFF[kNeuron] - Itgrl[kNeuron]));
-      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], Itgrl[kNeuron]);
+      //      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], Itgrl[kNeuron]);
     }
     for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
       idem = -1 * rand();
@@ -265,9 +265,9 @@ void Gff(double theta, double t) {
       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem); // / SQRT_DT;
       gFF[kNeuron] += DT * (-1 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP 
                             * ( INV_TAU_SYNAP * gFF[kNeuron] - Itgrl[kNeuron]));
-      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], rTotal[kNeuron]);
+      //      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], rTotal[kNeuron]);
     }
-    fprintf(rTotalFP, "\n");
+    //    fprintf(rTotalFP, "\n");
   }
   else {
      for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {

@@ -89,20 +89,19 @@ void derivs(double t, double stateVar[], double dydx[]) {
     //    cur = 0.2 * sqrt(K);
     //    cur=2.8;
     //    printf("\n ICur : %f", cur);
-    cur = 3;
     if (kNeuron <= NE) { 
       dydx[1 + colNo] =  1/Cm * (cur 
                                  - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
                                  - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
                                  - G_L_E * (stateVar[1 + colNo] - E_L)
-                                 - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron]);// iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
+                                 - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iFF[kNeuron]);// iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
       }
       else {
         dydx[1 + colNo] =  1/Cm * (cur  
                                    - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
                                    - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
                                    - G_L_I * (stateVar[1 + colNo] - E_L)
-                                   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron]); // + iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
+                                   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron]+ iFF[kNeuron]); // + iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
       }
      
     dydx[2 + colNo] = alpha_n(stateVar[1 + colNo]) * (1 - stateVar[2 + colNo]) 

@@ -6,7 +6,7 @@
 #define PI 3.14159265359
 char filebase[256];
 
-#define DT 0.025 // ms
+#define DT 0.05 // ms
 #define SQRT_DT sqrt(DT)
 
 #define STORE_LAST_T_MILLISEC 100.0
@@ -27,10 +27,10 @@ double dt, *thetaVec;
 
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 1
-#define NE 1
+#define NI 10000
+#define NE 20000
 #define N_Neurons (NE + NI)
-#define K 1.0 // use decimal point to assign, keeps it double 
+#define K 2000.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0

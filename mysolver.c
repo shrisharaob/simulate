@@ -29,7 +29,7 @@ void main(int argc, char **argv) {
   int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 100.0, // simulation end time
+      x2 = 15000.0, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     int kNeuron, clmNo, loopIdx=0;
@@ -41,7 +41,6 @@ void main(int argc, char **argv) {
     nSteps = (int)((x2 - x1) / dt);
     xx = vector(1, STORE_LAST_N_STEPS);
     y = matrix(1, N_Neurons, 1, STORE_LAST_N_STEPS);
-    input_cur = vector(1, nSteps);
     vstart = vector(1, N_StateVars * N_Neurons);
     IF_SPK = vector(1, N_Neurons);   
     expSum = vector(1, N_Neurons); // synap input
@@ -86,8 +85,8 @@ void main(int argc, char **argv) {
     gEEEIFP = fopen(strcat(filebase, "gEEEI.csv"), "w");
     strcpy(filebase, FILEBASE);
     srand(time(NULL)); // set the seed for random number generator
-    //    genConMat(); // Generate conection matrix
-    GenConMat02();
+    genConMat(); // Generate conection matrix
+    //    GenConMat02();
     GenSparseConMat(sConMat);
     //    GenSparseConMatDisp(sConMat);
     AuxRffTotal(); /* auxillary function, generates random variables for the 
