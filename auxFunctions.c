@@ -292,7 +292,7 @@ void GenConMat02() {
   int i, j;
   long idem;
   FILE *conMatFP;
-  conMatFP = fopen(strcat(filebase,"conMatFp.csv"), "w");
+  conMatFP = fopen(strcat(filebase,"conMat.csv"), "w");
   for(i = 1; i <= NE + NI; ++i) {
     for(j = 1; j <= NE + NI; ++j) {
       if(i <= NE & j <= NE) {conMat[i][j] = 0;} // E --> E

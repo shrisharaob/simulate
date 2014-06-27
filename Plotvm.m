@@ -8,6 +8,7 @@ v = vm(:, 2:end);
 cm = importdata([fb, 'conMat.csv']);
 st = importdata([fb, 'spkTimes.csv']);
 t = dt: dt: dt * size(v, 1);
+keyboard;
 for r = 1 : size(v, 2) 
     for c = 1 : size(v, 2)
         if((cm(r, c) == 1) && (r ~= c))

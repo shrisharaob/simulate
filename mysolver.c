@@ -102,19 +102,6 @@ void main(int argc, char **argv) {
       nThetaSteps = 1;
     }
     printf("theta = %f %d\n", thetaVec[1], nThetaSteps);
-    /* /\********\/ */
-    //    conMat[1][1] = 0; 
-    //    conMat[1][2] = 0; 
-    //for(loopIdx = 3; loopIdx <=N_Neurons; ++loopIdx) {
-    //conMat[loopIdx][2] = 1;
-    //    }
-    // conMat[1][3] = 1; */
-    //    conMat[2][1] = 1; 
-    //    conMat[2][2] = 0; 
-    /* conMat[2][3] = 1; */
-    /* conMat[3][1] = 1; */
-    /* conMat[3][2] = 0; */
-    /* conMat[3][3] = 0; */
     // compute
     printf("\nNE = %d\n", NE);
     printf("\nNI = %d\n", NI);
@@ -122,29 +109,14 @@ void main(int argc, char **argv) {
     printf("computing...\n");
     //***** PARSE INPUT ARGS *****//
     if(argc > 1) {
-      theta = atof(argv[2]);
-      contrast = atof(argv[3]);
-      muE = atof(argv[4]);
-      muI = atof(argv[5]);
-      // current pulse - tStart, tStop, stepSize
-      for(loopIdx = 1; loopIdx < nSteps+1;  ++loopIdx) {
-        if(loopIdx * dt > atof(argv[6]) && loopIdx *dt <= atof(argv[7])) { 
-          input_cur[loopIdx] = atof(argv[8]); 
-        }
-        else { 
-          input_cur[loopIdx] = 0;
-        }
-      }
+      theta = atof(argv[1]);
     }
     else {
       theta = 0;
-      contrast = 0.25;
-      muE = 0.1;
-      muI = 0.1;
-      for(loopIdx =1; loopIdx < nSteps+1;  ++loopIdx) {
-        input_cur[loopIdx] = 0; 
-      }
     }
+    contrast = 0.25;
+    muE = 0.1;
+    muI = 0.1;
     //***** INITIALIZE STATE VARIABLES *****//
     for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
       clmNo =  (kNeuron - 1) * N_StateVars;
@@ -171,8 +143,7 @@ void main(int argc, char **argv) {
     for(loopIdx = 1; loopIdx <= STORE_LAST_N_STEPS; ++loopIdx) {
         fprintf(vmFP, "%f ", xx[loopIdx]);
         for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
-          clmNo =  (kNeuron - 1) * N_StateVars;
-          fprintf(vmFP, "%f ", y[1 + clmNo][loopIdx]);
+          fprintf(vmFP, "%f ", y[kNeuron][loopIdx]);
         }
         fprintf(vmFP, "\n");
     }
