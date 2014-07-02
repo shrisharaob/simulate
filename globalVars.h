@@ -24,13 +24,13 @@ char filebase[256];
 #define Tau_adapt 60.0 // in ms
 
 double dt, *thetaVec;
-
+int nTotSpks;
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 10000
-#define NE 20000
+#define NI 3000
+#define NE 0
 #define N_Neurons (NE + NI)
-#define K 2000.0 // use decimal point to assign, keeps it double 
+#define K 300.0 // use decimal point to assign, keeps it double 
 
 // params patch
 #define L 1.0
@@ -63,7 +63,7 @@ FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 // ff input
 #define CFF 0.1
-#define KFF 1.0
+#define KFF 200.0
 #define GE_FF 0.95
 #define GI_FF 1.26
 #define R0 2.0

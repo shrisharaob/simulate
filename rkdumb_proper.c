@@ -59,6 +59,7 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
           if(vmOld[mNeuron] <= SPK_THRESH) {
             IF_SPK[mNeuron] = 1;
             fprintf(spkTimesFp, "%f;%d\n", x, mNeuron);
+            nTotSpks += 1;
           }
         }
         // fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);

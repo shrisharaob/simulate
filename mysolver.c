@@ -39,6 +39,7 @@ void main(int argc, char **argv) {
     // ***** INITIALIZATION *****//
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
+    nTotSpks = 0;
     xx = vector(1, STORE_LAST_N_STEPS);
     y = matrix(1, N_Neurons, 1, STORE_LAST_N_STEPS);
     vstart = vector(1, N_StateVars * N_Neurons);
@@ -67,6 +68,12 @@ void main(int argc, char **argv) {
     randwZiA = matrix(1, N_Neurons, 1, 4);
     randuDelta = vector(1, N_Neurons);
     randuPhi = matrix(1, N_Neurons, 1, 3);
+    printf("mem allocation done\n");
+
+    printf("NE = %d\n", NE);
+    printf("NI = %d\n", NI);
+    printf("K = %d\n", (int)K);
+    printf("computing...\n");
     strcpy(filebase, FILEBASE);
     vmFP = fopen(strcat(filebase, "vm.csv"), "w");
     //    strcpy(filebase, FILEBASE);
@@ -85,7 +92,9 @@ void main(int argc, char **argv) {
     gEEEIFP = fopen(strcat(filebase, "gEEEI.csv"), "w");
     strcpy(filebase, FILEBASE);
     srand(time(NULL)); // set the seed for random number generator
+    fprintf(stdout, "generating conMat..."); fflush(stdout);
     genConMat(); // Generate conection matrix
+    printf("done\n");
     //    GenConMat02();
     GenSparseConMat(sConMat);
     //    GenSparseConMatDisp(sConMat);
@@ -100,12 +109,7 @@ void main(int argc, char **argv) {
       thetaVec[1] = 0;
       nThetaSteps = 1;
     }
-    printf("theta = %f %d\n", thetaVec[1], nThetaSteps);
-    // compute
-    printf("\nNE = %d\n", NE);
-    printf("\nNI = %d\n", NI);
-    printf("\nK = %d\n", (int)K);
-    printf("computing...\n");
+
     //***** PARSE INPUT ARGS *****//
     if(argc > 1) {
       theta = atof(argv[1]);
@@ -113,6 +117,7 @@ void main(int argc, char **argv) {
     else {
       theta = 0;
     }
+    printf("theta = %f\n", theta);
     contrast = 0.25;
     muE = 0.1;
     muI = 0.1;
@@ -128,7 +133,7 @@ void main(int argc, char **argv) {
     //***** INTEGRATE *****//
     begin = clock();
     for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
-      theta = thetaVec[loopIdx];
+      //      theta = thetaVec[loopIdx];
       //      fprintf(spkTimesFp, "%f %f\n", theta, theta);
       rkdumb(vstart, N_StateVars * N_Neurons, x1, x2, nSteps, derivs);
       //      fprintf(spkTimesFp, "%d %d\n", 11, 11); // delimiters for thetas 
@@ -147,6 +152,7 @@ void main(int argc, char **argv) {
         fprintf(vmFP, "\n");
     }
     printf("\nnSteps = %d \n", nSteps);
+    printf("nSpks = %d\n", nTotSpks);
     fflush(vmFP);
     fclose(vmFP);
     fclose(outVars);

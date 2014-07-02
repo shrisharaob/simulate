@@ -6,7 +6,7 @@ fn="spkTimes_theta"
 extn=".csv"
 make
 
-for n in {18..360..36}
+for n in {36..360..36}
 do
     echo $n
     ./mysolver $n
