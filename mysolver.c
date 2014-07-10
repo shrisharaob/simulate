@@ -11,15 +11,12 @@
 #include "auxFuncProtos.h"
 #include "optmNwEq.c"
 
-
-//#include "nwEq2.h"
-//void (*derive)(double, double *, double *);
 // compile as - gcc nrutil.c rk4.c auxFunctions.c rkdumb.c -g mysolver.c -lm -o mysolver
 // gcc ran1.c gasdev.c nrutil.c rk4.c auxFunctions.c rkdumb.c -g mysolver.c -lm -o mysolver
 // -g for gdb
 //-lm reqd. for linking math.h
-// 
-// GLOBAL VARS
+
+/* GLOBAL VARS */
 extern double **y, *xx, *input_cur, *IF_SPK, *expSum, *iSynap, 
   *gaussNoiseE, *gaussNoise, theta, contrast, *gFF, *iFF, *rTotal, muE, muI;
 extern FILE *spkTimesF, *outVars;
@@ -29,13 +26,21 @@ void main(int argc, char **argv) {
   int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 15000.0, // simulation end time
+      x2 = 10000.0, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     int kNeuron, clmNo, loopIdx=0;
     long idem;
     FILE *vmFP1;
     clock_t begin, end;
+    char fileSuffix[128];
+    //***** PARSE INPUT ARGS *****//
+    if(argc > 1) {
+      theta = atof(argv[1]);
+    }
+    else {
+      theta = 0;
+    }
     // ***** INITIALIZATION *****//
     dt = DT;
     nSteps = (int)((x2 - x1) / dt);
@@ -69,17 +74,19 @@ void main(int argc, char **argv) {
     randuDelta = vector(1, N_Neurons);
     randuPhi = matrix(1, N_Neurons, 1, 3);
     printf("mem allocation done\n");
-
     printf("NE = %d\n", NE);
     printf("NI = %d\n", NI);
     printf("K = %d\n", (int)K);
+    printf("dt = %f, tStop = %f, nSteps = %d\n", DT, x2, nSteps);  
     printf("computing...\n");
     strcpy(filebase, FILEBASE);
     vmFP = fopen(strcat(filebase, "vm.csv"), "w");
-    //    strcpy(filebase, FILEBASE);
-    //    vmFP1 = fopen(strcat(filebase, "vm1"), "w");
     strcpy(filebase, FILEBASE);
-    spkTimesFp = fopen(strcat(filebase, "spkTimes.csv"),"w");
+    strcat(filebase, "spkTimes_theta");
+    sprintf(fileSuffix, "%03.0f", theta);
+    strcat(filebase, fileSuffix);
+    spkTimesFp = fopen(strcat(filebase, ".csv"),"w");
+    printf("\n%s\n", filebase);
     strcpy(filebase, FILEBASE);
     outVars = fopen(strcat(filebase, "outvars.csv"), "w");
     strcpy(filebase, FILEBASE);
@@ -99,7 +106,7 @@ void main(int argc, char **argv) {
     GenSparseConMat(sConMat);
     //    GenSparseConMatDisp(sConMat);
     AuxRffTotal(); /* auxillary function, generates random variables for the 
-                      simulation run; which are used approximating FF input */
+                      simulation run; which are used for approximating FF input */
     if(thetaStep > 0) {
       thetaVec = vector(1, 360 / thetaStep);
       LinSpace(0, 360, thetaStep, thetaVec, &nThetaSteps); 
@@ -110,53 +117,46 @@ void main(int argc, char **argv) {
       nThetaSteps = 1;
     }
 
-    //***** PARSE INPUT ARGS *****//
-    if(argc > 1) {
-      theta = atof(argv[1]);
-    }
-    else {
-      theta = 0;
-    }
-    printf("theta = %f\n", theta);
-    contrast = 0.25;
+    contrast = 0.0;
     muE = 0.1;
     muI = 0.1;
-    //***** INITIALIZE STATE VARIABLES *****//
+    printf("theta = %f contrast = %f\n", theta, contrast);
+    /* INITIALIZE STATE VARIABLES */
+    vmFP1 = fopen("vmstart.csv", "w");
     for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
       clmNo =  (kNeuron - 1) * N_StateVars;
       idem = -1 * rand();
       vstart[1 + clmNo] = -70 +  40 * ran1(&idem); // Vm(0) ~ U(-70, -30)
+      fprintf(vmFP1, "%f\n", vstart[1+clmNo]);
       vstart[2 + clmNo] = 0.3176;
       vstart[3 + clmNo] = 0.1;
       vstart[4 + clmNo] = 0.5961;
     }
-    //***** INTEGRATE *****//
+    /* INTEGRATE */
     begin = clock();
     for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
       //      theta = thetaVec[loopIdx];
-      //      fprintf(spkTimesFp, "%f %f\n", theta, theta);
       rkdumb(vstart, N_StateVars * N_Neurons, x1, x2, nSteps, derivs);
-      //      fprintf(spkTimesFp, "%d %d\n", 11, 11); // delimiters for thetas 
-      //      fprintf(spkTimesFp, "%d %d\n", 73, 73);
     }
     printf("Done! \n");
     end = clock();
-    printf("\n time spent integrating : %f", (double)(end - begin) / CLOCKS_PER_SEC);
+    printf("\n time spent integrating : %.2fs", (double)(end - begin) / CLOCKS_PER_SEC);
     fclose(spkTimesFp);
     /* SAVE TO DISK */
-    for(loopIdx = 1; loopIdx <= STORE_LAST_N_STEPS; ++loopIdx) {
+    if(theta == 18.0) {
+      for(loopIdx = 1; loopIdx <= STORE_LAST_N_STEPS; ++loopIdx) {
         fprintf(vmFP, "%f ", xx[loopIdx]);
         for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
           fprintf(vmFP, "%f ", y[kNeuron][loopIdx]);
         }
         fprintf(vmFP, "\n");
+      }
     }
     printf("\nnSteps = %d \n", nSteps);
     printf("nSpks = %d\n", nTotSpks);
     fflush(vmFP);
     fclose(vmFP);
     fclose(outVars);
-
     fclose(isynapFP);
     fclose(rTotalFP);
     fclose(gbgrndFP);

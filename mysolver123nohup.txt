@@ -1,0 +1,9 @@
+mem allocation done
+NE = 20
+NI = 10
+K = 1
+dt = 0.050000, tStop = 10000.000000, nSteps = 200000
+computing...
+
+/homecentral/srao/Documents/cnrs/simResults/spkTimes_theta123.csv
+generating conMat...

@@ -27,10 +27,11 @@ double dt, *thetaVec;
 int nTotSpks;
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 3000
-#define NE 0
+#define NI 5000
+#define NE 10000
 #define N_Neurons (NE + NI)
-#define K 300.0 // use decimal point to assign, keeps it double 
+#define K 1000.0 // use decimal point to assign, keeps it double 
+
 
 // params patch
 #define L 1.0
@@ -42,7 +43,7 @@ int nTotSpks;
 #define V_E 0.0
 #define V_I -80.0
 #define G_EE 0.15
-#define G_EI 2.0
+#define G_EI 1.00 /* this was = 2*/
 #define G_IE 0.45
 #define G_II 3.0
 #define EXP_SUM exp(-1 * DT / TAU_SYNAP)
@@ -51,19 +52,19 @@ int nTotSpks;
 double *tempCurE, *tempCurI;
 
 // backgrund input
-#define RB_E 3.0
-#define RB_I 3.0
+#define RB_E 2.0
+#define RB_I 2.0
 double *iBg, *gaussNoiseE, *gaussNoiseI;
-#define G_EB (0.3 /sqrt(K))
-#define G_IB (0.4 /sqrt(K))
+#define G_EB (0.3 / sqrt(K))
+#define G_IB (0.4 / sqrt(K))
 
 double *input_cur, *IF_SPK, **conMat;
 double *iSynap, *expSum, *gEI_E, *gEI_I;
 FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 // ff input
-#define CFF 0.1
-#define KFF 200.0
+#define CFF 0.01
+#define KFF 100.0
 #define GE_FF 0.95
 #define GI_FF 1.26
 #define R0 2.0

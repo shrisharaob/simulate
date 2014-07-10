@@ -1,3 +1,5 @@
+#ifndef _VARPROTOS_
+#define _VARPROTOS_
 extern double dt, *thetaVec;// integration time step 
 
 extern double  *randnXiA, // norm rand number
@@ -22,3 +24,5 @@ extern double contrast, *gFF, *iFF;
 extern sparseMat *sConMat[];
 
 extern int nTotSpks;
+
+#endif

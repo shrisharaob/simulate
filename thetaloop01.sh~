@@ -1,15 +1,16 @@
 #!/bin/bash
-#set -eu # makes your program exit on error or unbound variable
+set -eu # makes your program exit on error or unbound variable
 fldr="/homecentral/srao/Documents/cnrs/simResults/"
 spkfile="spkTimes.csv"
 fn="spkTimes_theta" 
 extn=".csv"
-#make
+make
 
-for n in {18..72..36}
+for n in {18..360..36}
 do
     echo $n
     ./mysolver $n
+    mv $fldr$spkfile $fldr$fn$n$extn
 done
 
 

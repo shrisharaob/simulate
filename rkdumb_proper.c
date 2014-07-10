@@ -15,7 +15,7 @@ extern FILE *spkTimesFp, *vmFP;
 double **y, *xx;
 void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*derivs)(double, double [], double [])) { 
   void rk4(double y[], double dydx[], int n,  double x, double h, double yout[], void (*derivs)(double, double [], double []));
-  int i, k, mNeuron, clmNo, lastNStepsToStore;
+  int i, k, mNeuron, clmNo, lastNStepsToStore, logVar;
   double x, h, *vm, *vmOld;
   double *v, *vout, *dv;
   v = vector(1,nvar); /*nvar = N_Neurons * N_StateVars  */
@@ -31,7 +31,11 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
   /* TIME LOOP */
   x = x1;
   h = (x2 - x1) / nstep;
+  logVar = nstep / 10;
   for (k = 1; k <= nstep; k++) {
+    if(k % logVar == 0) {
+      printf("%2.1f %%  \n", (double)k * 100.0  / (double)nstep);
+    } 
     for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
         clmNo = (mNeuron - 1) * N_StateVars;
         vmOld[mNeuron] = v[1 + clmNo];   
@@ -62,9 +66,11 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
             nTotSpks += 1;
           }
         }
-        // fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
-      }
-      //        fprintf(isynapFP, "\n");
+        if(mNeuron >= 5 && mNeuron < 25) {
+          fprintf(isynapFP, "%f %f ", tempCurE[mNeuron], tempCurI[mNeuron]);
+        }
+      } 
+      fprintf(isynapFP, "\n");
     }
     /* /\* else { *\/ */
     /* /\*   for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) { *\/ */
@@ -84,8 +90,8 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
     // FF input current
     RffTotal(theta, x);
     Gff(theta, x);
-    IFF(vm);
-
+    IFF(vm); 
+    
   }
   free_vector(v,1,nvar);
   free_vector(vout,1,nvar);
