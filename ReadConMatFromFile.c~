@@ -1,0 +1,8 @@
+#include <stdio.h>
+
+void ReadConMatFromFile(char* filename, int* conmat[], int nNeurons) {
+  FILE* fp;
+  int i;
+  fp = fopen(filename, "r");
+  for(i = 1; i <= nNeurons; ++i) {
+      for(j = 1; j <= nNeurons; ++j) {

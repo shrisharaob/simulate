@@ -48,14 +48,22 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
     for (i=1;i<=nvar;i++) {
       v[i]=vout[i];
     }
-    // detect spike - zero crossing
-    if(k>3) {
-      for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
+      
+    for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
         clmNo = (mNeuron - 1) * N_StateVars;
         if(k > lastNStepsToStore) {
           y[mNeuron][k - lastNStepsToStore] = v[1+clmNo];
           xx[k - lastNStepsToStore] = x;
         }
+      }
+    // detect spike - zero crossing
+    if(k > 2) {
+      for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
+        clmNo = (mNeuron - 1) * N_StateVars;
+        /*        if(k > lastNStepsToStore) {
+          y[mNeuron][k - lastNStepsToStore] = v[1+clmNo];
+          xx[k - lastNStepsToStore] = x;
+          }*/
         IF_SPK[mNeuron] = 0;
         vm[mNeuron] = v[1 + clmNo]; 
         //        printf("%f \n", vm[mNeuron]);
@@ -86,13 +94,12 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
     // compute synaptic current
     Isynap1(vm);
     //compute background current
-    IBackGrnd(vm);
+    /*    IBackGrnd(vm);
     // FF input current
     RffTotal(theta, x);
     Gff(theta, x);
-    IFF(vm); 
-    
-  }
+    IFF(vm); */
+}
   free_vector(v,1,nvar);
   free_vector(vout,1,nvar);
   free_vector(dv,1,nvar);

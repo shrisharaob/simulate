@@ -400,3 +400,38 @@ void GenSparseConMatDisp(sparseMat *sPtr[]) {
     printf("\n");
   }
 }
+
+/* read connection matrix into global variable conMat from text file */
+void ReadConMatFromFile(const char* filename, int nNeurons) {
+  FILE* fp;
+  int i, j;
+  char buffer[nNeurons * nNeurons];
+  size_t result;
+  
+  /*  long fileSize;*/
+  fp = fopen(filename, "r");
+
+  /*  fseek(fp, 0, SEEK_END);
+  fileSize = ftell(fp);
+  rewind(fp);
+  buffer = (char *)malloc(sizeof(char) * fileSize);
+  if(buffer == NULL) {
+    fputs("buffer not allocated", stderr);
+    exit(1);
+    }
+  */
+  if(fp != NULL) {
+    result = fread(buffer, sizeof(int), nNeurons * nNeurons, fp);
+    for(i = 0; i < nNeurons; ++i) {
+      for(j = 0; j < nNeurons; ++j) {
+        conMat[i+1][j+1] = (double)(buffer[i + j * nNeurons] - '0'); // convert ascii decimal character representation to integer 
+        /*        printf("int %d\n", (buffer[i + j * nNeurons]) - '0');
+                  printf("%f\n" , conMat[i+1][j+1]);*/
+      }
+    }
+    fclose(fp);
+  }
+  else {
+    printf("\n%s does not exist\n", filename);
+  }
+}

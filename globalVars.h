@@ -6,7 +6,7 @@
 #define PI 3.14159265359
 char filebase[256];
 
-#define DT 0.05 // ms
+#define DT 0.025 // ms
 #define SQRT_DT sqrt(DT)
 
 #define STORE_LAST_T_MILLISEC 100.0
@@ -19,7 +19,7 @@ char filebase[256];
 #define G_Na 100.0 // mS/cm^2
 #define G_K 40.0
 #define G_L_E 0.05 // excitatory
-#define G_L_I 0.1 // inhibitory
+#define G_L_I 0.1 /*0.1*/ // inhibitory
 #define G_adapt 0.5
 #define Tau_adapt 60.0 // in ms
 
@@ -27,10 +27,10 @@ double dt, *thetaVec;
 int nTotSpks;
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 5000
-#define NE 10000
+#define NI 2
+#define NE 1
 #define N_Neurons (NE + NI)
-#define K 1000.0 // use decimal point to assign, keeps it double 
+#define K 1.0 // use decimal point to assign, keeps it double 
 
 
 // params patch
@@ -41,11 +41,11 @@ int nTotSpks;
 #define TAU_SYNAP 3.0  // ms
 #define INV_TAU_SYNAP (1 / TAU_SYNAP)
 #define V_E 0.0
-#define V_I -80.0
-#define G_EE 0.15
-#define G_EI 1.00 /* this was = 2*/
-#define G_IE 0.45
-#define G_II 3.0
+#define V_I -80.0 
+#define G_EE 0.0 //0.15
+#define G_EI 2.00
+#define G_IE 0.45 //0.45
+#define G_II 3.0 
 #define EXP_SUM exp(-1 * DT / TAU_SYNAP)
 
 // recurrent input 
@@ -67,13 +67,13 @@ FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 #define KFF 100.0
 #define GE_FF 0.95
 #define GI_FF 1.26
-#define R0 2.0
-#define R1 20.0
+#define R0 0.002
+#define R1 0.020
 #define INP_FREQ (4 * PI) // 
 #define ETA_E 0.4
 #define ETA_I 0.4
 #define MU_E 0.1
-#define MU_I 0.1
+#define MU_I 0.10
 #define GFF_E 0.95
 #define GFF_I 1.26
 

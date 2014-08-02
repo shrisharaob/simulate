@@ -25,6 +25,9 @@
 *.x86_64
 *.hexfindPeaks
 
+# Data files
+*.csv
+
 findPeaks
 fndpks
 mysolver

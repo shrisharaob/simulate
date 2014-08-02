@@ -26,7 +26,7 @@ void main(int argc, char **argv) {
   int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 10000.0, // simulation end time
+      x2 = 100.0, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     int kNeuron, clmNo, loopIdx=0;
@@ -103,8 +103,10 @@ void main(int argc, char **argv) {
     genConMat(); // Generate conection matrix
     printf("done\n");
     //    GenConMat02();
+    /*    conMat[1][1] = 0; conMat[1][2] = 0; conMat[1][3] = 0;conMat[2][1] = 0; conMat[2][2] = 0; */
+    ReadConMatFromFile("conVec.csv", N_Neurons);
     GenSparseConMat(sConMat);
-    //    GenSparseConMatDisp(sConMat);
+    GenSparseConMatDisp(sConMat);
     AuxRffTotal(); /* auxillary function, generates random variables for the 
                       simulation run; which are used for approximating FF input */
     if(thetaStep > 0) {
@@ -116,18 +118,16 @@ void main(int argc, char **argv) {
       thetaVec[1] = 0;
       nThetaSteps = 1;
     }
-
     contrast = 0.0;
     muE = 0.1;
     muI = 0.1;
     printf("theta = %f contrast = %f\n", theta, contrast);
     /* INITIALIZE STATE VARIABLES */
-    vmFP1 = fopen("vmstart.csv", "w");
+    /*    vmFP1 = fopen("vmstart.csv", "w");*/
     for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
       clmNo =  (kNeuron - 1) * N_StateVars;
       idem = -1 * rand();
-      vstart[1 + clmNo] = -70 +  40 * ran1(&idem); // Vm(0) ~ U(-70, -30)
-      fprintf(vmFP1, "%f\n", vstart[1+clmNo]);
+      vstart[1 + clmNo] = -60.0; //-70 +  40 * ran1(&idem); // Vm(0) ~ U(-70, -30)
       vstart[2 + clmNo] = 0.3176;
       vstart[3 + clmNo] = 0.1;
       vstart[4 + clmNo] = 0.5961;
@@ -143,15 +143,15 @@ void main(int argc, char **argv) {
     printf("\n time spent integrating : %.2fs", (double)(end - begin) / CLOCKS_PER_SEC);
     fclose(spkTimesFp);
     /* SAVE TO DISK */
-    if(theta == 18.0) {
-      for(loopIdx = 1; loopIdx <= STORE_LAST_N_STEPS; ++loopIdx) {
-        fprintf(vmFP, "%f ", xx[loopIdx]);
-        for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
-          fprintf(vmFP, "%f ", y[kNeuron][loopIdx]);
-        }
-        fprintf(vmFP, "\n");
+    //    if(theta == 18.0) {
+    for(loopIdx = 1; loopIdx <= STORE_LAST_N_STEPS; ++loopIdx) {
+      fprintf(vmFP, "%f ", xx[loopIdx]);
+      for(kNeuron = 1; kNeuron <= N_Neurons; ++kNeuron) {
+        fprintf(vmFP, "%f ", y[kNeuron][loopIdx]);
       }
+      fprintf(vmFP, "\n");
     }
+    //}
     printf("\nnSteps = %d \n", nSteps);
     printf("nSpks = %d\n", nTotSpks);
     fflush(vmFP);

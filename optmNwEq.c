@@ -78,17 +78,21 @@ extern double dt, *iSynap;
 void derivs(double t, double stateVar[], double dydx[]) {
   int tIdx, kNeuron, colNo;
   double cur = 0.0, iffScale, iBgScale;
-  iBgScale = 0.001;
-  iffScale = 0.001;
+  iBgScale = 0.0;
+  iffScale = 0.0;
+  //  cur = 0.1 * sqrt(K);
+  //cur = 2.5;
+  
   tIdx = (int)(t / dt) + 1;
   for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
     colNo = (kNeuron - 1) * N_StateVars;
+    if(kNeuron == 2 & t >= 50 & t <= 60){ cur = 2.8;} else {cur = 0.0;}
     if (kNeuron <= NE) { 
-      if(kNeuron >= 5 && kNeuron < 25 ) { /*Na 2+ current blocked */
+      if(kNeuron == 0 && kNeuron == -25 ) { /*Na 2+ current blocked */
         dydx[1 + colNo] =  1/Cm * (cur
                                  - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K)
                                  - G_L_E * (stateVar[1 + colNo] - E_L)
-                                 - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBgScale* iBg[kNeuron] +  iffScale * iFF[kNeuron]);// iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
+                                 - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBgScale* iBg[kNeuron] +  iffScale * iFF[kNeuron]);
       }
       else {
         dydx[1 + colNo] =  1/Cm * (cur 

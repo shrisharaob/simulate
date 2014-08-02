@@ -11,3 +11,4 @@ void LinSpace(double startVal, double stopVal, double stepSize, double *outVecto
 void GenSparseConMat(sparseMat *sPtr[]);
 void FreeSparseMat(sparseMat *sPtr[]);
 void GenSparseConMatDisp(sparseMat *sPtr[]);
+void ReadConMatFromFile(const char* filename, int nNeurons);
