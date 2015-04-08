@@ -140,7 +140,7 @@ void genConMat() {
     for(clmId = 1; clmId <= N_Neurons; ++clmId) {
 //      srand(time(NULL));
       idum = -1 * rand();
-      ranttt = ran1(&idum);
+      ranttt = gsl_rng_uniform(gslRngState);
       //    printf("%f %ld \n", ranttt, idum);
       if(ranttt <=  zE[clmId] * conProb[rowId][clmId]) {
         conMat[rowId][clmId] = 1;
@@ -152,9 +152,7 @@ void genConMat() {
     srand(time(NULL));  
 for(rowId = 1 + NE; rowId <= N_Neurons; ++rowId) {
   for(clmId = 1; clmId <= N_Neurons; ++clmId) {
-    idum = -1 * rand();
-    //  printf("%ld \n", idum);
-    if(ran1(&idum) <=  zI[clmId] * conProb[rowId][clmId]) {
+    if(gsl_rng_uniform(gslRngState) <=  zI[clmId] * conProb[rowId][clmId]) {
       conMat[rowId][clmId] = 1;
     }
     //    fprintf(conMatFP,"%f ", conMat[rowId][clmId]);
@@ -168,34 +166,37 @@ for(rowId = 1 + NE; rowId <= N_Neurons; ++rowId) {
 void IBackGrnd(double *vm) {
   double D = 1;
   double gE, gI;
-  long idum;
+  long idum = -1 * time(NULL);
   int kNeuron;
-  double tmp1, tmp2, tmp3, tmp4, tmp5, tmp6;
+  /*  double tmp1, tmp2, tmp3, tmp4, tmp5, tmp6;
   tmp1 = 1 - DT * INV_TAU_SYNAP;
-  tmp2 = DT * SQRT_DT * INV_TAU_SYNAP;
+  tmp2 = SQRT_DT * INV_TAU_SYNAP;
   tmp3 = G_EB * K * RB_E ;
   tmp4 = G_IB * K * RB_I ;
   tmp5 = G_EB * K * sqrt(RB_E / K);
   tmp6 = G_IB * K * sqrt(RB_I / K);
-  
+*/  
   for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
-    idum = -1 * rand();
-    //    gaussNoiseE[kNeuron]  = gaussNoiseE[kNeuron] + DT * ( D * gasdev(&idum) / SQRT_DT -  gaussNoiseE[kNeuron] * INV_TAU_SYNAP);
-    gaussNoiseE[kNeuron] = gaussNoiseE[kNeuron] * tmp1 + tmp2 * gasdev(&idum);
-    //gE = G_EB * K * (RB_E + sqrt(RB_E / K) * gaussNoiseE[kNeuron]);
-    gE = tmp3 + tmp5 * gaussNoiseE[kNeuron];
+    gaussNoiseE[kNeuron] = gaussNoiseE[kNeuron] * (1 - DT * INV_TAU_SYNAP) + SQRT_DT  * INV_TAU_SYNAP * gasdev(&idum);
+    gaussNoiseE[kNeuron] = 0;
+    gE = G_EB * K * (RB_E + sqrt(RB_E / K) * gaussNoiseE[kNeuron]);
     iBg[kNeuron] = -1 * gE * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
-    //    fprintf(gbgrndFP, "%f ", gE);
+
   }
   for(kNeuron = 1; kNeuron <= NI; ++kNeuron) {
-    idum = -1 * rand();
     /*    gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] + DT * ( D * gasdev(&idum) / SQRT_DT -  gaussNoiseI[kNeuron] * INV_TAU_SYNAP);*/
-    gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] * tmp1 + tmp2 * gasdev(&idum);
+    /*    gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] * tmp1 + tmp2 * gasdev(&idum);*
+    gaussNoiseI[kNeuron] = 0;
     gI = tmp4 + tmp6 * gaussNoiseI[kNeuron];
-    iBg[kNeuron + NE] = -1 * gI * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
+    iBg[kNeuron + NE] = -1 * gI * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));*/
     //    fprintf(gbgrndFP,"%f ", gI);
+
+    gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] * (1 - DT * INV_TAU_SYNAP) + SQRT_DT  * INV_TAU_SYNAP * gasdev(&idum);
+    gaussNoiseI[kNeuron] = 0;
+    gI = G_IB * K * (RB_I + sqrt(RB_I / K) * gaussNoiseI[kNeuron]);
+    iBg[kNeuron] = -1 * gI * (RHO * (vm[kNeuron + NE] - V_E) + (1 - RHO) * (E_L - V_E));
   }
-  fprintf(gbgrndFP,"\n");
+  //  fprintf(gbgrndFP,"\n");
 }
 
 // ff input 
@@ -207,14 +208,13 @@ void AuxRffTotal() {
     idem1 = -1 * rand();
     idem2 = -1 * rand();
     randnXiA[lNeuron] =  gasdev(&idem1);
-    randuDelta[lNeuron] = PI * ran1(&idem2);
+    randuDelta[lNeuron] = PI * gsl_rng_uniform(gslRngState);
     for(i = 1; i <= 4; ++i) {
-      idem3 = -1 * rand();
-      randwZiA[lNeuron][i] = 1.4142135 * sqrt(-1 * log(ran1(&idem3)));
+      randwZiA[lNeuron][i] = 1.4142135 * sqrt(-1 * log(gsl_rng_uniform(gslRngState)));
     }
     for(i = 1; i <= 3; ++i) {
       idem4 = -1 * rand();
-      randuPhi[lNeuron][i] = 2 * PI * ran1(&idem4);
+      randuPhi[lNeuron][i] = 2 * PI * gsl_rng_uniform(gslRngState);
     }
   }
 }
@@ -252,40 +252,30 @@ void RffTotal(double theta, double t) {
 void Gff(double theta, double t) {
   int kNeuron;
   double tempGasdev;
-  long idem;
+  long idem = -1;
   if(t > DT) {
     for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
-      idem = -1 * rand();
-      ItgrlOld[kNeuron] = Itgrl[kNeuron];
+      /*      ItgrlOld[kNeuron] = Itgrl[kNeuron];*/
       tempGasdev = gasdev(&idem);
-       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * tempGasdev; // / sqrt(dt)
-      //      Itgrl[kNeuron] = cos(2 * PI * t) + 10 + sqrt(cos(2 * PI * t) + 10) * gasdev(&idem);
-      //gFF[kNeuron] += DT * (- 0.5*(1/1000) * ( (1/K) * gFF[kNeuron] - Itgrl[kNeuron]));
-       //       Itgrl[kNeuron] = 1;
-     gFF[kNeuron] += DT * (-1 * GFF_E * sqrt(1/K) * INV_TAU_SYNAP * ( INV_TAU_SYNAP * gFF[kNeuron] - Itgrl[kNeuron]));
+      Itgrl[kNeuron] = Itgrl[kNeuron] * (1 - DT * INV_TAU_SYNAP) + (SQRT_DT * INV_TAU_SYNAP) * tempGasdev;
+      gFF[kNeuron] = GFF_E * (rTotal[kNeuron] + sqrt(rTotal[kNeuron] * Itgrl[kNeuron]));
       //      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], Itgrl[kNeuron]);
     }
     for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
-      idem = -1 * rand();
-      ItgrlOld[kNeuron] = Itgrl[kNeuron];
-      Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem); // / SQRT_DT;
-      //      Itgrl[kNeuron] = 1;
-      gFF[kNeuron] += DT * (-1 * GFF_I * sqrt(1/K) * INV_TAU_SYNAP * ( INV_TAU_SYNAP * gFF[kNeuron] - Itgrl[kNeuron]));
-      //      fprintf(rTotalFP, "%f %f ", gFF[kNeuron], rTotal[kNeuron]);
+      Itgrl[kNeuron] = Itgrl[kNeuron] * (1 - DT * INV_TAU_SYNAP) + (SQRT_DT * INV_TAU_SYNAP) * tempGasdev;
+      gFF[kNeuron] = GFF_I * (rTotal[kNeuron] + sqrt(rTotal[kNeuron] * Itgrl[kNeuron]));
     }
-    //    fprintf(rTotalFP, "\n");
   }
   else {
     for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
-       idem = -1 * rand();
-       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem); // / SQRT_DT;
+       Itgrl[kNeuron] = 0.0;
      }  
      for(kNeuron = NE + 1; kNeuron <= N_Neurons; ++kNeuron) {
-       idem = -1 * rand();
-       Itgrl[kNeuron] = rTotal[kNeuron] + sqrt(rTotal[kNeuron]) * gasdev(&idem); // / SQRT_DT;
+       Itgrl[kNeuron] = 0.0;
      }
   }
 }
+
 void IFF(double *vm) {
   int mNeuron;
   for (mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
@@ -294,35 +284,71 @@ void IFF(double *vm) {
 }
 
 // minimal conmat for balance
-void GenConMat02() {
+void GenConMat02(int IF_GEN) {
   int i, j;
-  long idem;
   FILE *conMatFP;
-  conMatFP = fopen(strcat(filebase,"conMat.csv"), "w");
-  for(i = 1; i <= NE + NI; ++i) {
-    for(j = 1; j <= NE + NI; ++j) {
-      if(i <= NE & j <= NE) { // E --> E
-        conMat[i][j] = 0;
-      } 
-      if (i <= NE & j > NE) { // E --> I
-        conMat[i][j] = 0;
-      } 
-      if (i > NE & j <= NE) { // I --> E
-        conMat[i][j] = 1;
-      } 
-      if (i > NE & j > NE) { // I --> I
-        idem = -1 * rand();
-        if((K / NI) >= ran1(&idem)) {
-          conMat[i][j] = 1;
+
+  if(IF_GEN) {
+    conMatFP = fopen(strcat(filebase,"conMat.dat"), "wb");
+    fprintf(stdout, "generating conMat..."); fflush(stdout);
+    for(i = 1; i <= NE + NI; ++i) {
+      for(j = 1; j <= NE + NI; ++j) {
+        if(i <= NE & j <= NE & NE > 0) { // E --> E
+          if((K /(double)NE) >= gsl_rng_uniform(gslRngState)) {
+            conMat[i][j] = 1;
+          }
+        } 
+        if (i <= NE & j > NE & NE > 0) { // E --> I
+          if((K / (double)NE) >= gsl_rng_uniform(gslRngState)) {
+            conMat[i][j] = 1;
+          }
+        } 
+        if (i > NE & j <= NE & NI > 0) { // I --> E
+          if((K / (double)NI) >= gsl_rng_uniform(gslRngState)) {
+            conMat[i][j] = 1;
+          }
+        } 
+        if (i > NE & j > NE & NI > 0) { // I --> I
+          if((K / (double)NI) >= gsl_rng_uniform(gslRngState)) {
+            conMat[i][j] = 1;
+          }
         }
+        /*      fprintf(conMatFP,"%f ", conMat[i][j]);*/
       }
-      fprintf(conMatFP,"%f ", conMat[i][j]);
+      /*    fprintf(conMatFP, "\n");*/
     }
-    fprintf(conMatFP, "\n");
-    //    printf("%f %f %f %f", conMat[i][1], conMat[i][2], conMat[i][3], conMat[i][4]);
+    fprintf(stdout, "done\n");
+    fprintf(stdout, "writing to file..."); fflush(stdout);
+    fwrite(&conMat[1][1], sizeof(double), N_Neurons * N_Neurons, conMatFP);
   }
-  //  printf("\n");
+  else {
+    conMatFP = fopen(strcat(filebase,"conMat.dat"), "rb");
+    fprintf(stdout, "reading file... "); fflush(stdout);
+    fread(&conMat[1][1], sizeof(double), N_Neurons * N_Neurons, conMatFP);
+  }
+  fprintf(stdout, "done\n");
   fclose(conMatFP);
+  
+  FILE  *fp01 = fopen("countI.csv", "w"),  *fp02 = fopen("countE.csv", "w");
+  printf("\nN = %d\n", N_NEURONS);
+  int countE = 0, countI = 0;
+  for(i = 1; i <= N_NEURONS; ++i) {
+    countI = 0;
+    countE = 0;
+    for(j = 1; j <= N_NEURONS; ++j) {
+      if(j < NE) {
+        countE += conMat[i][j];
+      }
+      else {
+        countI += conMat[i][j];
+      }
+    }
+    fprintf(fp02, "%d\n", countE); 
+    fprintf(fp01, "%d\n", countI);
+  }
+  fprintf(stdout, " done\n");
+  fclose(fp02);   
+  fclose(fp01);
 }
 
 void GenSparseConMat(sparseMat *sPtr[]) {
@@ -368,6 +394,23 @@ void FreeSparseMat(sparseMat *sPtr[]) {
       free(sPtr[kNeuron]);
   }
 }
+/*
+void ReadSparseConMat() {
+  FILE *fpSparseConVec, *fpIdxVec, *fpNpostNeurons;
+  fpSparseConVec = fopen("sparseConVec.dat", "rb");
+  fpIdxVec = fopen("idxVec.dat", "rb");
+  fpNpostNeurons = fopen("nPostNeurons.dat", "rb");
+  fread(sparseConVec, sizeof(*sparseConVec), N_NEURONS * (2 * K + 1), fpSparseConVec);
+  fread(idxVec, sizeof(*idxVec), N_NEURONS, fpIdxVec);
+  fread(nPostNeurons, sizeof(*nPostNeurons), N_NEURONS, fpNpostNeurons);
+  fclose(fpSparseConVec);
+  fclose(fpIdxVec);
+  fclose(fpNpostNeurons);
+
+  
+
+}
+*/
 void LinSpace(double startVal, double stopVal, double stepSize, double *outVector, int* nSteps)  {
   // generate equally spaced vector
   int loopId = 0;

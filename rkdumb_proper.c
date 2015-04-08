@@ -18,6 +18,8 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
   int i, k, mNeuron, clmNo, lastNStepsToStore, logVar;
   double x, h, *vm, *vmOld;
   double *v, *vout, *dv;
+  int spksE = 0, spksI = 0;
+  FILE *fpIFR = fopen("InstFR.csv", "w");
   v = vector(1,nvar); /*nvar = N_Neurons * N_StateVars  */
   vout = vector(1,nvar);
   dv = vector(1,nvar);
@@ -41,6 +43,14 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
         vmOld[mNeuron] = v[1 + clmNo];   
       }
     //    printf("%f ", vmOld[1]);
+    for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
+        clmNo = (mNeuron - 1) * N_StateVars;
+        if(k >= lastNStepsToStore) {
+          y[mNeuron][k - lastNStepsToStore] = v[1+clmNo];
+          xx[k - lastNStepsToStore] = x;
+        }
+    }
+
     (*derivs)(x,v,dv);
     rk4(v,dv,nvar,x,h,vout,derivs);
     if ((double)(x+h) == x) nrerror("Step size too small in routine rkdumb");
@@ -49,13 +59,6 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
       v[i]=vout[i];
     }
       
-    for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
-        clmNo = (mNeuron - 1) * N_StateVars;
-        if(k > lastNStepsToStore) {
-          y[mNeuron][k - lastNStepsToStore] = v[1+clmNo];
-          xx[k - lastNStepsToStore] = x;
-        }
-      }
     // detect spike - zero crossing
     if(k > 2) {
       for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
@@ -94,16 +97,33 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
     // compute synaptic current
     Isynap1(vm);
     //compute background current
-    /*    IBackGrnd(vm);
+    IBackGrnd(vm);
     // FF input current
     RffTotal(theta, x);
     Gff(theta, x);
-    IFF(vm); */
-}
+    IFF(vm); 
+
+    for(i = 1; i <= N_NEURONS; ++i) {
+      if(IF_SPK[i]) {
+        if(i < NE) {
+          spksE += 1;
+        }
+        else{
+          spksI += 1;
+        }
+      }
+    }
+    if(!(k%1000)) {
+      fprintf(fpIFR, "%f %f \n", ((double)spksE) / (DT * (double)NE), ((double)spksI) / (0.05 * (double)NI));fflush(fpIFR);
+      fprintf(stdout, "%f %f \n", ((double)spksE) / (DT * (double)NE), ((double)spksI) / (0.05 * (double)NI));
+      spksE = 0; 
+      spksI = 0;
+    }
+  }
+  fclose(fpIFR);
   free_vector(v,1,nvar);
   free_vector(vout,1,nvar);
   free_vector(dv,1,nvar);
   free_vector(vm, 1, N_Neurons);
 }
 #undef NRANSI
-/* (C) Copr. 1986-92 Numerical Recipes Software 9,)5. */

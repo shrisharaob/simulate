@@ -1,3 +1,4 @@
+
 // synaptic input optimized network equations
 #include <stdio.h>
 #include <math.h>
@@ -13,8 +14,8 @@ double beta_h(double vm);
 
 double alpha_n(double vm) {
   double out;
-  if(vm != -34) { 
-    out = 0.1 * (vm + 34) / (1 - exp(-0.1 * (vm + 34)));
+  if(vm != -34.0) { 
+    out = 0.1 * (vm + 34.0) / (1 - exp(-0.1 * (vm + 34.0)));
   }
   else {
     out = 0.1;
@@ -24,36 +25,36 @@ double alpha_n(double vm) {
 
 double beta_n(double vm) {
   double out;
-  out = 1.25 * exp(- (vm + 44) / 80);
+  out = 1.25 * exp(- (vm + 44.0) / 80.0);
   return out;
 }
 
 double alpha_m(double vm) {
   double out;
-  if(vm != -30) { 
-    out = 0.1 * (vm + 30) / (1 - exp(-0.1 * (vm + 30)));
+  if(vm != -30.0) { 
+    out = 0.1 * (vm + 30.0) / (1 - exp(-0.1 * (vm + 30.0)));
   }
   else {
-    out = 1;
+    out = 1.0;
   }
   return out;
 }
 
 double beta_m(double vm) {
   double out;
-  out = 4 * exp(-(vm + 55) / 18);
+  out = 4.0 * exp(-(vm + 55.0) / 18.0);
   return out;
 }
 
 double alpha_h(double vm) {
   double out;
-  out = 0.7 * exp(- (vm + 44) / 20);
+  out = 0.7 * exp(- (vm + 44.0) / 20.0);
   return out;
 }
 
 double beta_h(double vm) {
   double out;
-  out = 10 / (exp(-0.1 * (vm + 14)) + 1);
+  out = 10.0 / (exp(-0.1 * (vm + 14.0)) + 1.0);
   return out;
   }
 
@@ -78,45 +79,49 @@ extern double dt, *iSynap;
 void derivs(double t, double stateVar[], double dydx[]) {
   int tIdx, kNeuron, colNo;
   double cur = 0.0, iffScale, iBgScale;
-  iBgScale = 0.0;
+  double *vm;
+  vm = vector(1, N_Neurons);
+  iBgScale = 1.0;
   iffScale = 0.0;
-  //  cur = 0.1 * sqrt(K);
-  //cur = 2.5;
-  
   tIdx = (int)(t / dt) + 1;
   for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
     colNo = (kNeuron - 1) * N_StateVars;
-    if(kNeuron == 2 & t >= 50 & t <= 60){ cur = 2.8;} else {cur = 0.0;}
+    vm[kNeuron] = stateVar[1 + colNo];
+    if(kNeuron == 2) { fprintf(gbgrndFP, "%f\n", iBg[kNeuron]); }
     if (kNeuron <= NE) { 
-      if(kNeuron == 0 && kNeuron == -25 ) { /*Na 2+ current blocked */
+      if(kNeuron == -10 && kNeuron == -25 ) { /*Na 2+ current blocked */
         dydx[1 + colNo] =  1/Cm * (cur
                                  - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K)
                                  - G_L_E * (stateVar[1 + colNo] - E_L)
                                  - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBgScale* iBg[kNeuron] +  iffScale * iFF[kNeuron]);
       }
       else {
+        iBg[kNeuron] = -1 * G_IB * K * RB_I * (RHO * vm[kNeuron] + (1 - RHO) * E_L);
+        if(kNeuron == 2 & t == 200) 
+          printf("%f\n", iBg[kNeuron]);
         dydx[1 + colNo] =  1/Cm * (cur 
                                  - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
                                  - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
                                  - G_L_E * (stateVar[1 + colNo] - E_L)
-                                   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBgScale * iBg[kNeuron] +  iffScale * iFF[kNeuron]);// iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
-           }
+                                 - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBgScale * iBg[kNeuron] +  iffScale * iFF[kNeuron]);
+      }
     }
     else {
+      iBg[kNeuron] = -1 * G_EB * K * RB_E * (RHO * vm[kNeuron] + (1 - RHO) * E_L);
       dydx[1 + colNo] =  1/Cm * (cur  
                                    - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
                                    - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
                                    - G_L_I * (stateVar[1 + colNo] - E_L)
-                                   - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBgScale * iBg[kNeuron] + iffScale * iFF[kNeuron]); // + iBg[kNeuron]);//+ iFF[kNeuron]); // N = [NE; NI]
+                                   - 0.0 * G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBgScale * iBg[kNeuron] + iffScale * iFF[kNeuron]); 
       }
      
     dydx[2 + colNo] = alpha_n(stateVar[1 + colNo]) * (1 - stateVar[2 + colNo]) 
                       - beta_n(stateVar[1 + colNo]) * stateVar[2 + colNo];
   
     dydx[3 + colNo] = 1 / Tau_adapt * (z_inf(stateVar[1 + colNo]) - stateVar[3 + colNo]);
-    
     dydx[4 + colNo] = alpha_h(stateVar[1 + colNo]) * (1 - stateVar[4 + colNo]) 
                       - beta_h(stateVar[1 + colNo]) * stateVar[4 + colNo];
   }
-
+  
+  free_vector(vm, 1, N_Neurons);
 }

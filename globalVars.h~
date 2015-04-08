@@ -1,28 +1,25 @@
 #ifndef _GLOBALVARS_
 #define _GLOBALVARS_
-#include <math.h>
-#include <stdio.h>
-#include <gsl/gsl_rng.h>
+#include<math.h>
+#include<stdio.h>
 // time in ms
 #define PI 3.14159265359
 char filebase[256];
 
-#define DT 0.05 // ms
+#define DT 0.025 // ms
 #define SQRT_DT sqrt(DT)
 
-#define STORE_LAST_T_MILLISEC 100.0
+#define STORE_LAST_T_MILLISEC 1.0
 #define STORE_LAST_N_STEPS (STORE_LAST_T_MILLISEC / DT)
-
-#define IF_GEN_CONMAT 1
 
 #define Cm 1 //microF / cm^2
 #define E_Na 55.0 //mV
-#define E_K -80.0
+#define E_K -90.0
 #define E_L -65.0
 #define G_Na 100.0 // mS/cm^2
 #define G_K 40.0
 #define G_L_E 0.05 // excitatory
-#define G_L_I 0.1  // inhibitory
+#define G_L_I 0.1 /*0.1*/ // inhibitory
 #define G_adapt 0.5
 #define Tau_adapt 60.0 // in ms
 
@@ -30,10 +27,9 @@ double dt, *thetaVec;
 int nTotSpks;
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 10000
-#define NE 10000
+#define NI 40000
+#define NE 40000
 #define N_Neurons (NE + NI)
-#define N_NEURONS N_Neurons
 #define K 1000.0 // use decimal point to assign, keeps it double 
 
 
@@ -41,23 +37,23 @@ int nTotSpks;
 #define L 1.0
 #define CON_SIGMA (L / 5.0)
 
-// params synapse
+ // params synapse
 #define TAU_SYNAP 3.0  // ms
 #define INV_TAU_SYNAP (1 / TAU_SYNAP)
 #define V_E 0.0
 #define V_I -80.0 
-#define G_EE 0.15
+#define G_EE 0.0 //0.15
 #define G_EI 2.00
-#define G_IE 0.45
-#define G_II 3.00
+#define G_IE 0.45 //0.45
+#define G_II 3.0 
 #define EXP_SUM exp(-1 * DT / TAU_SYNAP)
 
 // recurrent input 
 double *tempCurE, *tempCurI;
 
 // backgrund input
-#define RB_E 0.002
-#define RB_I 0.002
+#define RB_E 2.0
+#define RB_I 2.0
 double *iBg, *gaussNoiseE, *gaussNoiseI;
 #define G_EB (0.3 / sqrt(K))
 #define G_IB (0.4 / sqrt(K))
@@ -67,19 +63,19 @@ double *iSynap, *expSum, *gEI_E, *gEI_I;
 FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 // ff input
-#define CFF 0.1
-#define KFF 200.0
-//#define GE_FF 0.9486
-//#define GI_FF 1.265
+#define CFF 0.01
+#define KFF 100.0
+#define GE_FF 0.95
+#define GI_FF 1.26
 #define R0 0.002
-#define R1 0.02
+#define R1 0.020
 #define INP_FREQ (4 * PI) // 
-#define ETA_E 1.2
-#define ETA_I 1.2
-#define MU_E 0.0
-#define MU_I 0.00
-#define GFF_E (0.95 / sqrt(K))
-#define GFF_I (1.26 / sqrt(K))
+#define ETA_E 0.4
+#define ETA_I 0.4
+#define MU_E 0.1
+#define MU_I 0.10
+#define GFF_E 0.95
+#define GFF_I 1.26
 
 double contrast, theta;
 double *gFF, *iFF, *rTotal, muE, muI,
@@ -102,9 +98,4 @@ typedef struct
 {
   int neuronId, nPostNeurons, *postNeuronIds;
 } sparseMat;
-
-
-const gsl_rng_type *T, *T001;
-gsl_rng *gslRngState, *gslRngState001;
-
 #endif

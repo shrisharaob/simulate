@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <gsl/gsl_rng.h>
 #include "nr.h"
 #include "nrutil.h"
 #include "config.h"
@@ -23,10 +24,10 @@ extern FILE *spkTimesF, *outVars;
 sparseMat *sConMat[N_Neurons + 1]; // index staring with 1
 void main(int argc, char **argv) {
     // ***** DECLARATION *****//
-  int dim = 4;
+    int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 100.0, // simulation end time
+      x2 = 3000.0, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     int kNeuron, clmNo, loopIdx=0;
@@ -34,7 +35,16 @@ void main(int argc, char **argv) {
     FILE *vmFP1;
     clock_t begin, end;
     char fileSuffix[128];
-    //***** PARSE INPUT ARGS *****//
+    /* setup gsl rng */
+    gsl_rng_env_setup();
+    T = gsl_rng_default;
+    T001 = gsl_rng_default;
+    gslRngState = gsl_rng_alloc (T);
+    gslRngState001 = gsl_rng_alloc (T001);
+    gsl_rng_set(gslRngState, time(NULL));
+    gsl_rng_set(gslRngState001, time(NULL));
+    
+    /* PARSE INPUT ARGS */
     if(argc > 1) {
       theta = atof(argv[1]);
     }
@@ -99,14 +109,15 @@ void main(int argc, char **argv) {
     gEEEIFP = fopen(strcat(filebase, "gEEEI.csv"), "w");
     strcpy(filebase, FILEBASE);
     srand(time(NULL)); // set the seed for random number generator
-    fprintf(stdout, "generating conMat..."); fflush(stdout);
-    genConMat(); // Generate conection matrix
+    /*    fprintf(stdout, "generating conMat..."); fflush(stdout);*/
+    /*    genConMat(); // Generate conection matrix*/
+    GenConMat02(IF_GEN_CONMAT);
     printf("done\n");
-    //    GenConMat02();
     /*    conMat[1][1] = 0; conMat[1][2] = 0; conMat[1][3] = 0;conMat[2][1] = 0; conMat[2][2] = 0; */
-    ReadConMatFromFile("conVec.csv", N_Neurons);
+    /*    ReadConMatFromFile("conVec.csv", N_Neurons);*/
     GenSparseConMat(sConMat);
-    GenSparseConMatDisp(sConMat);
+    /*    GenSparseConMatDisp(sConMat);*/
+    free_matrix(conMat, 1, N_Neurons, 1, N_Neurons);
     AuxRffTotal(); /* auxillary function, generates random variables for the 
                       simulation run; which are used for approximating FF input */
     if(thetaStep > 0) {
@@ -118,29 +129,49 @@ void main(int argc, char **argv) {
       thetaVec[1] = 0;
       nThetaSteps = 1;
     }
-    contrast = 0.0;
-    muE = 0.1;
-    muI = 0.1;
+    contrast = 100; //30.0;
+    muE = 0.0;
+    muI = 0.0;
     printf("theta = %f contrast = %f\n", theta, contrast);
     /* INITIALIZE STATE VARIABLES */
     /*    vmFP1 = fopen("vmstart.csv", "w");*/
+    
     for(kNeuron = 1; kNeuron < N_Neurons + 1; ++kNeuron) {
       clmNo =  (kNeuron - 1) * N_StateVars;
-      idem = -1 * rand();
-      vstart[1 + clmNo] = -60.0; //-70 +  40 * ran1(&idem); // Vm(0) ~ U(-70, -30)
+      vstart[1 + clmNo] = -70 +  40 * gsl_rng_uniform(gslRngState); // Vm(0) ~ U(-70, -30)
       vstart[2 + clmNo] = 0.3176;
       vstart[3 + clmNo] = 0.1;
       vstart[4 + clmNo] = 0.5961;
     }
     /* INTEGRATE */
+    int i, spksE = 0, spksI = 0;
+    FILE *fpIFR = fopen("InstFR.csv", "w");
     begin = clock();
     for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
       //      theta = thetaVec[loopIdx];
       rkdumb(vstart, N_StateVars * N_Neurons, x1, x2, nSteps, derivs);
+      for(i = 0; i < N_NEURONS; ++i) {
+        if(IF_SPK[i]) {
+          if(i < NE) {
+            spksE += 1;
+          }
+          else{
+            spksI += 1;
+          }
+        }
+      }
+      if(!(loopIdx%2000)) {
+        fprintf(fpIFR, "%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI));fflush(fpIFR);
+        fprintf(stdout, "%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI));
+        printf("%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI));
+        spksE = 0; 
+        spksI = 0;
+      }
     }
+    fclose(fpIFR);
     printf("Done! \n");
     end = clock();
-    printf("\n time spent integrating : %.2fs", (double)(end - begin) / CLOCKS_PER_SEC);
+    printf("\n time spent integrating : %.2fs\n", (double)(end - begin) / CLOCKS_PER_SEC);
     fclose(spkTimesFp);
     /* SAVE TO DISK */
     //    if(theta == 18.0) {
@@ -151,6 +182,7 @@ void main(int argc, char **argv) {
       }
       fprintf(vmFP, "\n");
     }
+
     //}
     printf("\nnSteps = %d \n", nSteps);
     printf("nSpks = %d\n", nTotSpks);
@@ -177,7 +209,7 @@ void main(int argc, char **argv) {
     free_vector(iFF, 1, N_Neurons);
     free_vector(tempCurI, 1, N_Neurons);
     free_vector(tempCurE, 1, N_Neurons);
-    free_matrix(conMat, 1, N_Neurons, 1, N_Neurons);
+
     free_matrix(randwZiA, 1, N_Neurons, 1, 4);
     free_matrix(randuPhi, 1, N_Neurons, 1, 3);
     FreeSparseMat(sConMat);
