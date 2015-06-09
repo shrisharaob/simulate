@@ -168,18 +168,35 @@ void IBackGrnd(double *vm) {
   double gE, gI;
   long idum = -1 * time(NULL);
   int kNeuron;
+  /*  double tmp1, tmp2, tmp3, tmp4, tmp5, tmp6;
+  tmp1 = 1 - DT * INV_TAU_SYNAP;
+  tmp2 = SQRT_DT * INV_TAU_SYNAP;
+  tmp3 = G_EB * K * RB_E ;
+  tmp4 = G_IB * K * RB_I ;
+  tmp5 = G_EB * K * sqrt(RB_E / K);
+  tmp6 = G_IB * K * sqrt(RB_I / K);
+*/  
   for(kNeuron = 1; kNeuron <= NE; ++kNeuron) {
     gaussNoiseE[kNeuron] = gaussNoiseE[kNeuron] * (1 - DT * INV_TAU_SYNAP) + SQRT_DT  * INV_TAU_SYNAP * gasdev(&idum);
-    //    gaussNoiseE[kNeuron] = 0;
+    gaussNoiseE[kNeuron] = 0;
     gE = G_EB * K * (RB_E + sqrt(RB_E / K) * gaussNoiseE[kNeuron]);
     iBg[kNeuron] = -1 * gE * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));
+
   }
   for(kNeuron = 1; kNeuron <= NI; ++kNeuron) {
+    /*    gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] + DT * ( D * gasdev(&idum) / SQRT_DT -  gaussNoiseI[kNeuron] * INV_TAU_SYNAP);*/
+    /*    gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] * tmp1 + tmp2 * gasdev(&idum);*
+    gaussNoiseI[kNeuron] = 0;
+    gI = tmp4 + tmp6 * gaussNoiseI[kNeuron];
+    iBg[kNeuron + NE] = -1 * gI * (RHO * (vm[kNeuron] - V_E) + (1 - RHO) * (E_L - V_E));*/
+    //    fprintf(gbgrndFP,"%f ", gI);
+
     gaussNoiseI[kNeuron] = gaussNoiseI[kNeuron] * (1 - DT * INV_TAU_SYNAP) + SQRT_DT  * INV_TAU_SYNAP * gasdev(&idum);
-    //    gaussNoiseI[kNeuron] = 0;
+    gaussNoiseI[kNeuron] = 0;
     gI = G_IB * K * (RB_I + sqrt(RB_I / K) * gaussNoiseI[kNeuron]);
-    iBg[kNeuron + NE] = -1 * gI * (RHO * (vm[kNeuron + NE] - V_E) + (1 - RHO) * (E_L - V_E));
+    iBg[kNeuron] = -1 * gI * (RHO * (vm[kNeuron + NE] - V_E) + (1 - RHO) * (E_L - V_E));
   }
+  //  fprintf(gbgrndFP,"\n");
 }
 
 // ff input 
@@ -301,21 +318,17 @@ void GenConMat02(int IF_GEN) {
       /*    fprintf(conMatFP, "\n");*/
     }
     fprintf(stdout, "done\n");
-    fprintf(stdout, "writing to file...");
-    fflush(stdout);
-    
-    //    fwrite(&conMat[1][1], sizeof(double), N_Neurons * N_Neurons, conMatFP);
-    
+    fprintf(stdout, "writing to file..."); fflush(stdout);
+    fwrite(&conMat[1][1], sizeof(double), N_Neurons * N_Neurons, conMatFP);
   }
   else {
     conMatFP = fopen(strcat(filebase,"conMat.dat"), "rb");
     fprintf(stdout, "reading file... "); fflush(stdout);
     fread(&conMat[1][1], sizeof(double), N_Neurons * N_Neurons, conMatFP);
   }
-  fclose(conMatFP);
   fprintf(stdout, "done\n");
-  printf("counting number of connections ...");
-  fflush(stdout);
+  fclose(conMatFP);
+  
   FILE  *fp01 = fopen("countI.csv", "w"),  *fp02 = fopen("countE.csv", "w");
   printf("\nN = %d\n", N_NEURONS);
   int countE = 0, countI = 0;
@@ -341,8 +354,6 @@ void GenConMat02(int IF_GEN) {
 void GenSparseConMat(sparseMat *sPtr[]) {
   int row, clm, *count, loopid, *idx, tmpCntr;
   count = ivector(1, N_Neurons);
-  printf("Generating sparse convec...");
-  fflush(stdout);
   for(row = 1; row <= N_Neurons; ++row) {
     sPtr[row] = (sparseMat *)malloc(sizeof(sparseMat));
     sPtr[row]->neuronId = row;
@@ -374,7 +385,6 @@ void GenSparseConMat(sparseMat *sPtr[]) {
     free_ivector(idx, 1, count[row]);
   }
   free_ivector(count, 1, N_Neurons);
-  printf("done...");
 }
 
 void FreeSparseMat(sparseMat *sPtr[]) {

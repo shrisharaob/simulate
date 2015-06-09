@@ -36,7 +36,7 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
   logVar = nstep / 10;
   for (k = 1; k <= nstep; k++) {
     if(k % logVar == 0) {
-      printf("%2.1f %%  \n", (double)k * 100.0  / (double)nstep);
+      printf("%2.1f %% done \n", (double)k * 100.0  / (double)nstep);
     } 
     for(mNeuron = 1; mNeuron <= N_Neurons; ++mNeuron) {
         clmNo = (mNeuron - 1) * N_StateVars;
@@ -113,7 +113,7 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
         }
       }
     }
-    if(!(k%1000)) {
+    if(!(k%(int)(50.0/DT))) {
       fprintf(fpIFR, "%f %f \n", ((double)spksE) / (DT * (double)NE), ((double)spksI) / (0.05 * (double)NI));fflush(fpIFR);
       fprintf(stdout, "%f %f \n", ((double)spksE) / (DT * (double)NE), ((double)spksI) / (0.05 * (double)NI));
       spksE = 0; 

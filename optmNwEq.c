@@ -96,9 +96,6 @@ void derivs(double t, double stateVar[], double dydx[]) {
                                  - G_adapt * stateVar[3 + colNo] * (stateVar[1 + colNo] - E_K) + iSynap[kNeuron] + iBgScale* iBg[kNeuron] +  iffScale * iFF[kNeuron]);
       }
       else {
-        iBg[kNeuron] = -1 * G_IB * K * RB_I * (RHO * vm[kNeuron] + (1 - RHO) * E_L);
-        if(kNeuron == 2 & t == 200) 
-          printf("%f\n", iBg[kNeuron]);
         dydx[1 + colNo] =  1/Cm * (cur 
                                  - G_Na * pow(m_inf(stateVar[1 + colNo]), 3) * stateVar[4 + colNo] * (stateVar[1 + colNo] - E_Na) 
                                  - G_K * pow(stateVar[2 + colNo], 4) * (stateVar[1 + colNo] - E_K) 
@@ -117,7 +114,6 @@ void derivs(double t, double stateVar[], double dydx[]) {
      
     dydx[2 + colNo] = alpha_n(stateVar[1 + colNo]) * (1 - stateVar[2 + colNo]) 
                       - beta_n(stateVar[1 + colNo]) * stateVar[2 + colNo];
-  
     dydx[3 + colNo] = 1 / Tau_adapt * (z_inf(stateVar[1 + colNo]) - stateVar[3 + colNo]);
     dydx[4 + colNo] = alpha_h(stateVar[1 + colNo]) * (1 - stateVar[4 + colNo]) 
                       - beta_h(stateVar[1 + colNo]) * stateVar[4 + colNo];

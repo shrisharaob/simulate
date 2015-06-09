@@ -27,7 +27,7 @@ void main(int argc, char **argv) {
     int dim = 4;
     double *vstart, *spkTimes;;
     double x1 = 0, // simulation start time
-      x2 = 3000.0, // simulation end time
+      x2 = 500.0, // simulation end time
       thetaStep = 0;
     int nSteps, nThetaSteps;
     int kNeuron, clmNo, loopIdx=0;
@@ -88,7 +88,6 @@ void main(int argc, char **argv) {
     printf("NI = %d\n", NI);
     printf("K = %d\n", (int)K);
     printf("dt = %f, tStop = %f, nSteps = %d\n", DT, x2, nSteps);  
-    printf("computing...\n");
     strcpy(filebase, FILEBASE);
     vmFP = fopen(strcat(filebase, "vm.csv"), "w");
     strcpy(filebase, FILEBASE);
@@ -96,7 +95,7 @@ void main(int argc, char **argv) {
     sprintf(fileSuffix, "%03.0f", theta);
     strcat(filebase, fileSuffix);
     spkTimesFp = fopen(strcat(filebase, ".csv"),"w");
-    printf("\n%s\n", filebase);
+    printf("\nResults directory: %s\n", filebase);
     strcpy(filebase, FILEBASE);
     outVars = fopen(strcat(filebase, "outvars.csv"), "w");
     strcpy(filebase, FILEBASE);
@@ -132,7 +131,8 @@ void main(int argc, char **argv) {
     contrast = 100; //30.0;
     muE = 0.0;
     muI = 0.0;
-    printf("theta = %f contrast = %f\n", theta, contrast);
+    printf("\ntheta = %f contrast = %f\n", theta, contrast);
+    printf("computing...\n");
     /* INITIALIZE STATE VARIABLES */
     /*    vmFP1 = fopen("vmstart.csv", "w");*/
     
@@ -150,23 +150,23 @@ void main(int argc, char **argv) {
     for(loopIdx = 1; loopIdx <= nThetaSteps; ++loopIdx) {
       //      theta = thetaVec[loopIdx];
       rkdumb(vstart, N_StateVars * N_Neurons, x1, x2, nSteps, derivs);
-      for(i = 0; i < N_NEURONS; ++i) {
-        if(IF_SPK[i]) {
-          if(i < NE) {
-            spksE += 1;
-          }
-          else{
-            spksI += 1;
-          }
-        }
-      }
-      if(!(loopIdx%2000)) {
-        fprintf(fpIFR, "%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI));fflush(fpIFR);
-        fprintf(stdout, "%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI));
-        printf("%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI));
-        spksE = 0; 
-        spksI = 0;
-      }
+      /* for(i = 0; i < N_NEURONS; ++i) { */
+      /*   if(IF_SPK[i]) { */
+      /*     if(i < NE) { */
+      /*       spksE += 1; */
+      /*     } */
+      /*     else{ */
+      /*       spksI += 1; */
+      /*     } */
+      /*   } */
+      /* } */
+      /* if(!(loopIdx%2000)) { */
+      /*   fprintf(fpIFR, "%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI));fflush(fpIFR); */
+      /*   fprintf(stdout, "%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI)); */
+      /* 	//   printf("%f %f \n", ((double)spksE) / (0.05 * (double)NE), ((double)spksI) / (0.05 * (double)NI)); */
+      /*   spksE = 0;  */
+      /*   spksI = 0; */
+      /* } */
     }
     fclose(fpIFR);
     printf("Done! \n");
@@ -209,7 +209,6 @@ void main(int argc, char **argv) {
     free_vector(iFF, 1, N_Neurons);
     free_vector(tempCurI, 1, N_Neurons);
     free_vector(tempCurE, 1, N_Neurons);
-
     free_matrix(randwZiA, 1, N_Neurons, 1, 4);
     free_matrix(randuPhi, 1, N_Neurons, 1, 3);
     FreeSparseMat(sConMat);

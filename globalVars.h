@@ -30,11 +30,11 @@ double dt, *thetaVec;
 int nTotSpks;
 // params network
 #define N_StateVars 4 // equals the number of 1st order ode's
-#define NI 10000
-#define NE 10000
+#define NI 5000
+#define NE 5000
 #define N_Neurons (NE + NI)
 #define N_NEURONS N_Neurons
-#define K 1000.0 // use decimal point to assign, keeps it double 
+#define K 500.0 // use decimal point to assign, keeps it double 
 
 
 // params patch
@@ -68,12 +68,12 @@ FILE *outVars, *spkTimesFp, *isynapFP, *gbgrndFP, *gEEEIFP, *vmFP;
 
 // ff input
 #define CFF 0.1
-#define KFF 200.0
+//#define KFF 200.0
 //#define GE_FF 0.9486
 //#define GI_FF 1.265
 #define R0 0.002
 #define R1 0.02
-#define INP_FREQ (4 * PI) // 
+#define INP_FREQ (0.004 * PI) // 
 #define ETA_E 1.2
 #define ETA_I 1.2
 #define MU_E 0.0

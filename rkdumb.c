@@ -99,4 +99,4 @@ void rkdumb(double vstart[], int nvar, double x1, double x2, int nstep, void (*d
   free_vector(vm, 1, N_Neurons);
 }
 #undef NRANSI
-/* (C) Copr. 1986-92 Numerical Recipes Software 9,)5. */
+
